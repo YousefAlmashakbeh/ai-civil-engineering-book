@@ -13,17 +13,18 @@ from joblib import Parallel, delayed
 
 D = os.environ.get("HUCP_DIR", "hucp"); F = "fig"; os.makedirs(F, exist_ok=True)
 lab = pd.read_csv(f"{D}/tables/patch_labels_clean.csv", low_memory=False)
-w = lab[lab.surface_code == "W"].reset_index(drop=True)
+SURF = os.environ.get("HUCP_SURFACE", "W")   # "W" walls (book figure) or "P" pavements
+w = lab[lab.surface_code == SURF].reset_index(drop=True)
 w["y"] = (w.label == "cracked").astype(int)
 
 def feat(path):
-    im = Image.open(f"{D}/W/{path}").convert("L").resize((64, 64), Image.BILINEAR)
+    im = Image.open(f"{D}/{SURF}/{path}").convert("L").resize((64, 64), Image.BILINEAR)
     a = np.asarray(im, dtype=np.float32) / 255.0
     h = hog(a, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2), feature_vector=True)
     g = np.abs(np.diff(a, axis=0)).mean(), np.abs(np.diff(a, axis=1)).mean()
     return np.concatenate([h, [a.mean(), a.std(), a.min(), np.percentile(a, 5), *g]])
 
-cache = f"{D}/W_feats.npy"
+cache = f"{D}/{SURF}_feats.npy"
 if os.path.exists(cache): X = np.load(cache)
 else:
     X = np.array(Parallel(n_jobs=-1)(delayed(feat)(p) for p in w.file)); np.save(cache, X)
@@ -56,24 +57,26 @@ by_w = c.groupby("wclass").apply(lambda d: pd.Series({"n": len(d), "recall": (d.
 by_l = t.groupby("lighting").apply(lambda d: pd.Series({"n": len(d), "F1": f1_score(d.y, d.p >= .5) if d.y.sum() else np.nan}))
 out["recall_by_width"] = by_w.round(3).to_dict("index"); out["by_lighting"] = by_l.round(3).to_dict("index")
 
-# figure
-fig = plt.figure(figsize=(12, 3.6)); gs = fig.add_gridspec(1, 3, width_ratios=[1.25, 1, 1])
-ax0 = fig.add_subplot(gs[0]); rng = np.random.default_rng(3)
-pick = [*rng.choice(np.where(y == 1)[0], 4, replace=False), *rng.choice(np.where(y == 0)[0], 4, replace=False)]
-tiles = [np.asarray(Image.open(f"{D}/W/{w.file[i]}").convert("L").resize((96, 96))) for i in pick]
-grid = np.vstack([np.hstack(tiles[:4]), np.hstack(tiles[4:])]); ax0.imshow(grid, cmap="gray"); ax0.axis("off")
-ax0.set_title("(a) HU-CP walls: cracked (top), uncracked (bottom)", fontsize=9)
-ax1 = fig.add_subplot(gs[1]); ks = ["AUC", "F1", "recall"]; xx = np.arange(3)
-ax1.bar(xx - .18, [res_rand[k] for k in ks], .36, label="random patch split", color="#c44e52")
-ax1.bar(xx + .18, [res_rec[k] for k in ks], .36, label="record-level split", color="#4c72b0")
-ax1.set_xticks(xx); ax1.set_xticklabels(ks); ax1.set_ylim(0, 1); ax1.legend(fontsize=7, loc="lower right")
-ax1.set_title("(b) Same model, two ways to split", fontsize=9)
-ax2 = fig.add_subplot(gs[2])
 pr = t.groupby("record").apply(lambda d: pd.Series({"n": len(d), "c": int(d.y.sum()), "F1": f1_score(d.y, d.p >= .5) if d.y.sum() else np.nan})).sort_values("F1")
 out["per_record_F1"] = pr.round(3).to_dict("index")
-ax2.barh(range(len(pr)), pr.F1, color="#55a868"); ax2.set_yticks(range(len(pr)))
-ax2.set_yticklabels([f"{r} (n={int(n)})" for r, n in zip(pr.index, pr.n)], fontsize=7); ax2.set_xlim(0, 1)
-ax2.axvline(res_rec["F1"], ls="--", c="k", lw=.8); ax2.set_xlabel("F1 on each test record")
-ax2.set_title("(c) Only 6 test records: spread matters", fontsize=9)
-fig.tight_layout(); fig.savefig(f"{F}/fig12_3_hucp.png", dpi=200); plt.close()
+# figure (needs the image folder)
+if os.path.isdir(f"{D}/{SURF}"):
+    fig = plt.figure(figsize=(12, 3.6)); gs = fig.add_gridspec(1, 3, width_ratios=[1.25, 1, 1])
+    ax0 = fig.add_subplot(gs[0]); rng = np.random.default_rng(3)
+    pick = [*rng.choice(np.where(y == 1)[0], 4, replace=False), *rng.choice(np.where(y == 0)[0], 4, replace=False)]
+    tiles = [np.asarray(Image.open(f"{D}/{SURF}/{w.file[i]}").convert("L").resize((96, 96))) for i in pick]
+    grid = np.vstack([np.hstack(tiles[:4]), np.hstack(tiles[4:])]); ax0.imshow(grid, cmap="gray"); ax0.axis("off")
+    ax0.set_title(f"(a) HU-CP {'walls' if SURF=='W' else 'pavements'}: cracked (top), uncracked (bottom)", fontsize=9)
+    ax1 = fig.add_subplot(gs[1]); ks = ["AUC", "F1", "recall"]; xx = np.arange(3)
+    ax1.bar(xx - .18, [res_rand[k] for k in ks], .36, label="random patch split", color="#c44e52")
+    ax1.bar(xx + .18, [res_rec[k] for k in ks], .36, label="record-level split", color="#4c72b0")
+    ax1.set_xticks(xx); ax1.set_xticklabels(ks); ax1.set_ylim(0, 1); ax1.legend(fontsize=7, loc="lower right")
+    ax1.set_title("(b) Same model, two ways to split", fontsize=9)
+    ax2 = fig.add_subplot(gs[2])
+    ax2.barh(range(len(pr)), pr.F1, color="#55a868"); ax2.set_yticks(range(len(pr)))
+    ax2.set_yticklabels([f"{r} (n={int(n)})" for r, n in zip(pr.index, pr.n)], fontsize=7); ax2.set_xlim(0, 1)
+    ax2.axvline(res_rec["F1"], ls="--", c="k", lw=.8); ax2.set_xlabel("F1 on each test record")
+    ax2.set_title(f"(c) {len(pr)} test records: spread matters", fontsize=9)
+    fig.tight_layout(); fig.savefig(f"{F}/fig12_3_hucp.png" if SURF == "W" else f"{F}/fig12_3_hucp_{SURF}.png", dpi=200); plt.close()
+
 import json; print(json.dumps(out, indent=1, default=float, ensure_ascii=False))

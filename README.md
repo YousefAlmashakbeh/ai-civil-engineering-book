@@ -29,7 +29,7 @@ They are for teaching, not design. Real open datasets (UCI, METU, SDNET2018, RDD
 check each dataset's own licence page before reuse.
 
 ### HU-CP crack dataset (Chapter 12)
-`code/ch12_hucp.py` uses the walls subset of HU-CP v1.0 (CC BY 4.0): https://doi.org/10.5281/zenodo.23836570
+`code/ch12_hucp.py` uses the walls subset of HU-CP v1.0 by default (set `HUCP_SURFACE=P` for pavements) (CC BY 4.0): https://doi.org/10.5281/zenodo.23836570
 
 ### Author's experimental data
 The UPV and bond-corrosion measurements analysed in Chapters 8 and 13 (`ch_author.py`) are not distributed with this repository. They are available from the author on reasonable request.
