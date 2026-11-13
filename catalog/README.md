@@ -1,7 +1,7 @@
 # Kaggle civil-engineering dataset catalogue
 
 `kaggle_civil_datasets.csv` lists 63 Kaggle datasets relevant to the book, mapped to chapters.
-The licence is the one shown on each Kaggle page when checked (November 2026). Licences change, so check the page again before you publish anything.
+The licence is the one returned for each dataset page when checked (13 November 2026). Licences change, so check the page again before you publish anything.
 
 `book_use` values:
 - printable / usable / usable with credit: CC0, CC BY, MIT, Apache, PDDL, US Gov. You may use these with attribution.

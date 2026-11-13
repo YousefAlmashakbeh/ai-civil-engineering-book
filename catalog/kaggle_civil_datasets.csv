@@ -64,14 +64,14 @@ chapter,topic,kaggle_ref,title,kaggle_license,votes,book_use,original_source_not
 16,building energy,claytonmiller/buildingdatagenomeproject2,Building Data Genome Project 2,CC BY-SA 4.0,73,usable share-alike,
 9,seismic,usgs/earthquake-database,"Significant Earthquakes, 1965-2016",CC0,621,usable,USGS catalogue
 9,seismic,mohitkr05/global-significant-earthquake-database-from-2150bc,Global Significant Earthquake Database,U.S. Government Works,57,usable,NOAA NCEI significant earthquake database
-9,seismic damage,arashnic/earthquake-magnitude-damage-and-impact,"Earthquake Magnitude, Damage and Impact",CC0,54,check origin,
+9,seismic damage,arashnic/earthquake-magnitude-damage-and-impact,"Earthquake Magnitude, Damage and Impact",CC0,54,cite original,Nepal 2015 building survey (Kathmandu Living Labs / Central Bureau of Statistics)
 9,seismic,alessandrolobello/the-ultimate-earthquake-dataset-from-1990-2023,All the Earthquakes 1990-2023,CC0,99,usable with credit,Compiled from USGS
-9,seismic,ahmeduzaki/global-earthquake-tsunami-risk-assessment-dataset,Global Earthquake-Tsunami Risk Assessment,CC BY 4.0,700,check origin,Origin not documented
-12,disaster damage,kmader/satellite-images-of-hurricane-damage,Satellite Images of Hurricane Damage,CC BY 4.0,62,usable with credit,Cao & Choe (Hurricane Harvey); cite paper
+9,seismic,ahmeduzaki/global-earthquake-tsunami-risk-assessment-dataset,Global Earthquake-Tsunami Risk Assessment,CC BY 4.0,700,cite original,Derived from another Kaggle earthquake dataset; trace the original
+12,disaster damage,kmader/satellite-images-of-hurricane-damage,Satellite Images of Hurricane Damage,CC BY 4.0,62,cite original,"Originally from IEEE DataPort (Cao & Choe, Hurricane Harvey)"
 13,vibration,jishnukoliyadan/vibration-analysis-on-rotating-shaft,Vibration Analysis on Rotating Shaft,CC BY 4.0,76,usable with credit,Original on Fraunhofer/Mendeley; cite original
 13;15,pipelines,usdot/pipeline-accidents,"Oil Pipeline Accidents, 2010-Present",CC0,160,usable,US DOT PHMSA
 14,traffic signs,meowmeowmeowmeowmeow/gtsrb-german-traffic-sign,GTSRB German Traffic Sign Benchmark,CC0,1367,cite original,Re-upload of GTSRB (Stallkamp et al.); check original terms
-14,traffic signs,andrewmvd/road-sign-detection,Road Sign Detection,CC0,252,check origin,
+14,traffic signs,andrewmvd/road-sign-detection,Road Sign Detection,CC0,252,cite original,Credit on page: Make ML Road Signs Dataset
 14,crashes,daveianhickey/2000-16-traffic-flow-england-scotland-wales,1.6 million UK traffic accidents,ODbL,475,cite original,UK DfT STATS19 (Open Government Licence)
 14,crashes,usdot/nhtsa-traffic-fatalities,US Traffic Fatality Records (FARS),CC0,320,usable,NHTSA FARS
 14,crashes,ahmedlahlou/accidents-in-france-from-2005-to-2016,Accidents in France 2005-2016,CC0,235,cite original,data.gouv.fr (Licence Ouverte)
@@ -83,8 +83,8 @@ chapter,topic,kaggle_ref,title,kaggle_license,votes,book_use,original_source_not
 14,road network,imtkaggleteam/major-roads-australia,Major Roads Australia,CC BY 4.0,39,usable with credit,Geoscience Australia
 14,road damage,lorenzoarcioni/road-damage-dataset-potholes-cracks-and-manholes,"Road Damage: Potholes, Cracks and Manholes",MIT,38,check origin,
 14,road damage,rohitsuresh15/radroad-anomaly-detection,RAD Road Anomaly Detection,MIT,48,check origin,
-14,pothole,sovitrath/road-pothole-images-for-pothole-detection,Road Pothole Images,CC0,50,check origin,
-14,pothole,rajdalsaniya/pothole-detection-dataset,Pothole Detection Dataset,CC0,53,check origin,
+14,pothole,sovitrath/road-pothole-images-for-pothole-detection,Road Pothole Images,CC0,50,cite original,Re-upload; original linked on the Kaggle page
+14,pothole,rajdalsaniya/pothole-detection-dataset,Pothole Detection Dataset,CC0,53,cite original,Credit on page: Analytics Vidhya DataHack
 14,crashes,denkuznetz/traffic-accident-prediction,Traffic Accident Prediction,Apache 2.0,78,training only,Looks synthetic; audit before use
 15,drought,cdminix/us-drought-meteorological-data,Predict Droughts using Weather & Soil Data,CC0,246,usable with credit,US Drought Monitor + NASA POWER
 15,flood,naiyakhalid/flood-prediction-dataset,Flood Prediction Dataset,CC0,105,training only,Looks synthetic; audit before use
@@ -94,7 +94,7 @@ chapter,topic,kaggle_ref,title,kaggle_license,votes,book_use,original_source_not
 15,reservoirs,edomingo/catalonia-water-resource-daily-monitoring,Catalonia Water Resource Daily Monitoring,CC0,40,usable with credit,Agencia Catalana de l'Aigua open data
 15,reservoirs,aiwithcagri/istanbul-baraj-doluluk-dam-occupancy-rate,Istanbul dam occupancy rate,MIT,52,cite original,IBB open data portal
 15,reservoirs,muhammedtausif/dams-and-reservoirs,Dams and Reservoirs,CC0,45,check origin,
-15,rainfall,redikod/historical-rainfall-data-in-bangladesh,Rainfall in Bangladesh 1970-2016,CC0,94,check origin,
+15,rainfall,redikod/historical-rainfall-data-in-bangladesh,Rainfall in Bangladesh 1970-2016,CC0,94,usable with credit,Compiled in the uploader's thesis
 15,groundwater,sivapriyagarladinne/telangana-post-monsoon-ground-water-quality-data,Telangana groundwater quality,CC0,84,cite original,Telangana open data portal
 11,construction economics,yutodennou/construction-investment-amount-in-japan,Construction Investment in Japan,ODbL,89,cite original,MLIT statistics
 11,safety,shlokraval/ppe-dataset-yolov8,PPE dataset YOLOv8,Apache 2.0,39,training; do not print faces,
