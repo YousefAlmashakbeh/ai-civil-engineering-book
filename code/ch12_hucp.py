@@ -1,0 +1,79 @@
+"""HU-CP (walls subset): record-level vs random patch split.
+Data: Almashakbeh, Alelaimat, Al-Majali (2026) HU-CP v1.0, Zenodo, doi:10.5281/zenodo.23836570, CC BY 4.0.
+Download HU_CP_W.zip and HU_CP_tables_README_audit.zip, unzip into HUCP_DIR (default ./hucp).
+"""
+import os, numpy as np, pandas as pd, matplotlib
+matplotlib.use("Agg"); import matplotlib.pyplot as plt
+from PIL import Image
+from skimage.feature import hog
+from sklearn.ensemble import HistGradientBoostingClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import roc_auc_score, f1_score, recall_score, precision_score
+from joblib import Parallel, delayed
+
+D = os.environ.get("HUCP_DIR", "hucp"); F = "fig"; os.makedirs(F, exist_ok=True)
+lab = pd.read_csv(f"{D}/tables/patch_labels_clean.csv", low_memory=False)
+w = lab[lab.surface_code == "W"].reset_index(drop=True)
+w["y"] = (w.label == "cracked").astype(int)
+
+def feat(path):
+    im = Image.open(f"{D}/W/{path}").convert("L").resize((64, 64), Image.BILINEAR)
+    a = np.asarray(im, dtype=np.float32) / 255.0
+    h = hog(a, orientations=9, pixels_per_cell=(8, 8), cells_per_block=(2, 2), feature_vector=True)
+    g = np.abs(np.diff(a, axis=0)).mean(), np.abs(np.diff(a, axis=1)).mean()
+    return np.concatenate([h, [a.mean(), a.std(), a.min(), np.percentile(a, 5), *g]])
+
+cache = f"{D}/W_feats.npy"
+if os.path.exists(cache): X = np.load(cache)
+else:
+    X = np.array(Parallel(n_jobs=-1)(delayed(feat)(p) for p in w.file)); np.save(cache, X)
+y = w.y.values
+
+def fit_eval(tr, te, seed=0):
+    m = HistGradientBoostingClassifier(max_iter=300, learning_rate=0.08, random_state=seed)
+    m.fit(X[tr], y[tr]); p = m.predict_proba(X[te])[:, 1]; yh = (p >= 0.5).astype(int)
+    return dict(AUC=roc_auc_score(y[te], p), F1=f1_score(y[te], yh), recall=recall_score(y[te], yh),
+                precision=precision_score(y[te], yh)), p
+
+out = {"n_patches": len(w), "n_records": w.record.nunique(), "cracked": int(y.sum())}
+# A) official record-level split (train+val -> train, test -> test)
+tr = np.where(w.split != "test")[0]; te = np.where(w.split == "test")[0]
+res_rec, p_rec = fit_eval(tr, te)
+# B) random patch split with the same test size, repeated
+rs = []
+for s in range(3):
+    a, b = train_test_split(np.arange(len(w)), test_size=len(te), stratify=y, random_state=s)
+    rs.append(fit_eval(a, b, s)[0])
+res_rand = {k: float(np.mean([r[k] for r in rs])) for k in rs[0]}
+out["record_split"] = {k: round(v, 3) for k, v in res_rec.items()}
+out["random_split"] = {k: round(v, 3) for k, v in res_rand.items()}
+out["test_records"] = int(w.record[te].nunique()); out["test_patches"] = len(te)
+# C) recall on cracked test patches by stated crack width and lighting
+t = w.iloc[te].copy(); t["p"] = p_rec; c = t[t.y == 1].copy()
+wm = c.width_mm.astype(str).str.strip()
+c["wclass"] = np.where(wm.isin(["<1", "0.5"]), "< 1 mm", np.where(wm.isin(["1", "1.0", "1-2", "1.5"]), "1-1.5 mm", "≥ 1.8 mm"))
+by_w = c.groupby("wclass").apply(lambda d: pd.Series({"n": len(d), "recall": (d.p >= .5).mean()}))
+by_l = t.groupby("lighting").apply(lambda d: pd.Series({"n": len(d), "F1": f1_score(d.y, d.p >= .5) if d.y.sum() else np.nan}))
+out["recall_by_width"] = by_w.round(3).to_dict("index"); out["by_lighting"] = by_l.round(3).to_dict("index")
+
+# figure
+fig = plt.figure(figsize=(12, 3.6)); gs = fig.add_gridspec(1, 3, width_ratios=[1.25, 1, 1])
+ax0 = fig.add_subplot(gs[0]); rng = np.random.default_rng(3)
+pick = [*rng.choice(np.where(y == 1)[0], 4, replace=False), *rng.choice(np.where(y == 0)[0], 4, replace=False)]
+tiles = [np.asarray(Image.open(f"{D}/W/{w.file[i]}").convert("L").resize((96, 96))) for i in pick]
+grid = np.vstack([np.hstack(tiles[:4]), np.hstack(tiles[4:])]); ax0.imshow(grid, cmap="gray"); ax0.axis("off")
+ax0.set_title("(a) HU-CP walls: cracked (top), uncracked (bottom)", fontsize=9)
+ax1 = fig.add_subplot(gs[1]); ks = ["AUC", "F1", "recall"]; xx = np.arange(3)
+ax1.bar(xx - .18, [res_rand[k] for k in ks], .36, label="random patch split", color="#c44e52")
+ax1.bar(xx + .18, [res_rec[k] for k in ks], .36, label="record-level split", color="#4c72b0")
+ax1.set_xticks(xx); ax1.set_xticklabels(ks); ax1.set_ylim(0, 1); ax1.legend(fontsize=7, loc="lower right")
+ax1.set_title("(b) Same model, two ways to split", fontsize=9)
+ax2 = fig.add_subplot(gs[2])
+pr = t.groupby("record").apply(lambda d: pd.Series({"n": len(d), "c": int(d.y.sum()), "F1": f1_score(d.y, d.p >= .5) if d.y.sum() else np.nan})).sort_values("F1")
+out["per_record_F1"] = pr.round(3).to_dict("index")
+ax2.barh(range(len(pr)), pr.F1, color="#55a868"); ax2.set_yticks(range(len(pr)))
+ax2.set_yticklabels([f"{r} (n={int(n)})" for r, n in zip(pr.index, pr.n)], fontsize=7); ax2.set_xlim(0, 1)
+ax2.axvline(res_rec["F1"], ls="--", c="k", lw=.8); ax2.set_xlabel("F1 on each test record")
+ax2.set_title("(c) Only 6 test records: spread matters", fontsize=9)
+fig.tight_layout(); fig.savefig(f"{F}/fig12_3_hucp.png", dpi=200); plt.close()
+import json; print(json.dumps(out, indent=1, default=float, ensure_ascii=False))
