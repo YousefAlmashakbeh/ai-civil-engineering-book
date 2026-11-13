@@ -48,6 +48,9 @@ for wc, g in s.groupby("wc"):
 v = s[(s.corroded == 1) & s.Pmax_kN.notna()]
 rho, p = spearmanr(v.max_crack_mm, v.Pmax_kN)
 print("   corroded prisms with results: n=%d; Spearman(crack width, Pmax)=%.2f (p=%.2f)" % (len(v), rho, p))
+cor = s[s.corroded == 1]
+rd, pd_ = spearmanr(cor.EGCI_pct, cor.max_crack_mm)
+print("   inhibitor dose vs max corrosion crack width, all 8 corroded prisms: Spearman=%.2f (p=%.3f)" % (rd, pd_))
 k = cw[cw.n == 3].copy(); k["ml"] = pd.to_numeric(k["mass_loss_%"], errors="coerce")
 kk = k.dropna(subset=["ml"])
 r, pr = pearsonr(kk["max_crack_width_mm (thesis Fig 4.11-4.12)"], kk.ml)

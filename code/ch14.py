@@ -182,3 +182,26 @@ ax.axhline(y2[top_raw].mean(), color="tab:red", ls=":", lw=1)
 ax.axvline(y1[top_raw].mean(), color="tab:red", ls=":", lw=1)
 ax.set_xlabel("Crashes, period 1 (3 yr)"); ax.set_ylabel("Crashes, period 2 (3 yr)"); ax.legend(fontsize=8)
 plt.tight_layout(); plt.savefig("fig/fig14_3_hotspots.png", dpi=150); plt.close()
+
+# ---------------- Checks requested in review ----------------
+# (a) simulator vs Webster's delay formula, steady demand 600/400 veh/h
+C, g1, g2 = webster(600, 400)
+def webster_delay(qh, gr, C):
+    q = qh / 3600; lam = gr / C; x = q / (lam * S)
+    return C * (1 - lam) ** 2 / (2 * (1 - lam * x)) + x ** 2 / (2 * q * (1 - x)) - 0.65 * (C / q ** 2) ** (1 / 3) * x ** (2 + 5 * lam)
+d1, d2 = webster_delay(600, round(g1), 2 * LOST + round(g1) + round(g2)), webster_delay(400, round(g2), 2 * LOST + round(g1) + round(g2))
+dw = (600 * d1 + 400 * d2) / 1000
+ds = np.array([simulate("webster", "steady", s) for s in range(200)])
+print("Check: Webster plan C=%.0f s g=%d/%d s; Webster formula delay=%.1f / %.1f -> %.1f s/veh; simulator=%.1f +- %.1f s/veh (200 seeds)" % (2 * LOST + round(g1) + round(g2), round(g1), round(g2), d1, d2, dw, ds.mean(), ds.std()))
+# (b) the 'year' feature: trees cannot extend a trend to an unseen year
+f3 = ["hour", "dow", "ram", "eid", "month"]
+gb3 = HistGradientBoostingRegressor(max_iter=400, learning_rate=0.05, random_state=0).fit(train[f3], train["y"])
+p3 = gb3.predict(test[f3])
+# growth handled outside the trees: fit on volume divided by a yearly level, then scale by the extrapolated level
+lvl = train.groupby("year").y.mean(); rate = lvl[2025] / lvl[2024]
+gb4 = HistGradientBoostingRegressor(max_iter=400, learning_rate=0.05, random_state=0).fit(train[f3], train["y"] / train["year"].map(lvl))
+p4 = gb4.predict(test[f3]) * lvl[2025] * rate
+nm = ~mask_r & ~mask_e
+for nme, p in [("GBM with year (as in text)", pg), ("GBM without year", p3), ("GBM on detrended volume x extrapolated growth", p4)]:
+    print("  %-46s normal-days MAPE=%.1f%%  mean bias=%+.1f%%" % (nme, mape(test.y.values[nm], p[nm]), 100 * (p[nm].sum() / test.y.values[nm].sum() - 1)))
+print("  yearly level ratio 2025/2024 = %.3f" % rate)

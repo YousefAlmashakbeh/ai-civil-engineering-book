@@ -11,7 +11,8 @@ idx={y:100*(1.02**(min(y,2020)-2015))*(1.13 if y>=2021 else 1)*(1.12 if y>=2022 
 pi=np.array([idx[y] for y in year]); q=rng.integers(1,4,n); loc=rng.choice([1.0,0.92,0.95,1.08],n)  # Amman,Zarqa,Irbid,Aqaba
 area=rng.uniform(300,6000,n); floors=rng.integers(1,9,n)
 cost=(180+70*(q-1))*loc*(pi/100)*(1+0.015*floors)*(area/1000)**-0.05*np.exp(rng.normal(0,0.07,n))
-X=np.c_[year,q,loc,np.log(area),floors]; Xp=np.c_[np.log(pi),q,loc,np.log(area),floors]
+city=np.searchsorted([0.92,0.95,1.0,1.08],loc); D=np.eye(4)[city][:,1:]   # city as a category (one-hot), not its true cost factor
+X=np.c_[year,q,D,np.log(area),floors]; Xp=np.c_[np.log(pi),q,D,np.log(area),floors]
 tr,te=train_test_split(np.arange(n),test_size=0.25,random_state=0); old=year<=2021; new=~old
 def ev(model,XX,a,b,logy=False):
     y=np.log(cost) if logy else cost; model.fit(XX[a],y[a]); p=model.predict(XX[b]); p=np.exp(p) if logy else p
@@ -38,6 +39,15 @@ pG=cross_val_predict(GradientBoostingClassifier(random_state=0),D,yd,cv=cv,metho
 print(f"delayed share={yd.mean():.2f}; AUC logistic={roc_auc_score(yd,pL):.3f} GBM={roc_auc_score(yd,pG):.3f}")
 pT=cross_val_predict(LogisticRegression(max_iter=1000),D[:,:5],yd,cv=cv,method="predict_proba")[:,1]
 print(f"tender-stage model (without number of variation orders, unknown before execution): AUC logistic={roc_auc_score(yd,pT):.3f}")
+# decision threshold, confusion matrix and reliability for the tender-stage model
+for thr in (0.5,0.7):
+    pr=(pT>=thr); tp=(pr&(yd==1)).sum(); fp=(pr&(yd==0)).sum(); fn=(~pr&(yd==1)).sum(); tn=(~pr&(yd==0)).sum()
+    print(f"tender-stage, threshold {thr}: TP={tp} FP={fp} FN={fn} TN={tn}  recall={tp/(tp+fn):.2f} precision={tp/(tp+fp):.2f}")
+bins=np.clip((pT*5).astype(int),0,4); print("reliability (predicted -> observed):"," ".join(f"{pT[bins==b].mean():.2f}->{yd[bins==b].mean():.2f}(n={np.sum(bins==b)})" for b in range(5) if np.sum(bins==b)>0))
+print(f"Brier score={np.mean((pT-yd)**2):.3f} (always predicting the base rate: {yd.mean()*(1-yd.mean()):.3f})")
+# earned value example
+BAC,PV,EV,AC=1_000_000,500_000,420_000,480_000; CPI=EV/AC; SPI=EV/PV
+print(f"EVM: CPI={CPI:.3f} SPI={SPI:.3f} EAC=BAC/CPI={BAC/CPI:,.0f}  EAC(CPI*SPI)={AC+(BAC-EV)/(CPI*SPI):,.0f}")
 lg=LogisticRegression(max_iter=1000).fit((D-D.mean(0))/D.std(0),yd); names=["log size","design %","government","lump sum","summer start","variations"]
 print("standardised coefs:",dict(zip(names,np.round(lg.coef_[0],2))))
 fig,ax=plt.subplots(figsize=(4.6,4.2))
