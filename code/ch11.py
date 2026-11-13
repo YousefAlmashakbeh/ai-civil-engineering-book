@@ -18,7 +18,7 @@ def ev(model,XX,a,b,logy=False):
     return mean_absolute_error(cost[b],p)/cost[b].mean()*100, p
 r1,_=ev(GradientBoostingRegressor(random_state=0),X,tr,te); r2,pg=ev(GradientBoostingRegressor(random_state=0),X,old,new)
 r3,pl=ev(LinearRegression(),Xp,old,new,logy=True)
-print(f"GBM random split MAPE={r1:.1f}% ; GBM time split (train<=2021,test>=2022)={r2:.1f}% ; log-linear with price index time split={r3:.1f}%")
+print(f"GBM random split error (MAE/mean)={r1:.1f}% ; GBM time split (train<=2021,test>=2022)={r2:.1f}% ; log-linear with price index time split={r3:.1f}%")
 for yv in (2023,2025):
     s=year[new]==yv; print(yv,"mean actual",round(cost[new][s].mean()),"GBM",round(pg[s].mean()),"loglinear",round(pl[s].mean()))
 fig,ax=plt.subplots(figsize=(6.5,3.4)); yrs=np.arange(2015,2026)
