@@ -8,7 +8,7 @@ def norm_ar(s):
     s = re.sub(r"[ً-ْـ]", "", s)            # diacritics, tatweel
     s = re.sub("[إأآا]", "ا", s); s = s.replace("ى", "ي").replace("ة", "ه")
     return s
-def tok(s): return re.findall(r"[؀-ۿ\w]+", s)
+def tok(s): return re.findall(r"\w+", s)
 
 class BM25:
     def __init__(self, docs, k1=1.5, b=0.75):
