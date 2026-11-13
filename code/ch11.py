@@ -36,6 +36,8 @@ cv=StratifiedKFold(5,shuffle=True,random_state=0)
 pL=cross_val_predict(LogisticRegression(max_iter=1000),D,yd,cv=cv,method="predict_proba")[:,1]
 pG=cross_val_predict(GradientBoostingClassifier(random_state=0),D,yd,cv=cv,method="predict_proba")[:,1]
 print(f"delayed share={yd.mean():.2f}; AUC logistic={roc_auc_score(yd,pL):.3f} GBM={roc_auc_score(yd,pG):.3f}")
+pT=cross_val_predict(LogisticRegression(max_iter=1000),D[:,:5],yd,cv=cv,method="predict_proba")[:,1]
+print(f"tender-stage model (without number of variation orders, unknown before execution): AUC logistic={roc_auc_score(yd,pT):.3f}")
 lg=LogisticRegression(max_iter=1000).fit((D-D.mean(0))/D.std(0),yd); names=["log size","design %","government","lump sum","summer start","variations"]
 print("standardised coefs:",dict(zip(names,np.round(lg.coef_[0],2))))
 fig,ax=plt.subplots(figsize=(4.6,4.2))

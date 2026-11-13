@@ -11,6 +11,10 @@ for h in [(16,),(64,64)]:
     mlp=make_pipeline(StandardScaler(),MLPRegressor(hidden_layer_sizes=h,alpha=1e-3,max_iter=4000,early_stopping=True,random_state=0))
     p=cross_val_predict(mlp,X,y,cv=GroupKFold(5),groups=g)
     print(f"MLP {h}: MAE={mean_absolute_error(y,p):.2f} R2={r2_score(y,p):.3f}")
+    # same network, but with the target standardised as well (TransformedTargetRegressor)
+    from sklearn.compose import TransformedTargetRegressor
+    p2=cross_val_predict(TransformedTargetRegressor(regressor=mlp,transformer=StandardScaler()),X,y,cv=GroupKFold(5),groups=g)
+    print(f"MLP {h} + scaled target: MAE={mean_absolute_error(y,p2):.2f} R2={r2_score(y,p2):.3f}")
 # traffic
 torch.manual_seed(0); rng=np.random.default_rng(8)
 hours=24*7*10; t=np.arange(hours); hod=t%24; dow=(t//24)%7   # dow 0=Sunday ... 5=Friday 6=Saturday

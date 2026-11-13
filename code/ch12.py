@@ -44,7 +44,7 @@ print(f"pixel precision={prec:.3f} recall={rec:.3f} F1={f1:.3f}; mean IoU (crack
 fp_img=P[~has].sum((1,2)); print("false-positive pixels per crack-free image (mean):",round(fp_img.mean(),2))
 def width_mm(mask):
     if mask.sum()<5: return np.nan
-    sk=skeletonize(mask); d=distance_transform_edt(mask); return np.median(2*d[sk])*PX
+    sk=skeletonize(mask); d=distance_transform_edt(mask); return np.median(2*d[sk]-1)*PX
 wt=np.array([width_mm(t) for t in T[has]]); wp=np.array([width_mm(p) for p in P[has]]); ok=~np.isnan(wt)&~np.isnan(wp)
 err=np.abs(wp[ok]-wt[ok]); print(f"width: MAE={err.mean():.3f} mm, within ±0.1 mm={np.mean(err<=0.1)*100:.0f}%")
 gw=Wte[has]
