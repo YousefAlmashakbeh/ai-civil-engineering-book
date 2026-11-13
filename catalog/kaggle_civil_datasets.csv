@@ -1,0 +1,64 @@
+chapter,topic,kaggle_ref,title,kaggle_license,votes,book_use,original_source_note
+5;8,concrete,vinayakshanawad/cement-manufacturing-concrete-dataset,Civil Engineering: Cement Manufacturing Dataset,CC0,120,cite original,Appears to be the Yeh/UCI concrete data; cite UCI id=165 (CC BY 4.0)
+5;8,concrete,niteshyadav3103/concrete-compressive-strength,Concrete Compressive Strength,CC0,99,cite original,Yeh/UCI copy; cite UCI id=165
+5;8,concrete,maajdl/yeh-concret-data,Revisiting a Concrete Strength regression,Other,150,cite original,Yeh/UCI copy
+8,concrete,ziya07/sustainable-concrete-dataset,sustainable-concrete-dataset,CC0,11,do not use as real data,SYNTHETIC/implausible: f'c 88-615 MPa
+5;8,bond,vijayaadithyanvg/frp-bond-strength,FRP_Bond_strength,CC0,14,cite original,MISLABELLED: file is the Yeh/UCI concrete data (1030 rows) not FRP bond; cite UCI id=165
+8,concrete,imtkaggleteam/compressive-strength-foamednormal-concrete,Compressive strength foamed/normal concrete,Other,62,check licence,
+6;12,crack,arunrk7/surface-crack-detection,Surface Crack Detection,Data files © Original Authors,345,cite original,METU images (Ozgenel); cite Mendeley version (CC BY 4.0)
+6;12,crack,arnavr10880/concrete-crack-images-for-classification,Concrete Crack Images for Classification,CC BY 4.0,73,cite original,METU copy
+6;12,crack,aniruddhsharma/structural-defects-network-concrete-crack-images,SDNET2018,Other,128,cite original,Original USU SDNET2018 CC BY 4.0
+12,crack segmentation,lakshaymiddha/crack-segmentation-dataset,Crack Segmentation Dataset,Unknown,74,training only,Aggregate of several sources
+12,crack segmentation,yatata1/crack-dataset,Crack Dataset,CC BY-SA 4.0,42,usable share-alike,
+12,crack segmentation,rukiyeaydn/deepcrack-dataset,DeepCrack Dataset,CC BY 4.0,30,cite original,Re-upload of DeepCrack; check original licence
+12,crack segmentation,motono0223/concrete-crack-segmentation-dataset,Concrete Crack Segmentation Dataset,CC BY-SA 4.0,13,usable share-alike,
+12,crack,oluwaseunad/concrete-and-pavement-crack-images,Concrete & Pavement Crack Dataset,CC BY-SA 4.0,27,usable share-alike,Also on Mendeley (Omoebamije)
+12,bridge crack,yidazhang07/bridge-cracks-image,surface-defect-detection-dataset,ODbL,143,usable share-alike (database),
+12,corrosion,wednesday233/corrosion-detect-dataset,Corrosion Detect Dataset,MIT,12,usable with credit,
+12,steel,sovitrath/neu-steel-surface-defect-detect-trainvalid-split,NEU Steel Surface Defect,Unknown,11,training only,Original NEU database
+12,steel,uciml/faulty-steel-plates,Faulty Steel Plates,Other,167,cite original,UCI original
+14,road damage,alvarobasily/road-damage,Road Damage,CC0,53,printable,Smartphone images by uploader (verified on page)
+14,pothole,atulyakumar98/pothole-detection-dataset,Pothole Detection Dataset,CC0,194,printable after check,Verify images are uploader's own
+14,pothole,sachinpatel21/pothole-image-dataset,Pothole Image Data-Set,CC0,114,printable after check,
+14,pothole,chitholian/annotated-potholes-dataset,Annotated Potholes Image Dataset,ODbL,63,usable share-alike,Original creator's upload
+14,pothole,farzadnekouei/pothole-image-segmentation-dataset,Pothole Image Segmentation Dataset,Apache 2.0,108,usable with credit,
+14,pothole,jocelyndumlao/multi-weather-pothole-detection-mwpd,Multi-Weather Pothole Detection,CC0,13,check origin,
+14,road damage,aliabdelmenam/rdd-2022,RDD 2022,CC BY-SA 4.0,85,cite original,RDD2022 (Arya et al. 2024)
+14,traffic,coplin/traffic,DataSet(Traffic flow),CC0,74,usable,
+14,traffic,thanhnguyen2612/traffic-flow-data-in-ho-chi-minh-city-viet-nam,Traffic Flow data in Ho Chi Minh City,CC0,48,usable,
+14,traffic,jboysen/us-traffic-2015,US Traffic 2015,CC0,69,usable,US DOT data
+14,traffic,rabieelkharoua/traffic-flow-forecasting-dataset,Traffic Flow Forecasting Dataset,CC BY 4.0,50,cite original,UCI Traffic Flow Forecasting (CC BY 4.0)
+14,crashes,alexgude/california-traffic-collision-data-from-switrs,California Traffic Collision Data (SWITRS),CC0,480,usable,
+14,crashes,tsiaras/uk-road-safety-accidents-and-vehicles,UK Road Safety,ODbL,236,usable share-alike (database),
+14,crashes,new-york-city/nypd-motor-vehicle-collisions,NYPD Motor Vehicle Collisions,CC0,47,usable,
+14,crashes,sobhanmoosavi/us-accidents,US Accidents 2016-2023,CC BY-NC-SA 4.0,2729,cite only (non-commercial),
+11,safety,andrewmvd/hard-hat-detection,Safety Helmet Detection,CC0,447,training; do not print faces,
+11,safety,muhammetzahitaydn/hardhat-vest-dataset-v3,HardHat-Vest Dataset,CC0,57,training; do not print faces,
+11,safety,snehilsanyal/construction-site-safety-image-dataset-roboflow,Construction Site Safety (Roboflow),CC BY 4.0,271,training; do not print faces,
+11,safety,mugheesahmad/sh17-dataset-for-ppe-detection,SH17 PPE,CC BY-NC-SA 4.0,121,cite only (non-commercial),
+11,cost,aniket0712/bid-tabulations,Bid Tabulations,CC0,37,usable,
+11,contracts,trobacker/asheville-nc-construction-and-repair-contracts,Asheville NC Construction Contracts,PDDL,17,usable,
+11,permits,aparnashastry/building-permit-applications-data,San Francisco Building Permits,ODbL,298,usable share-alike (database),
+11,project mgmt,claytonmiller/construction-and-project-management-example-data,Construction/Project Management Report Examples,CC BY-NC-SA 4.0,96,cite only (non-commercial),
+9;13,bridges,cynthiamengyuanli/2022-national-bridge-inventory-data,2022 National Bridge Inventory,U.S. Government Works,28,usable,FHWA NBI
+13,sewer,aalborguniversity/sewerpointclouds,AAU Sewer Defect Point Clouds,CC BY 4.0,27,usable with credit,
+13,SHM,mithil27360/digital-twin-bridge-structural-health-monitoring,Digital twin Bridge SHM,MIT,11,training only,Likely synthetic
+9,seismic,isevilla/stanford-earthquake-dataset-stead,STEAD,CC BY 4.0,41,usable with credit,Mousavi et al. 2019
+9,seismic damage,mullerismail/richters-predictor-modeling-earthquake-damage,Richter's Predictor (Nepal 2015),Unknown,22,cite original,DrivenData competition data
+10,slope,ziya07/slope-stability-analysis-dataset,Slope Stability Analysis Dataset,CC0,24,do not use as real data,SYNTHETIC: inputs reproduced exactly by np.random.seed(42) uniform draws
+10,landslide,nasa/landslide-events,Landslides After Rainfall 2007-2016,CC0,113,usable,NASA Global Landslide Catalog
+10,landslide,niyarrbarman/landslide-divided,Landslide Segmentation,CC0,16,check origin,
+10,landslide,mohammadrahdanmofrad/landslide-risk-assessment-factors,Landslide Risk Assessment Factors,CC BY-SA 4.0,71,usable share-alike,
+15,water quality,adityakadiwal/water-potability,Water Quality (potability),CC0,1748,training only,Field origin not documented
+15,river water,vbmokin/dissolved-oxygen-prediction-in-river-water,Dissolved oxygen prediction in river water,CC BY 4.0,78,usable with credit,
+15,river water,vbmokin/ammonium-prediction-in-river-water,Ammonium prediction in river water,CC BY 4.0,84,usable with credit,
+15,water demand,marcomolina/water-consumption-in-a-median-size-city,Water Consumption in a Median Size City,ODbL,78,usable share-alike (database),
+15,groundwater,alifarahmandfar/continuous-groundwater-level-measurements-2023,Continuous Groundwater Level Measurements,CC0,51,usable,
+15,groundwater,saurabhshahane/groundwater-flooding-forecasting,Groundwater Flood Forecasting,CC BY 4.0,13,usable with credit,
+15,flood,faizalkarim/flood-area-segmentation,Flood Area Segmentation,CC0,132,check origin,
+15,flood,hhrclemson/flooding-image-dataset,FloodIMG,CC0,32,usable,Clemson
+15,wastewater,d4rklucif3r/full-scale-waste-water-treatment-plant-data,Full Scale Waste Water Treatment Plant Data,CC BY-SA 4.0,67,usable share-alike,
+15,wastewater,samansiadati/melbourne-water-19952019,Melbourne Wastewater 1995-2019,CC BY 4.0,31,usable with credit,
+16,building energy,elikplim/eergy-efficiency-dataset,Energy Efficiency Dataset,CC0,192,cite original,UCI Energy Efficiency (Tsanas & Xifara)
+16,building energy,city-of-seattle/sea-building-energy-benchmarking,SEA Building Energy Benchmarking,CC0,82,usable,
+16,building energy,claytonmiller/buildingdatagenomeproject2,Building Data Genome Project 2,CC BY-SA 4.0,73,usable share-alike,
