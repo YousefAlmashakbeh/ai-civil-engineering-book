@@ -32,7 +32,7 @@ check each dataset's own licence page before reuse.
 `code/ch12_hucp.py` uses the walls subset of HU-CP v1.0 by default (set `HUCP_SURFACE=P` for pavements) (CC BY 4.0): https://doi.org/10.5281/zenodo.23836570
 
 ### Author's experimental data
-The UPV and bond-corrosion measurements analysed in Chapters 8 and 13 (`ch_author.py`) are not distributed with this repository. They are available from the author on reasonable request.
+Chapters 8 and 13 use published literature (Almusallam et al. 1996; Bhargava et al. 2008; Mousavi et al. 2023; SHRP 2 R06A) together with generated teaching data (`ch8_lit.py`, `ch13_lit.py`).
 
 ### Licence
 Code: MIT (see `LICENSE`). Book text and figures: © the author, all rights reserved.
