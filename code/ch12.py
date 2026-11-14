@@ -42,23 +42,22 @@ inter=(P&T).sum((1,2)); uni=(P|T).sum((1,2)); iou=inter[has]/uni[has]
 prec=(P&T).sum()/P.sum(); rec=(P&T).sum()/T.sum(); f1=2*prec*rec/(prec+rec)
 print(f"pixel precision={prec:.3f} recall={rec:.3f} F1={f1:.3f}; mean IoU (crack images)={iou.mean():.3f}")
 fp_img=P[~has].sum((1,2)); print("false-positive pixels per crack-free image (mean):",round(fp_img.mean(),2))
-def sk_len(sk):
-    s=sk.astype(int); o=(s[1:,:]&s[:-1,:]).sum()+(s[:,1:]&s[:,:-1]).sum(); dg=(s[1:,1:]&s[:-1,:-1]).sum()+(s[1:,:-1]&s[:-1,1:]).sum()
-    return o+np.sqrt(2)*dg+1
+from skimage.measure import perimeter_crofton
 def width_mm(mask, how="area"):
-    # mean width = crack area / centre-line length; the older 2d-1 rule only returns odd pixel counts
+    # a ribbon of length L and width w has area A = w L and perimeter P = 2L + 2w, so w = (P - sqrt(P^2 - 16 A)) / 4
+    # the perimeter is measured by the Crofton formula, which is nearly unbiased for digital outlines at any angle
     if mask.sum()<5: return np.nan
-    sk=skeletonize(mask)
-    if how=="area": return mask.sum()/sk_len(sk)*PX
-    d=distance_transform_edt(mask); return np.median(2*d[sk]-1)*PX
+    if how=="area":
+        A=mask.sum(); P=perimeter_crofton(mask,4); return (P-np.sqrt(max(P*P-16*A,0)))/4*PX
+    sk=skeletonize(mask); d=distance_transform_edt(mask); return np.median(2*d[sk]-1)*PX
 # estimator check on straight strips of known width (independent of the network)
 rs=np.random.default_rng(0); yy,xx=np.mgrid[:96,:96]
-for w0 in [1,2,3,4]:
+for w0 in [1,2,4,8]:
     ea=[]; eo=[]
     for _ in range(200):
         a=rs.uniform(0,np.pi); c=rs.uniform(40,56,2); mk=np.abs((yy-c[0])*np.cos(a)-(xx-c[1])*np.sin(a))<=w0/2
         mk[:8]=mk[-8:]=0; mk[:,:8]=mk[:,-8:]=0; ea.append(width_mm(mk)/PX-w0); eo.append(width_mm(mk,"2d-1")/PX-w0)
-    print(f"strip width {w0} px: bias area/length={np.mean(ea):+.2f} px (sd {np.std(ea):.2f}); bias 2d-1={np.mean(eo):+.2f} px (sd {np.std(eo):.2f})")
+    print(f"strip width {w0} px: bias area-perimeter={np.mean(ea):+.2f} px (sd {np.std(ea):.2f}); bias 2d-1={np.mean(eo):+.2f} px (sd {np.std(eo):.2f})")
 wt=np.array([width_mm(t) for t in T[has]]); wp=np.array([width_mm(p) for p in P[has]]); ok=~np.isnan(wt)&~np.isnan(wp)
 err=np.abs(wp[ok]-wt[ok]); print(f"width (pred mask vs true mask): MAE={err.mean():.3f} mm, within +-0.1 mm={np.mean(err<=0.1)*100:.0f}%")
 # non-circular check: the generator's mask is a Gaussian ridge cut at 0.5, so its analytic width is 2*sqrt(2 ln 2)*(w/2)

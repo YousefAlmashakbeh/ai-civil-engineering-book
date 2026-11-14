@@ -119,3 +119,16 @@ prec,rec=tp/(tp+fp),tp/(tp+fn); print("Ex12.2 black top-hat + Otsu: pixel precis
 fig,ax=plt.subplots(1,3,figsize=(6.6,2.4))
 for a,im,t_ in zip(ax,ex,["Image","True mask","Top-hat + Otsu"]): a.imshow(im,cmap="gray"); a.set_title(t_,fontsize=8); a.axis("off")
 fig.tight_layout(); fig.savefig("fig/fig12_4_classical.png",dpi=200); plt.close()
+
+# ---- Section 12.5 check: how small must the pixel be to judge a width limit?
+from skimage.measure import perimeter_crofton
+def strip_width(w_px, rs):                              # width (px) of a rasterised strip from its area and Crofton perimeter (as in ch12.py)
+    yy, xx = np.mgrid[:128, :128]; a = rs.uniform(0, np.pi); c = rs.uniform(56, 72, 2)
+    m = np.abs((yy - c[0]) * np.cos(a) - (xx - c[1]) * np.sin(a)) <= w_px / 2; m[:10] = m[-10:] = 0; m[:, :10] = m[:, -10:] = 0
+    if m.sum() < 3: return 0.0
+    A = m.sum(); P = perimeter_crofton(m, 4); return (P - np.sqrt(max(P * P - 16 * A, 0))) / 4
+rs = np.random.default_rng(125); limit = 0.30; print("Sec12.5 limit %.2f mm, true widths 0.5-1.5 x limit; share of wrong 'exceeds the limit?' decisions:" % limit)
+for ratio in (1.0, 0.5, 0.33, 0.25, 0.125):             # pixel size / limit
+    px = ratio * limit; wt = rs.uniform(0.5, 1.5, 600) * limit; wm = np.array([strip_width(w / px, rs) * px for w in wt])
+    wrong = np.mean((wm > limit) != (wt > limit)); near = np.abs(wt / limit - 1) < 0.15
+    print(f"  pixel = {ratio:.3f} x limit: wrong {100*wrong:.1f}% overall; {100*np.mean(((wm > limit) != (wt > limit))[near]):.0f}% for widths within 15% of the limit; missed-exceedance share {100*np.mean((wm <= limit) & (wt > limit)):.1f}%")
