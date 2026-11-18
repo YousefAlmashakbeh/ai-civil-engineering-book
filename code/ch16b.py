@@ -21,4 +21,4 @@ for k, c in zip(pred, ["#718096", "#c53030", "#2b6cb0"]):
     ax.scatter(P[m], pred[k][m], s=6, color=c, label=k, alpha=.6)
 ax.scatter(P[m], Q[m], s=6, color="k", label="observed", alpha=.5); ax.axvline(60, ls="--", c="k", lw=.8); ax.text(62, 2, "outside training range", fontsize=8)
 ax.set_xlabel("Storm depth P (mm)"); ax.set_ylabel("Runoff Q (mm), CN 75-81"); ax.legend(frameon=False, fontsize=7); ax.spines[["top", "right"]].set_visible(False)
-fig.tight_layout(); fig.savefig("fig/fig16_3_hybrid.png", dpi=200)
+fig.tight_layout(); fig.savefig("fig/fig16_4_hybrid.png", dpi=200)

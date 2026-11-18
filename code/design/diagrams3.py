@@ -35,4 +35,4 @@ for i, (t, sub, c, up, down) in enumerate(lv):
     arrow(ax, (x0+2.12, 1.72), (x0+1.63, 1.72), cu, 2.2, ls="-" if up == "آلي" else "--")
     arrow(ax, (x0+1.63, 1.28), (x0+2.12, 1.28), cd, 2.2, ls="-" if down == "آلي" else "--")
     ax.text(x0+1.875, 0.55, f"بيانات ← نموذج: {up}    قرار ← منشأة: {down}", ha="center", fontsize=10, color=NAVY)
-save(fig, F + "fig16_5_twinlevels.png")
+save(fig, F + "fig16_2_twinlevels.png")

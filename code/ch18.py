@@ -27,9 +27,9 @@ print("  'best seed' random split vs honest median by mix: %.2f vs %.2f MPa (opt
 
 fig, ax = plt.subplots(figsize=(6.5, 3.5))
 bins = np.linspace(min(rand.min(), grp.min()) - 0.1, max(rand.max(), grp.max()) + 0.1, 22)
-ax.hist(rand, bins=bins, alpha=0.6, color="tab:orange", label="Random split (leaky)")
-ax.hist(grp, bins=bins, alpha=0.6, color="tab:blue", label="Split by mix (honest)")
-ax.axvline(rand.min(), color="tab:orange", ls="--", lw=1); ax.text(rand.min(), ax.get_ylim()[1] * 0.9, " best seed", color="tab:orange", fontsize=8)
+ax.hist(rand, bins=bins, alpha=0.6, color="#C05621", label="Random split (leaky)")
+ax.hist(grp, bins=bins, alpha=0.6, color="#2B6CB0", label="Split by mix (honest)")
+ax.axvline(rand.min(), color="#C05621", ls="--", lw=1); ax.text(rand.min(), ax.get_ylim()[1] * 0.9, " best seed", color="#C05621", fontsize=8)
 ax.set_xlabel("Test MAE (MPa)"); ax.set_ylabel("Number of seeds (of 30)"); ax.legend(fontsize=8)
 plt.tight_layout(); plt.savefig("fig/fig18_1_seeds.png", dpi=150); plt.close()
 
@@ -63,7 +63,7 @@ for k, p in P.items():
           (k, brier_score_loss(yt, p), ece(p, yt), p.mean(), yt.mean(), (p > 0.5).sum(), yt[p > 0.5].sum()))
 fig, ax = plt.subplots(figsize=(5, 4.2))
 edges = np.linspace(0, 1, 11)
-for (k, p), col, mk in zip(P.items(), ["tab:red", "tab:green", "tab:blue"], ["o", "s", "^"]):
+for (k, p), col, mk in zip(P.items(), ["#C53030", "#2F855A", "#2B6CB0"], ["o", "s", "^"]):
     xs, ys = [], []
     for a, b in zip(edges[:-1], edges[1:]):
         sel = (p >= a) & (p < b) if b < 1 else (p >= a)

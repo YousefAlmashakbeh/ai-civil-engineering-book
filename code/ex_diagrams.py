@@ -62,7 +62,7 @@ for i,(t,sub) in enumerate([("Digital model","no automatic data flow"),("Digital
     if i>=1: arr(ax,(x+1.42,2.9),(x+1.98,2.9),c=G); ax.text(x+1.7,3.25,"data",ha="center",fontsize=7,color=G)
     if i==2: arr(ax,(x+1.98,2.5),(x+1.42,2.5),c=R); ax.text(x+1.7,1.95,"decision / control",ha="center",fontsize=7,color=R)
 ax.text(6,0.8,"Example 16.3 updates one stiffness parameter from frequency and raises an inspection alert: a digital shadow.",ha="center",fontsize=8)
-save(fig,"fig16_5_twinlevels.png")
+save(fig,"fig16_2_twinlevels.png")
 
 # 13.6 monitoring pipeline
 fig,ax=plt.subplots(figsize=(9,2.2)); ax.axis("off"); ax.set_xlim(0,1); ax.set_ylim(0,1)

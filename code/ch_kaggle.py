@@ -15,6 +15,12 @@ from sklearn.metrics import r2_score, mean_absolute_error
 from sklearn.inspection import permutation_importance
 
 D = os.environ.get("KAGGLE_DIR", "kaggle_dl"); F = "fig"; os.makedirs(F, exist_ok=True)
+_need = ["slope_stability/slope_stability_dataset.csv", "sustainable_concrete/sustainable_concrete_dataset.csv",
+         "frp_bond/concrete_data.csv", "seattle_energy/2016-building-energy-benchmarking.csv"]
+_miss = [n for n in _need if not os.path.exists(os.path.join(D, n))]
+if _miss or not glob.glob(f"{D}/melbourne_ww/*.csv"):
+    raise SystemExit("Kaggle data not found in '%s'. Download the five datasets listed in catalog/ "
+                     "(see Appendix B) into that folder, or set KAGGLE_DIR. Missing: %s" % (D, ", ".join(_miss) or "melbourne_ww/*.csv"))
 out = {}
 
 # ---------- K1: data audit ----------

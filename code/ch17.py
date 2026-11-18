@@ -74,8 +74,8 @@ for q, ans in cases:
 
 fig, ax = plt.subplots(figsize=(7.5, 3.6))
 names = list(res); x = np.arange(len(names))
-ax.bar(x - 0.18, [100 * res[n][0] for n in names], 0.36, label="hit@1", color="tab:blue")
-ax.bar(x + 0.18, [100 * res[n][1] for n in names], 0.36, label="hit@3", color="tab:orange")
+ax.bar(x - 0.18, [100 * res[n][0] for n in names], 0.36, label="hit@1", color="#2B6CB0")
+ax.bar(x + 0.18, [100 * res[n][1] for n in names], 0.36, label="hit@3", color="#C05621")
 ax.set_xticks(x); ax.set_xticklabels(names, rotation=15, fontsize=8); ax.set_ylabel("Questions answered (%)")
 ax.set_ylim(0, 100); ax.legend(fontsize=8)
 for i, n in enumerate(names):
@@ -87,12 +87,12 @@ fig, ax = plt.subplots(figsize=(9, 2.6)); ax.axis("off")
 boxes = [("Engineer's\nquestion", 0.06), ("Normalise +\nretrieve top-3", 0.25), ("Snippets with\nclause IDs", 0.44),
          ("LLM drafts answer\nciting snippets", 0.63), ("Numeric & citation\nguard", 0.80), ("Engineer\nreviews & signs", 0.95)]
 for t, xc in boxes:
-    ax.add_patch(plt.Rectangle((xc - 0.075, 0.3), 0.15, 0.4, fill=True, fc="#e8f0fb", ec="tab:blue"))
+    ax.add_patch(plt.Rectangle((xc - 0.075, 0.3), 0.15, 0.4, fill=True, fc="#e8f0fb", ec="#2B6CB0"))
     ax.text(xc, 0.5, t, ha="center", va="center", fontsize=8)
 for (_, a), (_, b) in zip(boxes[:-1], boxes[1:]):
     ax.annotate("", xy=(b - 0.077, 0.5), xytext=(a + 0.077, 0.5), arrowprops=dict(arrowstyle="->"))
-ax.annotate("", xy=(0.63, 0.28), xytext=(0.80, 0.28), arrowprops=dict(arrowstyle="->", color="tab:red", connectionstyle="arc3,rad=0.5"))
-ax.text(0.715, 0.05, "flag -> regenerate or escalate", ha="center", fontsize=7, color="tab:red")
+ax.annotate("", xy=(0.63, 0.28), xytext=(0.80, 0.28), arrowprops=dict(arrowstyle="->", color="#C53030", connectionstyle="arc3,rad=0.5"))
+ax.text(0.715, 0.05, "flag -> regenerate or escalate", ha="center", fontsize=7, color="#C53030")
 ax.set_xlim(0, 1.03); ax.set_ylim(0, 1)
 plt.tight_layout(); plt.savefig("fig/fig17_2_pipeline.png", dpi=150); plt.close()
 

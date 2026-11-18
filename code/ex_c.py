@@ -56,7 +56,7 @@ for n_,c in [(1,O),(8,B)]:
     m_=np.trapezoid(grid*post,grid); l_,h_=grid[np.searchsorted(cdf,0.025)],grid[np.searchsorted(cdf,0.975)]
     print(f"  after {n_} test(s): posterior mean {m_/1e9:.2f}, 95% interval {l_/1e9:.2f}-{h_/1e9:.2f} GN.m2"); ax.plot(grid/1e9,post*1e9,color=c,label=f"posterior after {n_} test{'s' if n_>1 else ''}")
 ax.axvline(EI_true/1e9,color=R,ls=":"); ax.set_xlabel("EI (GN.m2)"); ax.set_ylabel("Probability density"); ax.legend(frameon=False,fontsize=8); clean(ax)
-fig.tight_layout(); fig.savefig("fig/fig16_4_bayes.png",dpi=200); plt.close()
+fig.tight_layout(); fig.savefig("fig/fig16_5_bayes.png",dpi=200); plt.close()
 
 # ---- Example 17.3: how good is the numeric guard? a systematic test
 from ch17_corpus import DOCS
