@@ -57,7 +57,8 @@ for q in res[best][2]: print("   -", q)
 
 # numeric guard: check every number+unit in an answer against the retrieved snippet
 def numbers(s):
-    return set(re.findall(r"(\d+(?:\.\d+)?)\s*(مم|متر|درجة|يوم|أيام|ساعة|متراً)", s))
+    # a unit missing from this list makes its numbers invisible to the guard
+    return set(re.findall(r"(\d+(?:\.\d+)?)\s*(مم|سم|متر|متراً|درجة|يوم|يوماً|أيام|ساعة)", s))
 cases = [
     ("كم الغطاء الخرساني للأساسات الملامسة للتربة؟", "الحد الأدنى للغطاء في الأساسات الملامسة للتربة هو 75 مم."),
     ("كم الغطاء الخرساني للأساسات الملامسة للتربة؟", "الحد الأدنى للغطاء في الأساسات الملامسة للتربة هو 50 مم."),

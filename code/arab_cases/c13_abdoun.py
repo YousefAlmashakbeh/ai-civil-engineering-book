@@ -4,7 +4,7 @@ import numpy as np
 rng = np.random.default_rng(4); days = np.arange(730)
 T = 18 + 11*np.sin(2*np.pi*(days - 110)/365) + rng.normal(0, 3, days.size)       # daily mean temperature (C), Amman-like
 f0, a = 0.620, -0.0012                                                            # Hz, relative change per C
-dmg = np.where(days >= 600, -0.010, 0.0)                                          # 1 % stiffness-related drop from day 601
+dmg = np.where(days >= 600, -0.010, 0.0)                                          # 1 % frequency drop (about 2 % stiffness loss) from day 601
 f = f0*(1 + a*(T - 18) + dmg) + rng.normal(0, 0.0015, days.size)
 print(f"seasonal swing of f: {f[:365].max()-f[:365].min():.4f} Hz = {100*(f[:365].max()-f[:365].min())/f0:.1f}% of f0")
 # rule 1: fixed band +/- 2% around f0

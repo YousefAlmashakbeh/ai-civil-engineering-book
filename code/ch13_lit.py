@@ -10,7 +10,7 @@ E = -150 - 330 * active + rng.normal(0, 25, X.shape)                      # mV v
 E[5, 15] = -180 + 900                                                    # a sign/entry error: +720 mV is not physical
 med = np.median(E); mad = np.median(np.abs(E - med)); z = 0.6745 * (E - med) / mad
 bad = np.abs(z) > 3.5; print("robust z flags:", int(bad.sum()), "points; values (mV):", np.round(E[bad]).astype(int).tolist())
-phys = (E > 0) | (E < -1000)                                              # physically impossible for steel in concrete (CSE)
+phys = (E > 200) | (E < -1000)                                            # outside the range steel in concrete can reach (CSE; dry concrete up to about +200 mV)
 print("physical-range flags:", int(phys.sum()), "point; value:", np.round(E[phys]).astype(int).tolist())
 print("robust-z flags that lie in the generated active zones:", int((bad & (active > 0.35)).sum()), "of", int(bad.sum()))
 Ec = np.where(phys, np.nan, E)

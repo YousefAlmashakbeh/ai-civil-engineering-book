@@ -110,8 +110,10 @@ for i in range(n):
     for k_ in cr: ci[k_]+=1
 print("  Monte Carlo: mean=%.0f days, P50=%.0f, P80=%.0f, P95=%.0f; P(finish within %d days)=%.1f%%"%(T.mean(),*np.percentile(T,[50,80,95]),det,100*np.mean(T<=det)))
 print("  criticality index (%):",{k_:round(100*v/n) for k_,v in ci.items()})
-fig,ax=plt.subplots(1,2,figsize=(8.6,3.1)); ax[0].hist(T,bins=60,color=B); ax[0].axvline(det,color=R,ls="--"); ax[0].text(det-2,ax[0].get_ylim()[1]*0.92,"CPM %d d"%det,fontsize=7,color=R,ha="right"); ax[0].axvline(np.percentile(T,80),color=K,ls=":"); ax[0].text(np.percentile(T,80)+2,ax[0].get_ylim()[1]*0.92,"P80",fontsize=7); ax[0].set_xlabel("Project duration (days)"); ax[0].set_yticks([]); clean(ax[0])
-ax[1].bar(keys,[100*ci[k_]/n for k_ in keys],color=O); ax[1].set_ylabel("Criticality index (%)"); ax[1].set_xlabel("Activity"); clean(ax[1])
+fig,a0=plt.subplots(figsize=(5.0,2.7)); a0.hist(T,bins=60,color=B); a0.axvline(det,color=R,ls="--"); p80=np.percentile(T,80); a0.axvline(p80,color=K,ls=":")
+yt=a0.get_ylim()[1]; a0.text(det-1.5,yt*0.9,"CPM %d d"%det,fontsize=8.6,color=R,ha="right"); a0.text(p80+1.5,yt*0.9,"P80 = %.0f d"%p80,fontsize=8.6,color=K)
+a0.text(T.mean(),yt*0.55,"mean %.0f d"%T.mean(),fontsize=8.6,color="white",ha="center",fontweight="bold")
+a0.set_xlabel("Project duration (days)"); a0.set_yticks([]); clean(a0)
 fig.tight_layout(); fig.savefig("fig/fig11_4_schedule.png",dpi=200); plt.close()
 
 # ---- Example 12.2: a classical baseline for crack segmentation (no training)

@@ -124,7 +124,7 @@ def signal():
     f.add(r"\draw[blue,line width=2pt,-{Stealth[length=7pt]}] (-2.5,-0.27) -- (-0.7,-0.27); \draw[orange,line width=2pt,-{Stealth[length=7pt]}] (0.27,-2.5) -- (0.27,-0.7);")
     f.text(-1.75, -1.25, "المدخل 1\n600 مركبة/ساعة", "font=\\scriptsize\\bfseries,text=blue,align=center"); f.text(1.75, -1.7, "المدخل 2\n400 مركبة/ساعة", "font=\\scriptsize\\bfseries,text=orange,align=center")
     x0, sc = 4.0, 0.24
-    rows = [(0.75, "الطور 1", [(0, 18, "green"), (18, 4, "gold"), (22, 16, "red")]), (-0.75, "الطور 2", [(0, 22, "red"), (22, 12, "green"), (34, 4, "gold")])]
+    rows = [(0.75, "المرحلة 1", [(0, 18, "green"), (18, 4, "gold"), (22, 16, "red")]), (-0.75, "المرحلة 2", [(0, 22, "red"), (22, 12, "green"), (34, 4, "gold")])]
     for y, lab, segs in rows:
         for s0, dlen, c in segs:
             f.add(r"\fill[%s,rounded corners=1.5pt] (%.3f,%.2f) rectangle (%.3f,%.2f);" % (c, x0 + s0*sc + 0.03, y - 0.38, x0 + (s0+dlen)*sc - 0.03, y + 0.38))

@@ -69,7 +69,13 @@ class Fig:
     def build(self, dpi=300):
         os.makedirs(WORK, exist_ok=True); os.makedirs(OUT, exist_ok=True)
         cols = "\n".join(r"\definecolor{%s}{HTML}{%s}" % kv for kv in COL.items())
-        tex = PRE % dict(fonts=FONTS.replace("\\", "/"), colors=cols) + "\n".join(self.b) + POST
+        pre = PRE % dict(fonts=FONTS.replace("\\", "/"), colors=cols)
+        k = float(os.environ.get("BOOK_FONT_SCALE", "1"))
+        if k != 1:   # print-size fonts: every size command scaled by k
+            defs = "".join(r"\renewcommand\%s{\fontsize{%.2f}{%.2f}\selectfont}" % (n, b * k, b * k * 1.2)
+                           for n, b in (("scriptsize", 7), ("footnotesize", 8), ("small", 9), ("normalsize", 10), ("large", 12), ("Large", 14.4)))
+            pre = pre.replace("\\begin{document}", "\\begin{document}" + defs)
+        tex = pre + "\n".join(self.b) + POST
         p = os.path.join(WORK, self.name + ".tex"); open(p, "w", encoding="utf8").write(tex)
         r = subprocess.run(["xelatex", "-interaction=batchmode", "-halt-on-error", self.name + ".tex"], cwd=WORK, capture_output=True, text=True)
         if r.returncode:
