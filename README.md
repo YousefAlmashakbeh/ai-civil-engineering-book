@@ -42,6 +42,9 @@ Nine worked cases built on published figures from Jordanian projects; each scrip
 `c14_accidents.py` (Jordan road deaths 2019–2024, Poisson trend), `c15_nrw.py` (non-revenue water and minimum night flow),
 `c16_carrier.py` (hydraulic twin with a Kalman filter). Sources are listed in each case in the book; values marked as assumptions are for teaching.
 
+### Book diagrams (`code/design/`)
+`bookstyle.py` holds the shared colours, fonts and box/arrow helpers. `diagrams2.py` (book roadmap, Fig. 1.2), `diagrams3.py` (Figs. 13.6, 16.5, 17.2), `map_cases.py` (atlas of the Arab cases) and `casefigs.py` (one figure per Arab case) write to `figures/` and replace the older drawings of the same figures in `code/diagrams.py`. Arabic labels need the Amiri font in `~/.fonts`.
+
 ### Using the book in a course
 The front matter of the book includes an instructor guide: four teaching pathways (undergraduate elective, graduate course, professional short course, self-study), a 16-week plan, and a suggested assessment split. Each chapter opens with a chapter map (`figures/fig*_0_blueprint.png`) and closes with a key-terms table and short self-check questions.
 

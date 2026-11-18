@@ -12,6 +12,9 @@ from sklearn.metrics import roc_auc_score, f1_score, recall_score, precision_sco
 from joblib import Parallel, delayed
 
 D = os.environ.get("HUCP_DIR", "hucp"); F = "fig"; os.makedirs(F, exist_ok=True)
+if not os.path.exists(os.path.join(D, "tables")):
+    raise SystemExit(f"HU-CP data not found in '{D}'. Download HU_CP_W.zip and HU_CP_tables_README_audit.zip from "
+                     "https://doi.org/10.5281/zenodo.23836570, unzip them there, or set HUCP_DIR.")
 lab = pd.read_csv(f"{D}/tables/patch_labels_clean.csv", low_memory=False)
 SURF = os.environ.get("HUCP_SURFACE", "W")   # "W" walls (book figure) or "P" pavements
 w = lab[lab.surface_code == SURF].reset_index(drop=True)
