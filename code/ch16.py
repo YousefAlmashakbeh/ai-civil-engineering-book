@@ -48,7 +48,7 @@ for it in range(5000):
     loss = ((EI * w4 - 1.0) ** 2).mean() + 1e4 * (wb ** 2).mean() + 1e2 * (wb2 ** 2).mean() \
            + 1e5 * ((SCALE * net2(Xs) - Ws) ** 2).mean()
     loss.backward(); opt2.step()
-EI_hat = float(torch.exp(logEI))
+EI_hat = float(torch.exp(logEI).detach())
 wi = SCALE * net2(torch.tensor(xs, dtype=torch.float32).reshape(-1, 1)).detach().numpy().ravel()
 # data-only network on the same 5 sensors
 net3 = mlp(); opt3 = torch.optim.Adam(net3.parameters(), lr=2e-3)
