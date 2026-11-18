@@ -10,6 +10,9 @@ A,B=96.5,7.0
 fc = A/B**wc*age/(4+0.85*age)*rng.normal(1.0,0.07,n)
 X=np.column_stack([wc,age]); Xtr,Xte,ytr,yte=train_test_split(X,fc,test_size=0.2,random_state=0)
 m=RandomForestRegressor(n_estimators=300,random_state=0).fit(Xtr,ytr)
+from sklearn.metrics import mean_absolute_error
+print("MAE =", round(mean_absolute_error(yte, m.predict(Xte)), 2), "MPa")          # printed output of Example 1.1
+for w in (0.45, 0.30): print(f"w/c={w}: ML={m.predict([[w, 28]])[0]:.1f}  Abrams={A/B**w*28/(4+0.85*28):.1f}")
 g=np.linspace(0.25,0.80,200); phys=A/B**g*28/(4+0.85*28)
 ml=m.predict(np.column_stack([g,np.full_like(g,28)]))
 fig,ax=plt.subplots(figsize=(6.5,3.6))
