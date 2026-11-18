@@ -39,11 +39,12 @@ mu,sd=gp.predict(G,return_std=True); err=np.abs(mu-bedrock(G[:,0],G[:,1]))
 print(f"kriging: mean abs error={err.mean():.2f} m, max={err.max():.2f} m; max std={sd.max():.2f} m at",np.round(G[sd.argmax()],0))
 inside=(sd<np.percentile(sd,50)); print(f"error where std below median={err[inside].mean():.2f} m ; above={err[~inside].mean():.2f} m")
 cov=np.mean(np.abs(mu-bedrock(G[:,0],G[:,1]))<=1.96*sd); print(f"95% band coverage of true surface: {cov*100:.0f}%")
-fig,ax=plt.subplots(1,2,figsize=(8.5,3.6))
-c0=ax[0].contourf(gx,gy,mu.reshape(gx.shape),20,cmap="viridis"); fig.colorbar(c0,ax=ax[0],label="Depth to rock (m)")
-c1=ax[1].contourf(gx,gy,sd.reshape(gx.shape),20,cmap="magma_r"); fig.colorbar(c1,ax=ax[1],label="Std (m)")
+fig,ax=plt.subplots(1,2,figsize=(5.6,2.7))
+c0=ax[0].contourf(gx,gy,mu.reshape(gx.shape),20,cmap="viridis"); cb0=fig.colorbar(c0,ax=ax[0],shrink=0.9); cb0.ax.tick_params(labelsize=8)
+c1=ax[1].contourf(gx,gy,sd.reshape(gx.shape),20,cmap="magma_r"); cb1=fig.colorbar(c1,ax=ax[1],shrink=0.9); cb1.ax.tick_params(labelsize=8)
 for a in ax: a.plot(bx,by,"wo",ms=4,mec="k"); a.set_xlabel("x (m)"); a.set_aspect("equal")
-ax[0].set_ylabel("y (m)"); ax[1].plot(*G[sd.argmax()],"r*",ms=14,mec="k"); ax[0].set_title("Kriged depth",fontsize=9); ax[1].set_title("Uncertainty; star = next borehole",fontsize=9)
+ax[0].set_ylabel("y (m)"); ax[1].plot(*G[sd.argmax()],"r*",ms=13,mec="k",clip_on=False,zorder=6); ax[0].set_title("Kriged depth to rock (m)",fontsize=8.6); ax[1].set_title("Std (m); star: next hole",fontsize=8.6)
+for a in ax: a.set_xlim(-6,206); a.set_ylim(-6,206); a.tick_params(labelsize=8)
 fig.tight_layout(); fig.savefig("fig/fig10_2_kriging.png",dpi=200)
 # (3) infinite slope Monte Carlo
 z,g,gw=2.0,19.0,9.81
@@ -59,6 +60,18 @@ Ns=20000; B=rng.uniform(20,40,Ns); cc=np.exp(rng.normal(np.log(8)-s_ln**2/2,s_ln
 lab=(FS(B,cc,pp,mm)<1).astype(int); clf=HistGradientBoostingClassifier(random_state=0).fit(np.c_[B,cc,pp,mm],lab)
 for bt in (32,36,40):
     pr=clf.predict(np.c_[np.full(N,bt),c,phi,m]).mean(); print(f"surrogate Pf at {bt}°: {pr*100:.2f}%")
-fig,ax=plt.subplots(figsize=(6,3.3)); ax.semilogy(betas,np.maximum(pf,1e-5)*100,"o-",color="#c53030"); ax.axhline(1,ls="--",color="#a0aec0"); ax.text(betas[-1],0.78,"1% target",fontsize=8,ha="right",va="top",color="#4A5568")
-ax.set_xlabel("Slope angle (deg)"); ax.set_ylabel("Probability of failure (%)"); ax.spines[["top","right"]].set_visible(False)
+# Figure 10.4: seasonal mean (as Table 10.1), wet season (m=0.8) and dry season (m=0), same samples as ch10_wet.py
+rng2=np.random.default_rng(0); c2=np.exp(rng2.normal(np.log(8)-s_ln**2/2,s_ln,N)); phi2=rng2.normal(34,3,N)
+bb=np.arange(22,41,1.0); wet=np.array([np.mean(FS(b_,c2,phi2,0.8)<1) for b_ in bb]); dry=np.array([np.mean(FS(b_,c2,phi2,0.0)<1) for b_ in bb])
+mb=np.r_[22,24,betas[betas<=40]]; mp=np.r_[[np.mean(FS(b_,c,phi,m)<1) for b_ in (22,24)],np.array(pf)[betas<=40]]
+fig,ax=plt.subplots(figsize=(5.6,3.2)); ok=mp>0; ax.semilogy(mb[ok],mp[ok]*100,"o-",color="#c53030",lw=1.6,ms=4,label="Seasonal mean (Table 10.1)")
+ax.semilogy(bb[wet>0],wet[wet>0]*100,"-",color="#1A365D",lw=1.8,label="Wet season (m = 0.8)")
+ax.semilogy(bb[dry>0],dry[dry>0]*100,"--",color="#718096",lw=1.4,label="Dry season (m = 0)")
+ax.axhline(1,ls="--",color="#a0aec0",lw=0.9); ax.text(39.8,1.12,"1% target",fontsize=8.6,ha="right",va="bottom",color="#4A5568")
+xw=np.interp(np.log10(1),np.log10(wet[wet>0]*100),bb[wet>0]); xm=np.interp(np.log10(1),np.log10(mp[ok]*100),mb[ok])
+for xx,t,col in ((xw,f"≈{xw:.0f}° wet season","#1A365D"),(xm,f"≈{xm:.1f}° seasonal mean","#c53030")):
+    ax.annotate(t,xy=(xx,1),xytext=(xx,0.13 if col=="#1A365D" else 0.035),ha="center",fontsize=8.6,color=col,arrowprops=dict(arrowstyle="-|>",color=col,lw=1))
+ax.set_xlim(22,40); ax.set_ylim(0.01,100); ax.set_yticks([0.01,0.1,1,10,100]); ax.set_yticklabels(["0.01%","0.1%","1%","10%","100%"])
+ax.set_xlabel("Slope angle (deg)"); ax.set_ylabel("Probability of failure"); ax.spines[["top","right"]].set_visible(False); ax.legend(fontsize=8.6,frameon=False,loc="upper left")
+print("fig10.4 crossings: wet %.1f deg, seasonal mean %.1f deg; wet Pf at 40 deg %.1f%%"%(xw,xm,wet[-1]*100))
 fig.tight_layout(); fig.savefig("fig/fig10_4_slope.png",dpi=200)

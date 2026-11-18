@@ -11,7 +11,7 @@ dem = n*(1.7 + 12*np.sin(2*np.pi*(h % 24 - 7)/24).clip(0) + 7*np.exp(-((h % 24 -
 background = 6.0                          # m3/h background leakage
 burst = np.where(h >= 24*36 + 14, 4.5, 0)  # m3/h
 q = dem + background + burst + rng.normal(0, 0.8, h.size)
-mnf = q.reshape(days, 24)[:, 2:5].mean(1)                   # 02:00-04:00 average
+mnf = q.reshape(days, 24)[:, 2:5].mean(1)                   # 02:00-05:00 average (three night hours)
 legit = n*1.7/1000                                          # legitimate night use, 1.7 L/conn/h (assumption)
 print(f"MNF first week = {mnf[:7].mean():.1f} m3/h, legitimate night use = {legit:.1f} m3/h, night leakage = {mnf[:7].mean()-legit:.1f} m3/h")
 ref, sd = mnf[:21].mean(), mnf[:21].std(ddof=1); S = 0; k, H = 0.5*sd, 5*sd

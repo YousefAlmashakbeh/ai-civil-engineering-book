@@ -19,7 +19,7 @@ city = {"إربد": (35.85, 32.55), "جرش": (35.90, 32.28), "الزرقاء": 
 carrier = [city[k] for k in ("العقبة", "القويرة", "معان", "القطرانة", "عمّان")]
 ax.plot(*zip(*carrier), color=BLUE, lw=3.2, alpha=0.85, solid_capstyle="round", zorder=2)
 ax.plot(*zip(*[city[k] for k in ("إربد", "جرش", "عمّان")]), color=ORANGE, lw=3, ls=(0, (4, 2)), zorder=2)
-ax.plot(*zip(*[city[k] for k in ("عمّان", "الزرقاء")]), color=GREEN, lw=3, ls=(0, (1, 1.5)), zorder=2)
+ax.plot(*zip(*[city[k] for k in ("عمّان", "الزرقاء")]), color=GREEN, lw=3.6, ls=(0, (1.5, 1)), zorder=4, solid_capstyle="round")
 for k, (x, y) in city.items():
     ax.scatter(x, y, s=55, color=NAVY, zorder=4, edgecolor="white", linewidth=1.2)
     dx, dy, ha, va = {"الزرقاء": (0.0, 0.07, "center", "bottom"), "غور الحديثة": (-0.10, 0.0, "right", "center"), "القطرانة": (0.05, -0.06, "left", "top")}.get(k, (-0.05, 0.0, "right", "center"))
@@ -37,9 +37,9 @@ for (n, t, c, col), yy in zip(cases, ys):
     ax.text(bx+1.86, yy, "\u202a" + n + ".أ\u202c", ha="center", va="center", color="white", fontsize=10, fontweight="bold", zorder=5)
     ax.text(bx+1.62, yy, t, ha="right", va="center", fontsize=9.3, color=NAVY, zorder=5)
     if c:
-        x, y = city[c]; ax.annotate("", xy=(x+0.03, y), xytext=(bx-0.02, yy), arrowprops=dict(arrowstyle="-", color=col, lw=1, alpha=0.6, connectionstyle=f"arc3,rad={0.3 if n == '12' else 0.0}"), zorder=1)
+        x, y = city[c]; ax.annotate("", xy=(x+0.03, y), xytext=(bx-0.02, yy), arrowprops=dict(arrowstyle="-", color=col, lw=1, alpha=0.6, connectionstyle=f"arc3,rad={0.3 if n == '12' else (0.4 if n == '10' else 0.0)}"), zorder=1)
 ax.text(36.6, 33.18, "أطلس الحالات العربية المحلولة", ha="center", va="top", fontsize=15, color=NAVY, fontweight="bold")
-lg = [(BLUE, "-", "الناقل الوطني للمياه (العقبة–عمّان)"), (ORANGE, (0, (4, 2)), "طريق إربد–جرش–عمّان"), (GREEN, (0, (1, 1.5)), "الباص سريع التردد عمّان–الزرقاء")]
+lg = [(BLUE, "-", "الناقل الوطني للمياه (العقبة–عمّان)"), (ORANGE, (0, (4, 2)), "طريق إربد–جرش–عمّان"), (GREEN, (0, (1.5, 1)), "الباص سريع التردد عمّان–الزرقاء")]
 for i, (c, ls, t) in enumerate(lg):
     y = 29.90 - i*0.19; ax.plot([36.85, 37.15], [y, y], color=c, lw=3, ls=ls); ax.text(37.2, y, t, ha="left", va="center", fontsize=9, color=NAVY)
 ax.text(38.62, 29.06, "مخطط توضيحي: المواقع بإحداثياتها التقريبية، والحدود والمسطحات المائية مبسّطة وغير مرسومة بمقياس", ha="right", fontsize=8, color=GREY)

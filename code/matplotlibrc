@@ -28,5 +28,5 @@ axes.facecolor: white
 savefig.facecolor: white
 savefig.dpi: 220
 savefig.bbox: tight
-axes.prop_cycle: cycler('color', ['2B6CB0', 'C05621', '2F855A', 'C53030', 'B7791F', '1A365D', '718096']) + cycler('linestyle', ['-', '--', '-.', ':', '-', '--', '-.'])
+axes.prop_cycle: cycler('color', ['2B6CB0', 'C05621', '2F855A', 'C53030', 'B7791F', '1A365D', '718096'])
 image.cmap: viridis

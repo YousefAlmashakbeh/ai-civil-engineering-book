@@ -32,7 +32,7 @@ for k_,((i,j),a) in enumerate(zip(bars,r.x)):
 ax[0].plot(nodes[:,0],nodes[:,1],"o",color=K,ms=4,zorder=5)
 for n_ in (4,5): ax[0].plot(nodes[n_][0]-0.55,nodes[n_][1],marker=">",ms=11,color="0.45",zorder=4); ax[0].plot([-1.05,-1.05],[nodes[n_][1]-0.9,nodes[n_][1]+0.9],color="0.45",lw=2)
 for n_ in (1,3):
-    ax[0].annotate("",xy=(nodes[n_][0],-3.0),xytext=(nodes[n_][0],-0.25),arrowprops=dict(arrowstyle="<|-",color=R,lw=1.8,mutation_scale=12))
+    ax[0].annotate("",xy=(nodes[n_][0],-3.0),xytext=(nodes[n_][0],-0.25),arrowprops=dict(arrowstyle="-|>",color=R,lw=1.8,mutation_scale=12))
     ax[0].text(nodes[n_][0]+0.35,-2.4,"445 kN",fontsize=8,color=R)
 ax[0].set_xlim(-1.6,2*L+1.2); ax[0].set_ylim(-3.4,L+0.8); ax[0].set_aspect("equal"); ax[0].axis("off"); ax[0].set_title("(a) optimum: line width = bar area")
 ax[1].plot(hist,color=O); ax[1].set_yscale("log"); ax[1].set_xlabel("generation"); ax[1].set_ylabel("penalised weight (kg)")
