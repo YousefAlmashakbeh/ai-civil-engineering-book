@@ -51,7 +51,7 @@ arr(ax,(2,4.2),(4.4,3.7)); arr(ax,(4.6,2.6),(7.4,2.1)); arr(ax,(8.6,1.6),(10.4,2
 arr(ax,(3,4.75),(12.2,4.75),c=R,ls="--"); arr(ax,(5.6,3.15),(9.6,3.15),c=R,ls="--")
 ax.text(7.6,5.05,"skip connection: fine detail (thin cracks) copied across",ha="center",fontsize=7.5,color=R)
 ax.text(3.3,1.2,"encoder: pool,\nwhat is it?",ha="center",fontsize=7.5); ax.text(12.4,1.6,"decoder: up-sample,\nwhere is it?",ha="center",fontsize=7.5)
-save(fig,"fig12_5_unet.png")
+save(fig,"fig12_2_unet.png")
 
 # 16.5 from model to twin
 fig,ax=plt.subplots(figsize=(8.6,2.9)); ax.axis("off"); ax.set_xlim(0,12); ax.set_ylim(0,4.4)
@@ -82,7 +82,7 @@ cx=(x1+x2)/2; cy=np.tan(be)*cx+1.1; ax.annotate("",xy=(cx,cy-1.3),xytext=(cx,cy)
 ax.annotate("",xy=(x2+0.9,np.tan(be)*x2+2.2),xytext=(x2+0.9,np.tan(be)*x2),arrowprops=dict(arrowstyle="<->",color=K)); ax.text(x2+1.0,np.tan(be)*x2+1.1,"z",fontsize=9)
 ax.annotate("",xy=(x2+1.6,np.tan(be)*x2+1.3),xytext=(x2+1.6,np.tan(be)*x2),arrowprops=dict(arrowstyle="<->",color=B)); ax.text(x2+1.7,np.tan(be)*x2+0.55,"m z",fontsize=9,color=B)
 ax.plot([0,2.6],[0,0],color="0.5",lw=0.7); ax.text(1.75,0.22,r"$\beta$",fontsize=11); ax.set_aspect("equal"); ax.set_xlim(-0.2,L_+0.2); ax.set_ylim(-0.8,7.4)
-save(fig,"fig10_5_slopesketch.png")
+save(fig,"fig10_3_slopesketch.png")
 
 # 14.5 two-phase intersection and its signal plan
 fig,ax=plt.subplots(1,2,figsize=(8.4,2.8),gridspec_kw={"width_ratios":[1,1.6]}); a=ax[0]; a.axis("off"); a.set_xlim(-5,5); a.set_ylim(-5,5); a.set_aspect("equal")
@@ -92,5 +92,5 @@ a.annotate("",xy=(0.45,-1.2),xytext=(0.45,-4.8),arrowprops=dict(arrowstyle="->",
 b_=ax[1]; b_.set_xlim(0,38); b_.set_ylim(0,3); b_.set_yticks([0.75,2.05]); b_.set_yticklabels(["phase 2","phase 1"],fontsize=8); b_.set_xlabel("Time in cycle (s): Webster C = 38 s, greens 18 and 12 s, 4 s lost per change",fontsize=8)
 for y,segs in [(1.7,[(0,18,G),(18,4,"#ecc94b"),(22,16,R)]),(0.4,[(0,22,R),(22,12,G),(34,4,"#ecc94b")])]:
     for s0,d,c in segs: b_.add_patch(Rectangle((s0,y),d,0.7,fc=c,ec="w"))
-b_.spines[["top","right"]].set_visible(False); fig.tight_layout(); save(fig,"fig14_5_signalplan.png")
+b_.spines[["top","right"]].set_visible(False); fig.tight_layout(); save(fig,"fig14_2_signalplan.png")
 print("diagrams done")

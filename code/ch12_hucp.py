@@ -80,6 +80,6 @@ if os.path.isdir(f"{D}/{SURF}"):
     ax2.set_yticklabels([f"{r} (n={int(n)})" for r, n in zip(pr.index, pr.n)], fontsize=7); ax2.set_xlim(0, 1)
     ax2.axvline(res_rec["F1"], ls="--", c="k", lw=.8); ax2.set_xlabel("F1 on each test record")
     ax2.set_title(f"(c) {len(pr)} test records: spread matters", fontsize=9)
-    fig.tight_layout(); fig.savefig(f"{F}/fig12_3_hucp.png" if SURF == "W" else f"{F}/fig12_3_hucp_{SURF}.png", dpi=200); plt.close()
+    fig.tight_layout(); fig.savefig(f"{F}/fig12_4_hucp.png" if SURF == "W" else f"{F}/fig12_4_hucp_{SURF}.png", dpi=200); plt.close()
 
 import json; print(json.dumps(out, indent=1, default=float, ensure_ascii=False))

@@ -32,7 +32,7 @@ print("  Underwood: vf=%.0f km/h, km=%.0f veh/km, capacity=%.0f veh/h/lane at k=
 g=np.linspace(0,125,200); fig,ax=plt.subplots(1,2,figsize=(8.4,3.1))
 ax[0].scatter(k,v,s=6,color="0.6"); ax[0].plot(g,np.maximum(a+b*g,0),color=O,label="Greenshields (linear)"); ax[0].plot(g,vf_u*np.exp(-g/km_u),color=B,label="Underwood (exponential)"); ax[0].set_xlabel("Density (veh/km/lane)"); ax[0].set_ylabel("Speed (km/h)"); ax[0].legend(frameon=False,fontsize=8); clean(ax[0])
 ax[1].scatter(k,k*v,s=6,color="0.6"); ax[1].plot(g,g*np.maximum(a+b*g,0),color=O); ax[1].plot(g,g*vf_u*np.exp(-g/km_u),color=B); ax[1].set_xlabel("Density (veh/km/lane)"); ax[1].set_ylabel("Flow (veh/h/lane)"); clean(ax[1])
-fig.tight_layout(); fig.savefig("fig/fig14_4_fundamental.png",dpi=200); plt.close()
+fig.tight_layout(); fig.savefig("fig/fig14_5_fundamental.png",dpi=200); plt.close()
 
 # ---- Example 15.4: design rainfall from a short record (Gumbel + bootstrap)
 rng=np.random.default_rng(15); true=stats.genextreme(c=-0.10,loc=28,scale=11); x=true.rvs(35,random_state=rng)          # 35 annual maxima of daily rain (mm)

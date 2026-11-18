@@ -79,7 +79,7 @@ fig,ax=plt.subplots(1,2,figsize=(8.4,3)); ax[0].hist(q,bins=80,range=(0,2500),co
 lab={"c":"cohesion c' (COV 40%)","phi":"friction angle (COV 10%)","gam":"unit weight (COV 5%)"}
 for i,k_ in enumerate(sorted(tor,key=lambda z:abs(tor[z][1]-tor[z][0]))): ax[1].barh(i,tor[k_][1]-tor[k_][0],left=tor[k_][0],color=O); ax[1].text(tor[k_][1]+15,i,lab[k_],va="center",fontsize=7)
 ax[1].axvline(q0,color=K,lw=0.8); ax[1].set_yticks([]); ax[1].set_xlabel("q_ult for -1 sd ... +1 sd (kPa)"); ax[1].set_xlim(None,tor["phi"][1]+520); clean(ax[1])
-fig.tight_layout(); fig.savefig("fig/fig10_4_bearing.png",dpi=200); plt.close()
+fig.tight_layout(); fig.savefig("fig/fig10_5_bearing.png",dpi=200); plt.close()
 
 # ---- Example 11.4: schedule risk by Monte Carlo on a critical-path network
 acts={"A excavation":(8,10,16,[]),"B foundations":(12,15,24,["A"]),"C columns+slabs":(40,48,70,["B"]),"D masonry":(18,22,34,["C"]),"E MEP rough-in":(20,26,45,["C"]),
@@ -118,7 +118,7 @@ for img,lab,m in zip(X,y,M):
 prec,rec=tp/(tp+fp),tp/(tp+fn); print("Ex12.2 black top-hat + Otsu: pixel precision=%.3f recall=%.3f F1=%.3f; false-positive pixels per crack-free image=%.1f (U-Net in Example 12.1: F1 0.915, 0.07 px)"%(prec,rec,2*prec*rec/(prec+rec),np.mean(fpc)))
 fig,ax=plt.subplots(1,3,figsize=(6.6,2.4))
 for a,im,t_ in zip(ax,ex,["Image","True mask","Top-hat + Otsu"]): a.imshow(im,cmap="gray"); a.set_title(t_,fontsize=8); a.axis("off")
-fig.tight_layout(); fig.savefig("fig/fig12_4_classical.png",dpi=200); plt.close()
+fig.tight_layout(); fig.savefig("fig/fig12_5_classical.png",dpi=200); plt.close()
 
 # ---- Section 12.5 check: how small must the pixel be to judge a width limit?
 from skimage.measure import perimeter_crofton

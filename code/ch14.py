@@ -137,7 +137,7 @@ ax.plot(cv[:, 0], cv[:, 2], "s-", color="#C53030", label="Q-learning, shifting p
 ax.axhline(res["steady"][0], color="#2B6CB0", ls="--", label="Webster fixed, steady")
 ax.axhline(res["shift"][0], color="#C53030", ls="--", label="Webster fixed, shifting")
 ax.set_yscale("log"); ax.set_xlabel("Training episodes (1 h each)"); ax.set_ylabel("Mean delay (s/veh, log scale)"); ax.legend(fontsize=7)
-plt.tight_layout(); plt.savefig("fig/fig14_2_signal.png", dpi=150); plt.close()
+plt.tight_layout(); plt.savefig("fig/fig14_3_signal.png", dpi=150); plt.close()
 
 # ---------------- Part 3: crash frequency, NB vs Poisson, Empirical Bayes hotspots ----------------
 r3 = np.random.default_rng(314)
@@ -181,7 +181,7 @@ ax.plot([0, y1.max()], [0, y1.max()], "k--", lw=0.8)
 ax.axhline(y2[top_raw].mean(), color="#C53030", ls=":", lw=1)
 ax.axvline(y1[top_raw].mean(), color="#C53030", ls=":", lw=1)
 ax.set_xlabel("Crashes, period 1 (3 yr)"); ax.set_ylabel("Crashes, period 2 (3 yr)"); ax.legend(fontsize=8)
-plt.tight_layout(); plt.savefig("fig/fig14_3_hotspots.png", dpi=150); plt.close()
+plt.tight_layout(); plt.savefig("fig/fig14_4_hotspots.png", dpi=150); plt.close()
 
 # ---------------- Checks requested in review ----------------
 # (a) simulator vs Webster's delay formula, steady demand 600/400 veh/h

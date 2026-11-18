@@ -85,7 +85,7 @@ def cnn():
     f.build()
 # ---------------- Fig 12.5: U-Net ----------------
 def unet():
-    f = Fig("fig12_5_unet")
+    f = Fig("fig12_2_unet")
     E = [("e1", 0, 0, "16 قناة", "64×64", "blue"), ("e2", -2.6, -1.7, "32 قناة", "32×32", "blue"), ("e3", -5.6, -3.4, "64 قناة", "16×16", "navy"), ("d2", -8.6, -1.7, "32 قناة", "32×32", "green"), ("d1", -11.2, 0, "16 قناة", "64×64", "green")]
     f.add(r"\node[fill=greyT,draw=grey,line width=0.8pt,rounded corners=3pt,minimum width=1.5cm,minimum height=1.15cm,align=center,font=\footnotesize,sh] (in) at (2.6,0) {%s};" % RL("الصورة\n64×64"))
     for id, x, y, a, b, c in E:
@@ -98,7 +98,7 @@ def unet():
     f.build()
 # ---------------- Fig 10.5: infinite slope ----------------
 def slope():
-    f = Fig("fig10_5_slopesketch"); be = 28; t = math.tan(math.radians(be)); L = 10; z = 2.2; mz = 1.3
+    f = Fig("fig10_3_slopesketch"); be = 28; t = math.tan(math.radians(be)); L = 10; z = 2.2; mz = 1.3
     f.add(r"\fill[greyT] (0,-0.7) -- (%.2f,%.3f) -- (%.2f,%.3f) -- (0,0) -- cycle;" % (L, L*t - 0.7, L, L*t))
     f.add(r"\fill[goldT] (0,0) -- (%.2f,%.3f) -- (%.2f,%.3f) -- (0,%.2f) -- cycle;" % (L, L*t, L, L*t + z, z))
     f.add(r"\fill[blueT] (0,0) -- (%.2f,%.3f) -- (%.2f,%.3f) -- (0,%.2f) -- cycle;" % (L, L*t, L, L*t + mz, mz))
@@ -118,7 +118,7 @@ def slope():
     f.build()
 # ---------------- Fig 14.5: intersection and Webster plan ----------------
 def signal():
-    f = Fig("fig14_5_signalplan")
+    f = Fig("fig14_2_signalplan")
     f.add(r"\fill[fill=line] (-2.6,-0.55) rectangle (2.6,0.55); \fill[fill=line] (-0.55,-2.6) rectangle (0.55,2.6);")
     f.add(r"\draw[white,line width=1pt,dash pattern=on 5pt off 4pt] (-2.6,0)--(-0.55,0) (0.55,0)--(2.6,0) (0,-2.6)--(0,-0.55) (0,0.55)--(0,2.6);")
     f.add(r"\draw[blue,line width=2pt,-{Stealth[length=7pt]}] (-2.5,-0.27) -- (-0.7,-0.27); \draw[orange,line width=2pt,-{Stealth[length=7pt]}] (0.27,-2.5) -- (0.27,-0.7);")
