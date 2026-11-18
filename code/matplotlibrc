@@ -1,0 +1,32 @@
+# One visual identity for all result plots of the book (picked up automatically by every script run from this folder)
+font.family: DejaVu Sans
+font.size: 10
+axes.titlesize: 11
+axes.titleweight: bold
+axes.labelsize: 10
+axes.labelcolor: 1A202C
+axes.edgecolor: 4A5568
+axes.linewidth: 0.8
+axes.spines.top: False
+axes.spines.right: False
+axes.grid: False
+axes.axisbelow: True
+grid.color: E2E8F0
+grid.linewidth: 0.7
+xtick.color: 4A5568
+ytick.color: 4A5568
+xtick.labelsize: 9
+ytick.labelsize: 9
+xtick.direction: out
+ytick.direction: out
+lines.linewidth: 1.8
+lines.markersize: 5
+legend.frameon: False
+legend.fontsize: 9
+figure.facecolor: white
+axes.facecolor: white
+savefig.facecolor: white
+savefig.dpi: 220
+savefig.bbox: tight
+axes.prop_cycle: cycler('color', ['2B6CB0', 'C05621', '2F855A', 'C53030', 'B7791F', '1A365D', '718096'])
+image.cmap: viridis

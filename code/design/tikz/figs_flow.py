@@ -2,7 +2,7 @@
 from tk import *
 # ---------------- Fig 1.2: workflow as a real flowchart ----------------
 def workflow():
-    f = Fig("fig1_2_workflow"); W, H, px, py = 3.05, 1.75, 3.65, 2.95
+    f = Fig("fig1_3_workflow"); W, H, px, py = 3.05, 1.75, 3.65, 2.95
     xs = [3*px, 2*px, px, 0]
     S = [("السؤال الهندسي", "ما القرار الذي\nسيتغيّر؟", "navy"), ("البيانات", "مختبر، موقع،\nمصادر مفتوحة", "blue"),
          ("التنظيف والفحص", "وحدات، حدود\nفيزيائية، تكرار", "blue"), ("الخصائص", "من المعرفة\nالهندسية", "blue"),
@@ -100,4 +100,29 @@ def roadmap():
     f.text(0, y5 - 1.6, "في كل فصل: خريطة الفصل • أمثلة محلولة • حدود النموذج • مصطلحات واختبار ذاتي\nتسع حالات عربية محلولة في الفصول 7 و9 إلى 16", "text=navy,font=\\footnotesize,align=center")
     f.build()
 if __name__ == "__main__":
-    for fn in [workflow, pipeline13, pipeline17, twin, roadmap]: fn()
+    for fn in [workflow, pipeline13, pipeline17, twin, roadmap, decision]: fn()
+# ---------------- Fig 1.2: should I use AI at all? (decision flowchart of Section 1.8) ----------------
+def decision():
+    f = Fig("fig1_2_decision"); py = 2.45; DW, DH = 5.4, 1.75; xo = -7.4; OW = 5.6
+    Q = [("هل توجد معادلة موثوقة\nورخيصة تحلّ المسألة؟", "استخدم المعادلة", "هي النموذج، ولا حاجة إلى غيرها", "red"),
+         ("هل يفرض كود التصميم\nطريقة حساب محددة؟", "التزم بطريقة الكود", "النموذج للتحقق والفرز فقط", "red"),
+         ("هل البيانات أقل من أن\nتمثّل المشكلة؟", "اجمع بيانات أو ابنِ محاكاة", "قبل أي نموذج", "red"),
+         ("هل كلفة الخطأ كارثية\nولا قياس لثقة التنبؤ؟", "أضف مدى الثقة", "ومراجعة مهندس لكل قرار", "orange"),
+         ("هل ظروف الاستخدام\nتختلف عن ظروف البيانات؟", "نموذج هجين", "واختبار صريح خارج المدى", "orange")]
+    f.add(r"\node[term=navy] (st) at (0,%.2f) {%s};" % (py*0.78, R("مسألة هندسية جديدة")))
+    for i, (q, t, b, c) in enumerate(Q):
+        y = -i*py
+        f.add(r"\node[dec=%s,minimum width=%.2fcm,minimum height=%.2fcm,font=\footnotesize] (q%d) at (0,%.2f) {%s};" % ("navy", DW, DH, i, y, RL(q, True)))
+        f.add(r"\node[circle,fill=navy,text=white,font=\bfseries\footnotesize,inner sep=0pt,minimum size=0.44cm] at ($(q%d.east)+(0.42,0)$) {\lt %d};" % (i, i+1))
+        f.card("o%d" % i, xo, y, OW, 1.45, t, b, c, hb=0.6)
+        f.add(r"\draw[connc=%s] (q%d.west) -- node[lab,above=1pt,text=%s,font=\bfseries\footnotesize] {%s} (o%d.east);" % (c, i, c, R("نعم"), i))
+        prev = "st" if i == 0 else "q%d" % (i-1)
+        if i == 0: f.add(r"\draw[conn] (st.south) -- (q0.north);")
+        else: f.add(r"\draw[conn] (q%d.south) -- node[lab,right=1pt,font=\bfseries\footnotesize] {%s} (q%d.north);" % (i-1, R("لا"), i))
+    f.add(r"\node[term=green,minimum width=5.4cm] (en) at (0,%.2f) {%s};" % (-4*py - 1.95, RL("ابدأ بأبسط نموذج يحلّ المسألة\nوقارنه بخط أساس فيزيائي")))
+    f.add(r"\draw[connc=green] (q4.south) -- node[lab,right=1pt,text=green,font=\bfseries\footnotesize] {%s} (en.north);" % R("لا"))
+    f.add(r"\draw[decorate,decoration={brace,amplitude=5pt},slate,line width=0.7pt] (%.2f,%.2f) -- (%.2f,%.2f);" % (xo - OW/2 - 0.25, -2*py - 0.75, xo - OW/2 - 0.25, 0.75))
+    f.add(r"\node[rotate=90,font=\footnotesize,text=slate] at (%.2f,%.2f) {%s};" % (xo - OW/2 - 0.75, -py, R("الغالب أنك لا تحتاج إلى الذكاء الاصطناعي")))
+    f.add(r"\draw[decorate,decoration={brace,amplitude=5pt},slate,line width=0.7pt] (%.2f,%.2f) -- (%.2f,%.2f);" % (xo - OW/2 - 0.25, -4*py - 0.75, xo - OW/2 - 0.25, -3*py + 0.75))
+    f.add(r"\node[rotate=90,font=\footnotesize,text=slate] at (%.2f,%.2f) {%s};" % (xo - OW/2 - 0.75, -3.5*py, R("استخدمه بضمانات")))
+    f.build()

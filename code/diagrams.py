@@ -17,7 +17,7 @@ for x in xs[:-1]: arr(ax, (x+0.11, 0.57), (x+0.124, 0.57))
 ax.annotate("", xy=(xs[1]+0.055, 0.40), xytext=(xs[6]+0.055, 0.40), arrowprops=dict(arrowstyle="->", color="tab:red", connectionstyle="arc3,rad=-0.35", ls="--"))
 ax.text(0.5, -0.12, "fails a check (leakage, out-of-range, unsafe errors) -> go back to data", ha="center", fontsize=8, color="tab:red")
 ax.text(0.5, 0.9, "AI project workflow in civil engineering (used throughout the book)", ha="center", fontsize=10)
-plt.savefig("fig/fig1_2_workflow.png", dpi=150, bbox_inches="tight"); plt.close()
+plt.savefig("fig/fig1_3_workflow.png", dpi=150, bbox_inches="tight"); plt.close()
 # Fig 8.6 accelerated corrosion setup
 fig, ax = plt.subplots(figsize=(7.5, 3.6)); ax.axis("off"); ax.set_xlim(0, 10); ax.set_ylim(-0.3, 6)
 ax.add_patch(Rectangle((0.5, 0.0), 9, 2.8, fc="#dbeafe", ec="k")); ax.text(9.3, 2.0, "2% NaCl\nsolution", ha="right", fontsize=8)

@@ -34,7 +34,7 @@ ax.plot(g,phys(g),"--",color="0.4",label="Abrams only")
 ax.plot(g,rf.predict(np.c_[g,np.full(100,5.0)]),color=O,label="random forest")
 ax.plot(g,phys(g)*hyb.predict(np.c_[g,np.full(100,5.0)]),color=B,label="hybrid (Abrams x RF ratio)")
 ax.axvspan(0.25,0.35,color="#fff5f5"); ax.axvspan(0.70,0.75,color="#fff5f5"); ax.set_xlabel("w/c"); ax.set_ylabel("28-day strength (MPa)"); ax.legend(fontsize=7,frameon=False); clean(ax)
-fig.tight_layout(); fig.savefig("fig/fig1_3_hybrid.png",dpi=200); plt.close()
+fig.tight_layout(); fig.savefig("fig/fig1_4_hybrid.png",dpi=200); plt.close()
 
 # ---- Example 2.4: principal components of eight strain gauges on a bridge
 rng=np.random.default_rng(24); days=np.arange(730); T=15+12*np.sin(2*np.pi*(days-110)/365)+rng.normal(0,2.5,730); L=rng.gamma(4,0.25,730)   # temperature, daily traffic load index
