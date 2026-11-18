@@ -10,3 +10,5 @@ Requirements: XeLaTeX with TikZ, `pdftoppm`, and the IBM Plex Sans Arabic fonts 
 
     BOOK_FONTS=/path/to/fonts BOOK_FIG_OUT=../../../figures python3 figs_flow.py
     BOOK_FONTS=/path/to/fonts BOOK_FIG_OUT=../../../figures python3 figs_tech.py
+
+- `cover2.py` — the current cover (`cover.png`) and a light alternative (`cover_alt.png`); `cover.py` is the earlier design.
