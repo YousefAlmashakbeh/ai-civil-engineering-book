@@ -52,16 +52,23 @@ f2 = ["hour", "dow", "eid", "year", "month"]
 gb2.fit(train[f2], train["y"]); p2 = gb2.predict(test[f2])
 print("  GBM without Ramadan flag: ramadan MAPE=%.1f%%" % mape(test.y.values[mask_r], p2[mask_r]))
 
-fig, ax = plt.subplots(1, 2, figsize=(11, 3.6))
+import matplotlib.dates as mdates
+fig, ax = plt.subplots(2, 2, figsize=(6.8, 4.8), sharex="col", gridspec_kw=dict(height_ratios=[1.5, 1]))
 w1 = (test.index >= "2026-01-11") & (test.index < "2026-01-18")
 w2 = (test.index >= "2026-03-01") & (test.index < "2026-03-08")
-for a, w, t in [(ax[0], w1, "Normal week (Jan 2026)"), (ax[1], w2, "Ramadan week (Mar 2026)")]:
-    a.plot(test.index[w], test.y.values[w], "k", lw=1.2, label="Observed")
-    a.plot(test.index[w], pn[w], color="#C05621", lw=1, ls="--", label="Seasonal naive (t-168h)")
-    a.plot(test.index[w], pg[w], color="#2B6CB0", lw=1, label="GBM + calendar")
-    a.set_title(t); a.set_ylabel("Vehicles / hour"); a.tick_params(axis="x", rotation=30, labelsize=7)
-ax[0].legend(fontsize=7)
-plt.tight_layout(); plt.savefig("fig/fig14_1_traffic.png", dpi=150); plt.close()
+for k, (w, t) in enumerate([(w1, "normal week (Jan 2026)"), (w2, "Ramadan week (Mar 2026)")]):
+    a, b = ax[0, k], ax[1, k]; x = test.index[w]; yo = test.y.values[w]
+    a.plot(x, yo, "k", lw=1.1, label="observed")
+    a.plot(x, pn[w], color="#C05621", lw=.9, ls="--", label="seasonal naive (t-168 h)")
+    a.plot(x, pg[w], color="#2B6CB0", lw=.9, ls="-", label="GBM + calendar")
+    a.set_title(t); a.set_ylabel("vehicles / hour" if k == 0 else "")
+    b.plot(x, pn[w] - yo, color="#C05621", lw=.8, ls="--", label="naive error")
+    b.plot(x, pg[w] - yo, color="#2B6CB0", lw=.9, label="GBM error"); b.axhline(0, c="k", lw=.6)
+    b.set_ylabel("forecast - observed" if k == 0 else ""); b.xaxis.set_major_locator(mdates.DayLocator()); b.xaxis.set_major_formatter(plt.FuncFormatter(lambda v, p: mdates.num2date(v).strftime("%a")[:2])); b.tick_params(axis="x", labelsize=7, rotation=0)
+    for lab in b.get_xticklabels(): lab.set_ha("left")
+    lim = max(abs(pn[w] - yo).max(), abs(pg[w] - yo).max()) * 1.05; b.set_ylim(-lim, lim)
+_h, _l = ax[0, 0].get_legend_handles_labels(); ax[1, 0].legend(fontsize=7, loc="lower left", ncol=2)
+plt.tight_layout(rect=(0, 0, 1, 0.94)); fig.legend(_h, _l, loc="upper center", ncol=3, fontsize=7.5, frameon=False); plt.savefig("fig/fig14_1_traffic.png", dpi=260); plt.close()
 
 # ---------------- Part 2: signal control, Webster vs Q-learning ----------------
 S = 0.5      # saturation flow veh/s per approach (1800 veh/h)

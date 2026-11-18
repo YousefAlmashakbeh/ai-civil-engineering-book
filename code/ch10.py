@@ -59,6 +59,6 @@ Ns=20000; B=rng.uniform(20,40,Ns); cc=np.exp(rng.normal(np.log(8)-s_ln**2/2,s_ln
 lab=(FS(B,cc,pp,mm)<1).astype(int); clf=HistGradientBoostingClassifier(random_state=0).fit(np.c_[B,cc,pp,mm],lab)
 for bt in (32,36,40):
     pr=clf.predict(np.c_[np.full(N,bt),c,phi,m]).mean(); print(f"surrogate Pf at {bt}°: {pr*100:.2f}%")
-fig,ax=plt.subplots(figsize=(6,3.3)); ax.semilogy(betas,np.maximum(pf,1e-5)*100,"o-",color="#c53030"); ax.axhline(1,ls="--",color="#a0aec0"); ax.text(26.5,1.2,"1% target",fontsize=8)
+fig,ax=plt.subplots(figsize=(6,3.3)); ax.semilogy(betas,np.maximum(pf,1e-5)*100,"o-",color="#c53030"); ax.axhline(1,ls="--",color="#a0aec0"); ax.text(betas[-1],0.78,"1% target",fontsize=8,ha="right",va="top",color="#4A5568")
 ax.set_xlabel("Slope angle (deg)"); ax.set_ylabel("Probability of failure (%)"); ax.spines[["top","right"]].set_visible(False)
 fig.tight_layout(); fig.savefig("fig/fig10_4_slope.png",dpi=200)

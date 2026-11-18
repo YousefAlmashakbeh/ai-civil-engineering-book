@@ -73,9 +73,17 @@ from scipy.stats import norm
 nll=lambda th: -np.sum(ex*np.log(norm.cdf((np.log(pgas)-th[0])/abs(th[1]))+1e-12)+(1-ex)*np.log(1-norm.cdf((np.log(pgas)-th[0])/abs(th[1]))+1e-12))
 th=minimize(nll,[np.log(0.3),0.5],method="Nelder-Mead").x; med=np.exp(th[0]); beta=abs(th[1])
 print(f"fragility: median PGA={med:.2f} g, beta={beta:.2f}; P(exceed|PGA=0.3g)={norm.cdf((np.log(0.3)-th[0])/beta)*100:.0f}%")
-fig,ax=plt.subplots(1,2,figsize=(8,3.2))
+fig,ax=plt.subplots(1,2,figsize=(6.8,3.0))
 ax[0].loglog(pgas,drift*100,".",color="#2b6cb0",ms=4); ax[0].axhline(1,color="#c53030",ls="--",lw=1); ax[0].set_xlabel("PGA (g)"); ax[0].set_ylabel("Peak drift ratio (%)")
 g=np.linspace(0.03,0.9,200); ax[1].plot(g,norm.cdf((np.log(g)-th[0])/beta),color="#c53030",lw=2); ax[1].plot(pgas,ex,"|",color="#a0aec0")
 ax[1].set_xlabel("PGA (g)"); ax[1].set_ylabel("P(drift > 1%)")
+from matplotlib.ticker import ScalarFormatter, NullFormatter, FixedLocator
+ax[0].set_xticks([0.05,0.1,0.2,0.4,0.8]); ax[0].set_yticks([0.1,0.3,1,3])
+for _ax in (ax[0].xaxis, ax[0].yaxis):
+    _f=ScalarFormatter(); _f.set_scientific(False); _ax.set_major_formatter(_f); _ax.set_minor_formatter(NullFormatter())
+_med=float(np.exp(th[0]))
+for _a in ax: _a.axvline(_med,color="#718096",ls=":",lw=1)
+ax[1].annotate(f"median {_med:.2f} g",xy=(_med,0.5),xytext=(_med+0.12,0.32),fontsize=8,arrowprops=dict(arrowstyle="->",color="#4A5568",lw=.8))
+ax[0].set_title("(a) log scale"); ax[1].set_title("(b) linear scale")
 for a in ax: a.spines[["top","right"]].set_visible(False)
 fig.tight_layout(); fig.savefig("fig/fig9_3_fragility.png",dpi=200)

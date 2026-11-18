@@ -12,11 +12,11 @@ from sklearn.metrics import roc_auc_score, f1_score, recall_score, precision_sco
 from joblib import Parallel, delayed
 
 D = os.environ.get("HUCP_DIR", "hucp"); F = "fig"; os.makedirs(F, exist_ok=True)
+lab = pd.read_csv(f"{D}/tables/patch_labels_clean.csv", low_memory=False)
+SURF = os.environ.get("HUCP_SURFACE", "W")   # "W" walls (book figure) or "P" pavements
 if not os.path.exists(os.path.join(D, "tables")):
     raise SystemExit(f"HU-CP data not found in '{D}'. Download HU_CP_W.zip and HU_CP_tables_README_audit.zip from "
                      "https://doi.org/10.5281/zenodo.23836570, unzip them there, or set HUCP_DIR.")
-lab = pd.read_csv(f"{D}/tables/patch_labels_clean.csv", low_memory=False)
-SURF = os.environ.get("HUCP_SURFACE", "W")   # "W" walls (book figure) or "P" pavements
 w = lab[lab.surface_code == SURF].reset_index(drop=True)
 w["y"] = (w.label == "cracked").astype(int)
 
@@ -64,22 +64,25 @@ pr = t.groupby("record").apply(lambda d: pd.Series({"n": len(d), "c": int(d.y.su
 out["per_record_F1"] = pr.round(3).to_dict("index")
 # figure (needs the image folder)
 if os.path.isdir(f"{D}/{SURF}"):
-    fig = plt.figure(figsize=(12, 3.6)); gs = fig.add_gridspec(1, 3, width_ratios=[1.25, 1, 1])
-    ax0 = fig.add_subplot(gs[0]); rng = np.random.default_rng(3)
+    fig = plt.figure(figsize=(6.8, 5.6)); gs = fig.add_gridspec(2, 2, height_ratios=[1.05, 1], width_ratios=[1, 1.35])
+    ax0 = fig.add_subplot(gs[0, :]); rng = np.random.default_rng(3)
     pick = [*rng.choice(np.where(y == 1)[0], 4, replace=False), *rng.choice(np.where(y == 0)[0], 4, replace=False)]
     tiles = [np.asarray(Image.open(f"{D}/{SURF}/{w.file[i]}").convert("L").resize((96, 96))) for i in pick]
     grid = np.vstack([np.hstack(tiles[:4]), np.hstack(tiles[4:])]); ax0.imshow(grid, cmap="gray"); ax0.axis("off")
-    ax0.set_title(f"(a) HU-CP {'walls' if SURF=='W' else 'pavements'}: cracked (top), uncracked (bottom)", fontsize=9)
-    ax1 = fig.add_subplot(gs[1]); ks = ["AUC", "F1", "recall"]; xx = np.arange(3)
-    ax1.bar(xx - .18, [res_rand[k] for k in ks], .36, label="random patch split", color="#c44e52")
-    ax1.bar(xx + .18, [res_rec[k] for k in ks], .36, label="record-level split", color="#4c72b0")
-    ax1.set_xticks(xx); ax1.set_xticklabels(ks); ax1.set_ylim(0, 1); ax1.legend(fontsize=7, loc="lower right")
-    ax1.set_title("(b) Same model, two ways to split", fontsize=9)
-    ax2 = fig.add_subplot(gs[2])
-    ax2.barh(range(len(pr)), pr.F1, color="#55a868"); ax2.set_yticks(range(len(pr)))
-    ax2.set_yticklabels([f"{r} (n={int(n)})" for r, n in zip(pr.index, pr.n)], fontsize=7); ax2.set_xlim(0, 1)
+    ax0.set_title(f"(a) HU-CP {'walls' if SURF=='W' else 'pavements'}: cracked (top row), uncracked (bottom row)")
+    ax1 = fig.add_subplot(gs[1, 0]); ks = ["AUC", "F1", "recall"]; xx = np.arange(3)
+    b1 = ax1.bar(xx - .19, [res_rand[k] for k in ks], .36, label="random patch split", color="#C05621")
+    b2 = ax1.bar(xx + .19, [res_rec[k] for k in ks], .36, label="record-level split", color="#2B6CB0", hatch="//", edgecolor="white")
+    ax1.bar_label(b1, fmt="%.3f", fontsize=7, padding=2, rotation=90); ax1.bar_label(b2, fmt="%.3f", fontsize=7, padding=2, rotation=90)
+    lo = min(min(res_rand[k] for k in ks), min(res_rec[k] for k in ks))
+    ax1.set_xticks(xx); ax1.set_xticklabels(ks); ax1.set_ylim(max(0, np.floor(lo * 20) / 20 - .05), 1.06)
+    ax1.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=1, fontsize=8)
+    ax1.set_title("(b) same model, two splits", pad=34)
+    ax2 = fig.add_subplot(gs[1, 1])
+    ax2.barh(range(len(pr)), pr.F1, color="#2F855A"); ax2.set_yticks(range(len(pr)))
+    ax2.set_yticklabels([f"{r}\nn={int(n)}" for r, n in zip(pr.index, pr.n)], fontsize=7); ax2.set_xlim(0, 1)
     ax2.axvline(res_rec["F1"], ls="--", c="k", lw=.8); ax2.set_xlabel("F1 on each test record")
-    ax2.set_title(f"(c) {len(pr)} test records: spread matters", fontsize=9)
-    fig.tight_layout(); fig.savefig(f"{F}/fig12_4_hucp.png" if SURF == "W" else f"{F}/fig12_4_hucp_{SURF}.png", dpi=200); plt.close()
+    ax2.set_title(f"(c) {len(pr)} test records")
+    fig.tight_layout(); fig.savefig(f"{F}/fig12_4_hucp.png" if SURF == "W" else f"{F}/fig12_4_hucp_{SURF}.png", dpi=260); plt.close()
 
 import json; print(json.dumps(out, indent=1, default=float, ensure_ascii=False))

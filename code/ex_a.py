@@ -45,10 +45,13 @@ print("Ex2.4 explained variance:",np.round(p.explained_variance_ratio_,3),"first
 Zs=sc2.transform(S); rec=p.inverse_transform(np.c_[p.transform(Zs)[:,:2],np.zeros((730,6))]); q=((Zs-rec)**2).sum(1)      # residual outside the 2-component plane
 thr=np.percentile(q[:365],99); print("  residual threshold (99%% of year 1)=%.2f; alarms days 365-599: %.1f%%; days 600-729: %.1f%%"%(thr,100*np.mean(q[365:600]>thr),100*np.mean(q[600:]>thr)))
 print("  raw gauge 3, mean before/after day 600: %.1f / %.1f microstrain (sd of the raw signal %.1f)"%(S[365:600,2].mean(),S[600:,2].mean(),S[365:600,2].std()))
-fig,ax=plt.subplots(1,2,figsize=(8.4,3.2))
-ax[0].bar(range(1,9),p.explained_variance_ratio_,color=B); ax[0].plot(range(1,9),np.cumsum(p.explained_variance_ratio_),"o-",color=O,ms=3); ax[0].set_xlabel("Principal component"); ax[0].set_ylabel("Explained variance"); clean(ax[0])
-ax[1].plot(days,q,color=B,lw=0.6); ax[1].axhline(thr,color="#c53030",ls="--",lw=0.8); ax[1].axvline(600,color="0.4",ls=":"); ax[1].axvspan(0,365,color="#edf2f7"); ax[1].set_yscale("log"); ax[1].set_xlabel("Day"); ax[1].set_ylabel("Residual outside 2 PCs"); ax[1].text(10,q.max()*0.6,"reference year",fontsize=7); clean(ax[1])
-fig.tight_layout(); fig.savefig("fig/fig2_3_pca.png",dpi=200); plt.close()
+fig,ax=plt.subplots(1,2,figsize=(7.0,3.0),gridspec_kw=dict(width_ratios=[1,2]))
+ev=p.explained_variance_ratio_; bb=ax[0].bar(range(1,9),ev,color=B); ax[0].set_yscale("log"); ax[0].set_ylim(ev.min()/2,2)
+ax[0].bar_label(bb,labels=["%.1f%%"%(100*v) if i<2 else "" for i,v in enumerate(ev)],fontsize=7.5,padding=1); ax[0].set_xticks(range(1,9)); ax[0].set_xlabel("component"); ax[0].set_ylabel("explained variance (log)"); clean(ax[0])
+ax[1].plot(days,q,color=B,lw=0.6); ax[1].axhline(thr,color="#c53030",ls="--",lw=0.9); ax[1].axvline(600,color="0.4",ls=":"); ax[1].axvspan(0,365,color="#edf2f7"); ax[1].set_yscale("log"); ax[1].set_xlabel("day"); ax[1].set_ylabel("residual outside 2 PCs")
+ax[1].text(10,q.max()*0.6,"reference year",fontsize=7.5); ax[1].text(380,thr*1.25,"alarm threshold (99%)",fontsize=7.5,color="#c53030")
+ax[1].annotate("gauge 3 drifts",xy=(600,thr*1.6),xytext=(430,q.max()*0.25),fontsize=7.5,arrowprops=dict(arrowstyle="->",lw=.7)); clean(ax[1])
+fig.tight_layout(); fig.savefig("fig/fig2_3_pca.png",dpi=260); plt.close()
 df=make_concrete(); V=["cement","slag","flyash","water","sp","coarse","fine"]
 
 # ---- Example 3.3: borehole log -> SPT profile and design table

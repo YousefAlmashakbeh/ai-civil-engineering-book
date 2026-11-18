@@ -24,13 +24,21 @@ hist=[]
 r=differential_evolution(cost,[(0.645e-4,225e-4)]*10,seed=0,popsize=20,maxiter=600,tol=1e-8,polish=True,callback=lambda xk,convergence: hist.append(cost(xk)))
 u,s=analyse(r.x); print("  DE optimum: weight=%.0f kg (published optimum about 2295 kg), max |stress|=%.0f MPa, max deflection=%.1f mm, evaluations=%d"%(weight(r.x),np.abs(s).max()/1e6,np.abs(u).max()*1e3,r.nfev))
 print("  areas (cm2):",np.round(r.x*1e4,1))
-fig,ax=plt.subplots(1,2,figsize=(8.6,3.2),gridspec_kw={"width_ratios":[1.5,1]})
-for (i,j),a in zip(bars,r.x): ax[0].plot(*zip(nodes[i],nodes[j]),color=B,lw=0.6+a*1e4/22,solid_capstyle="round")
-ax[0].plot(nodes[:,0],nodes[:,1],"o",color=K,ms=4); ax[0].plot([0,0],[-0.5,L+0.5],color="0.4",lw=4)
-for n_ in (1,3): ax[0].annotate("",xy=(nodes[n_][0],-2.2),xytext=(nodes[n_][0],-0.2),arrowprops=dict(arrowstyle="->",color=R)); ax[0].text(nodes[n_][0]+0.3,-1.6,"445 kN",fontsize=7,color=R)
-ax[0].set_aspect("equal"); ax[0].axis("off"); ax[0].set_title("Optimum: line width = bar area",fontsize=9)
-ax[1].plot(hist,color=O); ax[1].set_yscale("log"); ax[1].set_xlabel("Generation"); ax[1].set_ylabel("Penalised weight (kg)"); clean(ax[1])
-fig.tight_layout(); fig.savefig("fig/fig7_4_truss.png",dpi=200); plt.close()
+fig,ax=plt.subplots(1,2,figsize=(7.0,3.0),gridspec_kw={"width_ratios":[1.6,1]})
+for k_,((i,j),a) in enumerate(zip(bars,r.x)):
+    ax[0].plot(*zip(nodes[i],nodes[j]),color=B,lw=0.6+a*1e4/22,solid_capstyle="round")
+    mx,my=(nodes[i]+nodes[j])/2; off=(0.0,0.0) if nodes[i][1]!=nodes[j][1] else (0,0.0)
+    ax[0].text(mx+off[0],my+off[1],str(k_+1),fontsize=7.5,ha="center",va="center",color=K,bbox=dict(boxstyle="circle,pad=0.15",fc="white",ec="0.6",lw=.5),zorder=6)
+ax[0].plot(nodes[:,0],nodes[:,1],"o",color=K,ms=4,zorder=5)
+for n_ in (4,5): ax[0].plot(nodes[n_][0]-0.55,nodes[n_][1],marker=">",ms=11,color="0.45",zorder=4); ax[0].plot([-1.05,-1.05],[nodes[n_][1]-0.9,nodes[n_][1]+0.9],color="0.45",lw=2)
+for n_ in (1,3):
+    ax[0].annotate("",xy=(nodes[n_][0],-3.0),xytext=(nodes[n_][0],-0.25),arrowprops=dict(arrowstyle="<|-",color=R,lw=1.8,mutation_scale=12))
+    ax[0].text(nodes[n_][0]+0.35,-2.4,"445 kN",fontsize=8,color=R)
+ax[0].set_xlim(-1.6,2*L+1.2); ax[0].set_ylim(-3.4,L+0.8); ax[0].set_aspect("equal"); ax[0].axis("off"); ax[0].set_title("(a) optimum: line width = bar area")
+ax[1].plot(hist,color=O); ax[1].set_yscale("log"); ax[1].set_xlabel("generation"); ax[1].set_ylabel("penalised weight (kg)")
+from matplotlib.ticker import ScalarFormatter, NullFormatter
+_f=ScalarFormatter(); _f.set_scientific(False); ax[1].yaxis.set_major_formatter(_f); ax[1].yaxis.set_minor_formatter(NullFormatter()); ax[1].set_title("(b) convergence"); clean(ax[1])
+fig.tight_layout(); fig.savefig("fig/fig7_4_truss.png",dpi=260); plt.close()
 
 # ---- Example 8.5: when can the slab formwork be struck? (equivalent age)
 Ea,Rg=40000.0,8.314; fu,tau,beta=44.0,30.0,0.75                # strength gain at 20 C: f = fu*exp(-(tau/te)^beta), te in hours

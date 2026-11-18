@@ -88,20 +88,23 @@ print("Part2 leak detection (MNF noise sd 0.9 m3/h, 150 DMAs per case, detection
 for name, fa, res in rows:
     print("  %-26s false alarms/DMA/month=%.2f | " % (name, fa) +
           " ".join("leak %.0f: det %3.0f%% delay %s d" % (s, 100 * r[0], "%.0f" % r[1] if r[1] == r[1] else "-") for s, r in zip(sizes, res)))
-fig, ax = plt.subplots(1, 2, figsize=(10, 3.6))
+fig = plt.figure(figsize=(7.2, 4.4)); gsp = fig.add_gridspec(2, 2, width_ratios=[1.25, 1])
+a0 = fig.add_subplot(gsp[0, 0]); a2 = fig.add_subplot(gsp[1, 0], sharex=a0); a1 = fig.add_subplot(gsp[:, 1]); ax = [a0, a1]
 r2 = np.random.default_rng(7)
 x = dma(True, 2.0)
 m, s = x[:30].mean(), x[:30].std(ddof=1); z = (x - m) / s; c = np.zeros(len(x))
 for i in range(30, len(x)): c[i] = max(0, c[i - 1] + z[i] - 0.5)
-ax[0].plot(x, "k", lw=1, label="Min night flow")
-ax[0].axhline(m + 3 * s, color="#C05621", ls="--", label="Shewhart limit")
-ax[0].axvline(60, color="#C53030", ls=":", label="Leak starts (+2 m3/h)")
-ax[0].set_xlabel("Day"); ax[0].set_ylabel("MNF (m3/h)"); ax[0].legend(fontsize=7, loc="upper left")
-a2 = ax[0].twinx(); a2.plot(c, color="#2B6CB0", lw=1); a2.axhline(5, color="#2B6CB0", ls=":", lw=0.8); a2.set_ylabel("CUSUM", color="#2B6CB0")
-for (name, fa, res), mk in zip(rows, ["o", "s", "^"]):
-    ax[1].plot(sizes, [100 * r[0] for r in res], marker=mk, label=name)
-ax[1].set_xlabel("Leak size (m3/h)"); ax[1].set_ylabel("Detected within 30 d (%)"); ax[1].legend(fontsize=7)
-plt.tight_layout(); plt.savefig("fig/fig15_2_leaks.png", dpi=150); plt.close()
+a0.plot(x, "k", lw=1, label="min night flow")
+a0.axhline(m + 3 * s, color="#C05621", ls="--", label="Shewhart limit")
+for _a in (a0, a2): _a.axvline(60, color="#C53030", ls=":", lw=1.2)
+a0.text(61, a0.get_ylim()[1], "leak starts (+2 m$^3$/h)", fontsize=7.5, va="top", color="#C53030")
+a0.set_ylabel("MNF (m$^3$/h)"); a0.legend(fontsize=7.5, loc="lower right"); plt.setp(a0.get_xticklabels(), visible=False)
+a2.plot(c, color="#2B6CB0", lw=1.1, label="CUSUM"); a2.axhline(5, color="#2B6CB0", ls="--", lw=0.9)
+a2.text(2, 5.4, "threshold h = 5", fontsize=7.5, color="#2B6CB0"); a2.set_ylabel("CUSUM"); a2.set_xlabel("day")
+for (name, fa, res), mk, ls in zip(rows, ["o", "s", "^"], ["-", "--", "-."]):
+    a1.plot(sizes, [100 * r[0] for r in res], marker=mk, ls=ls, label=name)
+a1.set_xlabel("leak size (m$^3$/h)"); a1.set_ylabel("detected within 30 d (%)"); a1.legend(fontsize=7.5, loc="lower right")
+plt.tight_layout(); plt.savefig("fig/fig15_2_leaks.png", dpi=260); plt.close()
 
 # ---------------- Part 3: wadi rainfall-runoff, extrapolation to an extreme storm ----------------
 r3 = np.random.default_rng(153)
