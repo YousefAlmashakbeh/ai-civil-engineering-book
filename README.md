@@ -34,6 +34,14 @@ check each dataset's own licence page before reuse.
 ### Author's experimental data
 Chapters 8 and 13 use published literature (Almusallam et al. 1996; Bhargava et al. 2008; Mousavi et al. 2023; SHRP 2 R06A) together with generated teaching data (`ch8_lit.py`, `ch13_lit.py`).
 
+### Arab worked cases (`code/arab_cases/`)
+Nine worked cases built on published figures from Jordanian projects; each script prints the console output shown in the book:
+`c07_solar_pump.py` (Aqaba–Amman carrier pumping schedule, LP), `c09_aqaba.py` (Aqaba seismic hazard vs. code PGA),
+`c10_marl.py` (clayey-marl cut slopes, Monte Carlo), `c11_brt.py` (Amman BRT cost and schedule risk),
+`c12_sinkholes.py` (Dead Sea sinkholes and image resolution), `c13_abdoun.py` (bridge frequency monitoring, synthetic data),
+`c14_accidents.py` (Jordan road deaths 2019–2024, Poisson trend), `c15_nrw.py` (non-revenue water and minimum night flow),
+`c16_carrier.py` (hydraulic twin with a Kalman filter). Sources are listed in each case in the book; values marked as assumptions are for teaching.
+
 ### Using the book in a course
 The front matter of the book includes an instructor guide: four teaching pathways (undergraduate elective, graduate course, professional short course, self-study), a 16-week plan, and a suggested assessment split. Each chapter opens with a chapter map (`figures/fig*_0_blueprint.png`) and closes with a key-terms table and short self-check questions.
 
