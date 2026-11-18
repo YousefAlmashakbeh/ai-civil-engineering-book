@@ -85,7 +85,7 @@ def cnn():
     f.build()
 # ---------------- Fig 12.5: U-Net ----------------
 def unet():
-    f = Fig("fig12_2_unet")
+    f = Fig("fig12_1_unet")
     E = [("e1", 0, 0, "16 قناة", "64×64", "blue"), ("e2", -2.6, -1.7, "32 قناة", "32×32", "blue"), ("e3", -5.6, -3.4, "64 قناة", "16×16", "navy"), ("d2", -8.6, -1.7, "32 قناة", "32×32", "green"), ("d1", -11.2, 0, "16 قناة", "64×64", "green")]
     f.add(r"\node[fill=greyT,draw=grey,line width=0.8pt,rounded corners=3pt,minimum width=1.5cm,minimum height=1.15cm,align=center,font=\footnotesize,sh] (in) at (2.6,0) {%s};" % RL("الصورة\n64×64"))
     for id, x, y, a, b, c in E:

@@ -83,7 +83,7 @@ for j,i in enumerate(idx):
     ax[0,j].imshow(Xte[i],cmap="gray",vmin=0,vmax=1); ax[1,j].imshow(T[i],cmap="gray"); ax[2,j].imshow(P[i],cmap="gray")
 for a in ax.ravel(): a.set_axis_off()
 for r,t in enumerate(["Image","True mask","U-Net"]): ax[r,0].text(-8,32,t,rotation=90,va="center",fontsize=9)
-fig.tight_layout(); fig.savefig("fig/fig12_1_unet.png",dpi=200)
+fig.tight_layout(); fig.savefig("fig/fig12_2_unet.png",dpi=200)
 fig,ax=plt.subplots(figsize=(4.6,4.2)); ax.scatter(wt[ok],wp[ok],s=8,color="#2b6cb0"); ax.plot([0,0.9],[0,0.9],color="#2d3748",lw=1)
 for lim in (0.15,0.30,0.41): ax.axvline(lim,color="#c53030",ls=":",lw=0.8)
 ax.set_xlabel("Width from true mask (mm)"); ax.set_ylabel("Width from U-Net mask (mm)"); ax.spines[["top","right"]].set_visible(False)
