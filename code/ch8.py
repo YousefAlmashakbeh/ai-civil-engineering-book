@@ -61,7 +61,7 @@ xx=np.linspace(0,100,200)/1000; fig,ax=plt.subplots(figsize=(6.5,3.4))
 for (wbv,sg,c) in [(0.5,0,"#c53030"),(0.4,0,"#dd6b20"),(0.4,50,"#2b6cb0")]:
     D28=10**(-12.06+2.40*wbv)*31536000; m=min(0.2+0.4*sg/70,0.6); Dint=D28*(28/365)**m*25**(1-m)/(1-m)
     ax.plot(xx*1000,min(0.04*25,0.6)*(1-erf(xx/(2*np.sqrt(Dint)))),color=c,lw=2,label=f"w/b={wbv}, slag={sg}%")
-ax.axhline(0.05,ls="--",color="#2d3748",lw=1); ax.axvline(50,ls=":",color="#2d3748",lw=1); ax.text(52,0.5,"cover 50 mm",fontsize=8); ax.text(80,0.06,"threshold",fontsize=8)
+ax.axhline(0.05,ls="--",color="#2d3748",lw=1); ax.axvline(50,ls=":",color="#2d3748",lw=1); ax.text(48,0.6,"cover 50 mm",fontsize=8,ha="right",va="center"); ax.text(80,0.06,"threshold",fontsize=8)
 ax.set_xlabel("Depth (mm)"); ax.set_ylabel("Chloride (% by mass of concrete)"); ax.set_title("Profiles after 25 years",fontsize=9); ax.legend(frameon=False,fontsize=8)
 ax.spines[["top","right"]].set_visible(False); fig.tight_layout(); fig.savefig("fig/fig8_3_chloride.png",dpi=200)
 # (4) corrosion-bond (synthetic trend)

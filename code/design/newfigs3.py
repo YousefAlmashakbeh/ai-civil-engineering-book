@@ -91,7 +91,7 @@ if want("building"):
     fig.add_artist(plt.Line2D([0.583, 0.583], [0.08, 0.92], color="#CBD5E0", lw=0.9, transform=fig.transFigure))
     save(fig, F + "nfig3_building.png")
 
-# ================================================================ 5.1 the depth-2 tree of Example 5.4 (same split, same data)
+# ================================================================ 5.1 the depth-2 tree of Example 5.2 (same split, same data)
 if want("tree2"):
     from ch5_data import make_concrete
     from sklearn.model_selection import GroupShuffleSplit
@@ -123,7 +123,7 @@ if want("tree2"):
     edge((3.2, 2.14), (4.0, 1.71), "نعم"); edge((2.4, 2.14), (1.6, 1.71), "لا")
     edge((4.45, 1.19), (4.8, 0.78), "نعم"); edge((3.95, 1.19), (3.6, 0.78), "لا")
     edge((1.65, 1.19), (2.0, 0.78), "نعم"); edge((1.15, 1.19), (0.8, 0.78), "لا")
-    ax.text(5.55, 2.65, "شجرة بعمق 2 من المثال 5.4", ha="right", va="top", fontsize=9.2, color=NAVY, fontweight="bold")
+    ax.text(5.55, 2.65, "شجرة بعمق 2 من المثال 5.2", ha="right", va="top", fontsize=9.2, color=NAVY, fontweight="bold")
     ax.text(5.55, 2.4, "خطأ الاختبار " + iso(f"MAE = {mae(y[te], t.predict(X.values[te])):.2f} MPa"), ha="right", va="top", fontsize=8.8, color="#4A5568")
     ax.text(0.05, 2.65, "الورقة تتنبأ بمتوسط\nمقاومة عيّناتها", ha="left", va="top", fontsize=8.8, color="#4A5568", linespacing=1.1)
     save(fig, F + "nfig3_tree2.png")

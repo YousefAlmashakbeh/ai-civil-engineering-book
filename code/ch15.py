@@ -37,7 +37,7 @@ for a in (0.1, 0.9):
     m.fit(X[tr][["T", "dow", "ram", "trend"]], demand[tr]); qs[a] = m.predict(X[te][["T", "dow", "ram", "trend"]])
 inside = (yt >= qs[0.1]) & (yt <= qs[0.9])
 print("  GBM 10-90%% interval coverage: all 2025=%.0f%%  heatwave=%.0f%% (nominal 80%%)" % (100 * inside.mean(), 100 * inside[hwt].mean()))
-fig, ax = plt.subplots(figsize=(9, 3.6))
+fig, ax = plt.subplots(figsize=(5.0, 3.3))   # drawn at print width (12.6 cm): fonts >= 8.6 pt in print
 w = (d[te] >= "2025-06-15") & (d[te] <= "2025-09-15")
 dd = d[te][w]
 ax.fill_between(dd, qs[0.1][w], qs[0.9][w], color="#2B6CB0", alpha=0.2, label="GBM 10-90% interval")
@@ -45,8 +45,10 @@ ax.plot(dd, yt[w], "k", lw=1.2, label="Observed")
 ax.plot(dd, pg[w], color="#2B6CB0", lw=1, label="GBM")
 ax.plot(dd, pl[w], color="#C53030", lw=1, ls="--", label="Linear with T and (T-28)+^2")
 ax.axvspan(pd.Timestamp("2025-08-05"), pd.Timestamp("2025-08-18"), color="orange", alpha=0.15, label="Heatwave (unseen T)")
-ax.set_ylabel("Demand (1000 m3/day)"); ax.legend(fontsize=7, ncol=2); ax.tick_params(axis="x", labelsize=8)
-plt.tight_layout(); plt.savefig("fig/fig15_1_demand.png", dpi=150); plt.close()
+import matplotlib.dates as mdates
+ax.xaxis.set_major_locator(mdates.MonthLocator(bymonthday=(1, 15))); ax.xaxis.set_major_formatter(mdates.DateFormatter("%d %b"))
+ax.set_ylabel("Demand (1000 m3/day)"); ax.legend(fontsize=8.6, ncol=2, loc="upper center", bbox_to_anchor=(0.45, -0.1)); ax.tick_params(axis="x", labelsize=8.6)
+plt.tight_layout(); plt.savefig("fig/fig15_1_demand.png", dpi=260); plt.close()
 
 # ---------------- Part 2: leak detection from minimum night flow ----------------
 r2 = np.random.default_rng(152)
@@ -97,14 +99,15 @@ for i in range(30, len(x)): c[i] = max(0, c[i - 1] + z[i] - 0.5)
 a0.plot(x, "k", lw=1, label="min night flow")
 a0.axhline(m + 3 * s, color="#C05621", ls="--", label="Shewhart limit")
 for _a in (a0, a2): _a.axvline(60, color="#C53030", ls=":", lw=1.2)
-a0.text(61, a0.get_ylim()[1], "leak starts (+2 m$^3$/h)", fontsize=7.5, va="top", color="#C53030")
-a0.set_ylabel("MNF (m$^3$/h)"); a0.legend(fontsize=7.5, loc="lower right"); plt.setp(a0.get_xticklabels(), visible=False)
+a0.set_ylim(a0.get_ylim()[0] - 3.2, a0.get_ylim()[1])   # room under the data for the legend
+a0.text(58, a0.get_ylim()[1], "leak starts\n(+2 m$^3$/h)", fontsize=8.6, va="top", ha="right", color="#C53030")   # left of the line, clear of the data
+a0.set_ylabel("MNF (m$^3$/h)"); a0.legend(fontsize=8.6, loc="lower right"); plt.setp(a0.get_xticklabels(), visible=False)
 a2.plot(c, color="#2B6CB0", lw=1.1, label="CUSUM"); a2.axhline(5, color="#2B6CB0", ls="--", lw=0.9)
-a2.text(2, 5.4, "threshold h = 5", fontsize=7.5, color="#2B6CB0"); a2.set_ylabel("CUSUM"); a2.set_xlabel("day")
+a2.text(2, 14, "threshold h = 5", fontsize=8.6, va="bottom", color="#2B6CB0"); a2.set_ylabel("CUSUM"); a2.set_xlabel("day")   # label above the dashed line, clear of the curve
 for (name, fa, res), mk, ls in zip(rows, ["o", "s", "^"], ["-", "--", "-."]):
     a1.plot(sizes, [100 * r[0] for r in res], marker=mk, ls=ls, label=name)
-a1.set_xlabel("leak size (m$^3$/h)"); a1.set_ylabel("detected within 30 d (%)"); a1.legend(fontsize=7.5, loc="lower right")
-plt.tight_layout(); plt.savefig("fig/fig15_2_leaks.png", dpi=260); plt.close()
+a1.set_xlabel("leak size (m$^3$/h)"); a1.set_ylabel("detected within 30 d (%)"); a1.set_xlim(0.7, 5.5); a1.set_ylim(42, 102); a1.set_xticks([1, 2, 3, 4, 5]); a1.legend(fontsize=8.6, loc="lower right", handlelength=1.4, handletextpad=0.4, borderaxespad=0.1)
+fig.set_layout_engine("tight", w_pad=2.0); plt.savefig("fig/fig15_2_leaks.png", dpi=260); plt.close()
 
 # ---------------- Part 3: wadi rainfall-runoff, extrapolation to an extreme storm ----------------
 r3 = np.random.default_rng(153)

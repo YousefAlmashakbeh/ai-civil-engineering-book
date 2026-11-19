@@ -38,5 +38,5 @@ ax[0].plot(t[:500], acc[:500], lw=0.8, color="#2d3748"); ax[0].set_xlabel("Time 
 ax[1].plot(freq, spec, lw=0.9, color="#2b6cb0"); ax[1].set_xlim(0,20); ax[1].set_xlabel("Frequency (Hz)"); ax[1].set_ylabel("Amplitude")
 for f0 in top: ax[1].annotate(f"{f0:.2f} Hz",(f0, spec[np.argmin(abs(freq-f0))]), textcoords="offset points", xytext=(6,0), fontsize=8)
 for a in ax: a.spines[["top","right"]].set_visible(False)
-fig.tight_layout(); fig.savefig("fig/fig3_2_fft.png", dpi=200)
+fig.set_layout_engine("tight", w_pad=2.5); fig.savefig("fig/fig3_2_fft.png", dpi=200)   # w_pad: the right y-label stays clear of the left panel
 print("SNR time-domain: signal amp 0.02 vs noise sd 0.02")

@@ -14,10 +14,10 @@ for i in range(730): e[i]=lam*res[i]+(1-lam)*(e[i-1] if i else 0)
 L=3*rs*np.sqrt(lam/(2-lam)); alarm=np.abs(e)>L
 first=days[500:][alarm[500:]][0]
 print(f"residual std={rs:.4f} Hz; EWMA limit={L:.4f}; false alarms days365-499={alarm[365:500].sum()}; first alarm after damage: day {first} (delay {first-500} d); alarms after damage {alarm[500:].sum()}/230")
-fig,ax=plt.subplots(2,1,figsize=(7.5,4.6),sharex=True)
-ax[0].plot(days,f,".",ms=2,color="#2b6cb0"); ax[0].axvline(500,color="#c53030",ls="--"); ax[0].set_ylabel("f1 (Hz)"); ax[0].text(505,f.max()-0.01,"damage",color="#c53030",fontsize=8)
+fig,ax=plt.subplots(2,1,figsize=(5.0,3.9),sharex=True)   # drawn at print width (12.6 cm): fonts >= 8.6 pt in print
+ax[0].plot(days,f,".",ms=2,color="#2b6cb0"); ax[0].axvline(500,color="#c53030",ls="--"); ax[0].set_ylabel("f1 (Hz)"); ax[0].text(505,f.max()-0.01,"damage",color="#c53030",fontsize=9)
 ax[1].plot(days,e,color="#2d3748",lw=1); ax[1].axhline(L,color="#c53030",ls=":"); ax[1].axhline(-L,color="#c53030",ls=":"); ax[1].axvline(500,color="#c53030",ls="--"); ax[1].axvspan(0,365,color="#edf2f7")
-ax[1].set_ylabel("EWMA of residual (Hz)"); ax[1].set_xlabel("Day"); ax[1].text(10,L*1.3,"baseline year",fontsize=8)
+ax[1].set_ylabel("EWMA of residual (Hz)"); ax[1].set_xlabel("Day"); ax[1].text(10,e.min()*0.8,"baseline year",fontsize=9)
 for a in ax: a.spines[["top","right"]].set_visible(False)
 fig.tight_layout(); fig.savefig("fig/fig13_1_shm.png",dpi=200)
 # (2) ultrasonic pulse-echo
@@ -67,8 +67,9 @@ rho,nu,V=2400,0.2,4000; Ed=rho*V**2*(1+nu)*(1-2*nu)/(1-nu); print(f"dynamic E fr
 fig,ax=plt.subplots(1,2,figsize=(8.5,3.2))
 i1=te[np.where((yt==1)&(at>0.2))[0][0]]; i0=te[np.where(yt==0)[0][0]]
 ax[0].plot(t*1e6,S[i0]+0.4,color="#2d3748",lw=0.8); ax[0].plot(t*1e6,S[i1],color="#2b6cb0",lw=0.8)
-ax[0].axvline(2*Dd[i1]/V0*1e6,color="#c53030",ls=":"); ax[0].set_xlim(0,260); ax[0].set_xlabel("Time (µs)"); ax[0].set_yticks([]); ax[0].set_title("A-scans: sound (top) / with defect (bottom)",fontsize=9)
+ax[0].axvline(2*Dd[i1]/V0*1e6,color="#c53030",ls=":"); ax[0].set_xlim(0,260); ax[0].set_xlabel("Time (µs)"); ax[0].set_yticks([]); ax[0].set_ylabel("amplitude"); ax[0].set_title("A-scans",fontsize=9)
+ax[0].text(150,0.47,"sound",ha="center",va="bottom",fontsize=9,color="#2d3748"); ax[0].text(150,0.07,"defect",ha="center",va="bottom",fontsize=9,color="#2b6cb0")
 ax[1].scatter(Dd[te][det]*1000,dep[det,0]*1000,s=8,color="#2b6cb0"); ax[1].plot([80,300],[80,300],color="#2d3748",lw=1)
 ax[1].set_xlabel("True defect depth (mm)"); ax[1].set_ylabel("TOF depth (mm)")
 for a in ax: a.spines[["top","right"]].set_visible(False)
-fig.tight_layout(); fig.savefig("fig/fig13_2_ultrasonic.png",dpi=200)
+fig.set_layout_engine("tight", w_pad=3.0); fig.savefig("fig/fig13_2_ultrasonic.png",dpi=200)   # w_pad: the right y-label stays clear of the left panel

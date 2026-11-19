@@ -13,15 +13,17 @@ fig, ax = plt.subplots(figsize=(6.8, 3.3)); ax.set_xlim(1949, 2028); ax.set_ylim
 ax.hlines(0, 1950, 2026, color=GREY, lw=2)
 for y in range(1950, 2030, 10):
     ax.plot([y, y], [-0.12, 0.12], color=GREY, lw=1.2); ax.text(y, -0.32, str(y), ha="center", va="top", fontsize=8.5, color="#4A5568", fontfamily="DejaVu Sans", zorder=6, bbox=dict(boxstyle="square,pad=0.05", fc="white", ec="none"))
-civ = [(1960, 1.2, "Clough (1960)\nالعناصر المحدودة"), (1981, 2.45, "HI-RISE (1981)\nالأنظمة الخبيرة"), (1989, 1.15, "Adeli (1989)\nشبكات عصبية للتصميم"),
+civ = [(1960, 1.2, "Clough (1960)\nالعناصر المحدودة"), (1984, 2.45, "HI-RISE (1984)\nالأنظمة الخبيرة"), (1989, 0.45, "Adeli (1989)\nشبكات عصبية\nللتصميم"),
        (1998, 2.45, "Yeh (1998)\nمقاومة الخرسانة"), (2017, 1.25, "Cha (2017)\nشبكة التفافية\nلكشف الشقوق")]
 gen = [(1956, -1.25, "Dartmouth (1956)\nولادة المصطلح"), (2012, -1.3, "AlexNet (2012)\nالتعلّم العميق"), (2019, -2.45, "PINN (2019)\nالفيزياء في التعلّم"), (2022, -1.25, "(2022)\nالنماذج اللغوية")]
 for x, y, t in civ:
     ax.plot([x, x], [0, y - 0.15 * np.sign(y)], color=BLUE, lw=1.2); ax.plot(x, 0, "o", color=BLUE, ms=6, zorder=4)
-    ax.text(x, y, t, ha="center", va="bottom", fontsize=9.3, color=NAVY, linespacing=1.0)
+    # Adeli's label starts right of the HI-RISE (1984) line so that line does not cross it
+    ax.text(x - 3.6 if x == 1989 else x, y, t, ha="left" if x == 1989 else "center", va="bottom", fontsize=9.3, color=NAVY, linespacing=1.0)
 for x, y, t in gen:
     ax.plot([x, x], [0, y + 0.15], color=ORANGE, lw=1.2, ls="--"); ax.plot(x, 0, "D", color=ORANGE, ms=5.5, zorder=4)
-    ax.text(x, y, t, ha="center", va="top", fontsize=9.3, color="#7B341E", linespacing=1.0)
+    # the 2022 label sits to the right of its own line, clear of the PINN (2019) line
+    ax.text(x + 0.6 if x == 2022 else x, y, t, ha="left" if x == 2022 else "center", va="top", fontsize=9.3, color="#7B341E", linespacing=1.0)
 ax.plot(1951.3, 3.12, "o", color=BLUE, ms=6); ax.text(1953, 3.12, "محطات في الهندسة المدنية", color=BLUE, fontsize=9.5, ha="left", va="center")
 ax.plot(1951.3, -2.85, "D", color=ORANGE, ms=5.5); ax.text(1953, -2.85, "محطات في الذكاء الاصطناعي عامة", color=ORANGE, fontsize=9.5, ha="left", va="center")
 ax.annotate("", xy=(1979.5, 0.55), xytext=(1962, 0.55), arrowprops=dict(arrowstyle="<->", color=GREY, lw=0.8))
@@ -180,8 +182,9 @@ for i in range(n):
 det, cdet, es = cpm({k: v[1] for k, v in acts.items()})
 print("network: CPM", det, "critical", sorted(cdet), "criticality", {k: round(100 * v / n) for k, v in ci.items()})
 pos = {"A": (6.35, 2.0), "B": (5.4, 2.0), "C": (4.45, 2.0), "D": (3.45, 2.75), "E": (3.45, 2.0), "G": (3.45, 1.2), "F": (2.45, 2.4), "I": (2.45, 1.2), "H": (1.45, 2.4), "J": (0.55, 1.8)}
-fig = plt.figure(figsize=(6.8, 4.6)); ax = fig.add_axes([0.0, 0.42, 0.92, 0.58]); ax.set_xlim(0.1, 6.9); ax.set_ylim(0.85, 3.2); ax.axis("off")
-cmap = plt.get_cmap("OrRd"); bw, bh = 0.8, 0.5
+# drawn at its print width (5.0 in = 12.6 cm) so that no text is below 8.5 pt in print; activity names go on the Gantt rows
+fig = plt.figure(figsize=(5.0, 5.6)); ax = fig.add_axes([0.0, 0.47, 0.88, 0.53]); ax.set_xlim(0.15, 6.75); ax.set_ylim(0.75, 3.25); ax.axis("off")
+cmap = plt.get_cmap("OrRd"); bw, bh = 0.68, 0.62
 for k in keys:
     x, y = pos[k]
     for p in pred[k]:
@@ -191,13 +194,15 @@ for k in keys:
     x, y = pos[k]; c = 100 * ci[k] / n
     ax.add_patch(FancyBboxPatch((x - bw / 2, y - bh / 2), bw, bh, boxstyle="round,pad=0,rounding_size=0.06", fc=cmap(0.05 + 0.5 * c / 100),
                                 ec=NAVY if k in cdet else GREY, lw=2.4 if k in cdet else 1))
-    ax.text(x, y + 0.1, f"{k}  {names[k]}", ha="center", va="center", fontsize=9.2, color="black")
-    ax.text(x, y - 0.12, iso(f"{acts[k][1]} d · {c:.0f}%"), ha="center", va="center", fontsize=8, color="#1A202C", fontfamily="DejaVu Sans")
+    ax.text(x, y + 0.17, k, ha="center", va="center", fontsize=10, fontweight="bold", color="black", fontfamily="DejaVu Sans")
+    ax.text(x, y - 0.02, f"{acts[k][1]} d", ha="center", va="center", fontsize=8.6, color="#1A202C", fontfamily="DejaVu Sans")
+    ax.text(x, y - 0.19, f"{c:.0f}%", ha="center", va="center", fontsize=8.6, color="#1A202C", fontfamily="DejaVu Sans")
 from matplotlib.colors import LinearSegmentedColormap
-cmap2 = LinearSegmentedColormap.from_list("c2", [cmap(0.05), cmap(0.55)]); sm = plt.cm.ScalarMappable(cmap=cmap2, norm=plt.Normalize(0, 100)); cax = fig.add_axes([0.93, 0.5, 0.015, 0.42])
-cb = fig.colorbar(sm, cax=cax); cb.set_label("مؤشر الحرجية (%)", fontsize=9.5); cb.ax.tick_params(labelsize=8)
-ax.text(6.85, 3.12, "الإطار السميك: المسار الحرج بالمدد الأرجح", ha="right", fontsize=9.3, color=NAVY)
-ag = fig.add_axes([0.1, 0.09, 0.82, 0.3])
+cmap2 = LinearSegmentedColormap.from_list("c2", [cmap(0.05), cmap(0.55)]); sm = plt.cm.ScalarMappable(cmap=cmap2, norm=plt.Normalize(0, 100)); cax = fig.add_axes([0.9, 0.55, 0.022, 0.38])
+cb = fig.colorbar(sm, cax=cax); cb.set_label("مؤشر الحرجية (%)", fontsize=9.5); cb.ax.tick_params(labelsize=8.6)
+ax.text(6.72, 3.12, "الإطار السميك: المسار الحرج بالمدد الأرجح", ha="right", fontsize=9.3, color=NAVY)
+ax.text(0.18, 3.12, iso("d") + " المدة الأرجح، و" + iso("%") + " مؤشر الحرجية", ha="left", fontsize=9, color="#4A5568")
+ag = fig.add_axes([0.25, 0.11, 0.72, 0.33])
 ml_ = {k: v[1] for k, v in acts.items()}; ef_ = {k: es[k] + ml_[k] for k in keys}; lf = {}
 for k in reversed(keys):
     succ = [q for q in keys if k in pred[q]]
@@ -209,12 +214,12 @@ for i, k in enumerate(keys):
     if tf > 0.5:
         ag.barh(y, tf, left=ef_[k], height=0.6, fc="none", ec=GREY, ls="--", lw=0.9)
         lab = f"فائض {tf:.0f} أيام" if tf < 11 else f"فائض {tf:.0f} يوماً"
-        if tf >= 20: ag.text(lf[k] + 2, y, lab, ha="left", va="center", fontsize=8.4, color="#4A5568")   # outside the dashed frame, no background
-        else: ag.text(es[k] + hi + 2, y, lab, ha="left", va="center", fontsize=8.4, color="#4A5568")
+        if tf >= 20: ag.text(lf[k] + 2, y, lab, ha="left", va="center", fontsize=8.6, color="#4A5568")   # outside the dashed frame, no background
+        else: ag.text(es[k] + hi + 2, y, lab, ha="left", va="center", fontsize=8.6, color="#4A5568")
     ag.plot([es[k] + lo, es[k] + hi], [y, y], color=ORANGE, lw=1.1); ag.plot([es[k] + lo, es[k] + hi], [y, y], "|", color=ORANGE, ms=6)
 print("floats", {k: lf[k] - ef_[k] for k in keys})
-ag.set_yticks(range(len(keys))); ag.set_yticklabels(keys[::-1], fontfamily="DejaVu Sans", fontsize=8.6)
-ag.set_xlabel("اليوم: الشريط المدة الأرجح، والخط البرتقالي مدى النهاية، والإطار المتقطع الفائض الكلي", fontsize=9.6); ag.tick_params(axis="x", labelsize=8.6)
+ag.set_yticks(range(len(keys))); ag.set_yticklabels([f"{names[k]} " + iso(k) for k in keys[::-1]], fontsize=9)
+ag.set_xlabel("اليوم: الشريط المدة الأرجح، والخط البرتقالي مدى النهاية،\nوالإطار المتقطع الفائض الكلي", fontsize=9.3); ag.tick_params(axis="x", labelsize=9)
 save(fig, F + "nfig_network.png")
 
 # ---------------------------------------------------------------- 7. an instrumented bridge (chapter 13 examples), drawn at print width
@@ -251,12 +256,12 @@ def inset(rect, kind, col):
         y = 0.05 * np.random.default_rng(0).normal(size=400); y[60:70] += np.hanning(10); y[260:272] += 0.6 * np.hanning(12); a.plot(t, y, color=col, lw=0.9); a.set_xticks([0.5]); a.set_xticklabels(["t"])
     elif kind == "disp":
         f_ = np.linspace(100, 1000, 50); a.plot(f_, 2.05 + 0.06 * ((f_ - 100) / 900) ** 0.6, color=col, lw=1.4); a.set_ylim(2.0, 2.13)
-        a.set_yticks([2.0, 2.1]); a.set_yticklabels(["2.0", "2.1"], fontsize=7.5); a.tick_params(axis="y", length=2, pad=1)
+        a.set_yticks([])   # schematic only: no numbers (soft-tissue values of Example 13.3 would mislead on a concrete deck)
         a.set_xticks([550]); a.set_xticklabels(["f"])
     else: f_ = np.linspace(0, 1, 300); a.plot(f_, np.exp(-((f_ - 0.45) / 0.03) ** 2) + 0.05, color=col, lw=1.0); a.set_xticks([0.5]); a.set_xticklabels(["f"])
     return a
 ins = [([0.04, 0.80, 0.19, 0.12], "acc", BLUE, "تسارع في الزمن", (1.9, 0.5)), ([0.285, 0.80, 0.19, 0.12], "echo", GREEN, "نبضة وصدى", (2.8, 0.5)),
-       ([0.545, 0.80, 0.19, 0.12], "disp", GOLD, "تشتت: c (m/s)", (6.1, 0.5)), ([0.79, 0.80, 0.19, 0.12], "spec", GREEN, "طيف الصدى الصدمي", (7.2, 0.5))]
+       ([0.545, 0.80, 0.19, 0.12], "disp", GOLD, "تشتت: السرعة c", (6.1, 0.5)), ([0.79, 0.80, 0.19, 0.12], "spec", GREEN, "طيف الصدى الصدمي", (7.2, 0.5))]
 from matplotlib.patches import ConnectionPatch
 for rect, kind, col, t, (sx, sy_) in ins:
     a = inset(rect, kind, col); fig.text(rect[0] + rect[2] / 2, rect[1] + rect[3] + 0.01, t, ha="center", va="bottom", fontsize=8.8, color="#2D3748")

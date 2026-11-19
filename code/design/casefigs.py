@@ -31,7 +31,7 @@ ax.axvline(0.20, color=GREY, lw=1.3, ls="--"); T(ax, 0.196, 1.9e-4, "Z = 0.20 g\
 ax.axvline(0.28, color=RED, lw=1.6); T(ax, 0.274, 2.4e-2, "الكود على التربة SD\nCa = 0.28 g", color=RED, fontsize=9.5, ha="right")
 ax.axhline(1/475, color=GREY, lw=0.8, ls=":"); T(ax, 0.125, 1/475*0.88, "⁦10%⁩ في 50 سنة", color=GREY, fontsize=9, ha="left", va="top")
 ax.fill_betweenx([1/400, 1/358], 0.12, 0.28, color=TINT[RED], zorder=0)
-ax.annotate("فترة عودة 358–400 سنة\nأي نحو ⁦13%⁩ في 50 سنة", xy=(0.28, 1/380), xytext=(0.335, 3.1e-3), fontsize=9.5, color=RED, family="Amiri", va="bottom",
+ax.annotate("فترة عودة 358–400 سنة\nأي ⁦12–13%⁩ في 50 سنة", xy=(0.28, 1/380), xytext=(0.335, 3.1e-3), fontsize=9.5, color=RED, family="Amiri", va="bottom",
             arrowprops=dict(arrowstyle="->", color=RED, lw=0.9))
 ax.set_ylim(1.3e-4, 6e-2)
 from matplotlib.ticker import FixedLocator, FixedFormatter, NullFormatter
@@ -86,7 +86,7 @@ fig.text((b0.x0 + b1.x1) / 2, 0.06, "الدوائر حفر خسفية معروف
 save(fig, F + "fig12_6_sinkholes.png")
 # 13 ---------------------------------------------------------------
 g = run("c13_abdoun.py"); days, f, T_, res, s, al = g["days"], g["f"], g["T"], g["res"], g["s"], g["al"]
-fig, (a1, a2) = plt.subplots(2, 1, figsize=(5.8, 4.4), sharex=True)
+fig, (a1, a2) = plt.subplots(2, 1, figsize=(5.0, 4.2), sharex=True)   # printed at 12.6 cm (figmap "full"), fonts >= 9 pt
 a1.axhspan(0.62*0.98, 0.62*1.02, color="#EDF2F7", zorder=0); T(a1, 0.0, 1.03, "نطاق ثابت ⁦±2%⁩ حول التردد المرجعي", fontsize=9, color=GREY, transform=a1.transAxes)
 a1.scatter(days, f, c=T_, cmap="coolwarm", s=5); a1.axvline(600, color=NAVY, ls="--"); a1.set_ylabel("f1 (Hz)")
 T(a1, 605, 0.62*1.03, "انخفاض ⁦1%⁩\nمن اليوم 601", fontsize=9, color=NAVY, va="top"); T(a1, 590, 0.6015, "اللون: حرارة اليوم، الأزرق بارد والأحمر حار", fontsize=9, color=GREY, ha="right")
@@ -101,7 +101,7 @@ save(fig, F + "fig13_7_abdoun.png")
 g = run("c14_accidents.py"); yr, dth, b = g["yr"], g["dth"], g["b"]
 fig, ax = plt.subplots(figsize=(5.8, 3.3))
 cols = [RED if y == 2020 else BLUE for y in yr]; ax.bar(yr, dth, color=cols, width=0.6)
-for y, d in zip(yr, dth): ax.text(y, d+8, str(d), ha="center", fontsize=9)
+for y, d in zip(yr, dth): ax.text(y, d-14, str(d), ha="center", va="top", fontsize=9, color="white", fontweight="bold")   # inside the bar, clear of the trend line
 xx = np.linspace(2019, 2025, 50); ax.plot(xx, np.exp(b[0]+b[1]*(xx-2019)), color=NAVY, lw=2, label="اتجاه بواسون (دون 2020)")
 ax.errorbar(2025, g["mu25"], yerr=[[g["mu25"]-g["lo"]], [g["hi"]-g["mu25"]]], fmt="D", color=ORANGE, capsize=5, label="توقع 2025 بفترة ⁦90%⁩")
 ax.plot([2025.18], [510], marker="*", ms=11, color=GREEN, ls="none", label="الفعلي لعام 2025 (510)"); 
@@ -110,7 +110,7 @@ ax.set_ylim(0, 820); YL(ax, "وفيات الطرق"); ax.set_xticks(list(yr)+[20
 save(fig, F + "fig14_6_jordan_roads.png")
 # 15 --------------------------------------------------------------
 g = run("c15_nrw.py"); mnf, ref, sd = g["mnf"], g["ref"], g["sd"]
-fig, (a1, a2) = plt.subplots(1, 2, figsize=(5.8, 3.2))
+fig, (a1, a2) = plt.subplots(1, 2, figsize=(5.8, 3.2), gridspec_kw={"wspace": 0.45})
 yrs = np.arange(2025, 2041); a1.plot([2022, 2025], [51.7, 41], "o-", color=NAVY, label="المنشور")
 a1.plot(yrs, 15+(41-15)*np.exp(-g["r"]*(yrs-2025)), "--", color=BLUE, label="مسار العائد المتناقص")
 a1.plot([2025, 2040], [41, 25], ":", color=GREY, label="خط مستقيم إلى الهدف")

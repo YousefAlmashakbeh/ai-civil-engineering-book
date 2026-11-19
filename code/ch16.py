@@ -63,18 +63,18 @@ print("  max error on unsensed half x>0.5 (%% of max w): PINN=%.1f%%  data-only 
       (100 * np.abs(wi - wt)[right].max() / wt.max(), 100 * np.abs(wd - wt)[right].max() / wt.max()))
 print("  support deflection check w(1): PINN=%.5f data-only=%.5f (should be 0)" % (wi[-1], wd[-1]))
 
-fig, ax = plt.subplots(1, 2, figsize=(10, 3.6))
+fig, ax = plt.subplots(1, 2, figsize=(5.6, 3.6))   # drawn at print width; the inverse-problem legend sits under both panels
 ax[0].plot(xs, we, "k", lw=2, label="Exact")
 ax[0].plot(xs, wp, "--", color="#C05621", lw=1.5, label="PINN (no data)")
-ax[0].set_xlabel("x / L"); ax[0].set_ylabel("w EI / (q L^4)"); ax[0].invert_yaxis(); ax[0].legend(fontsize=8)
+ax[0].set_xlabel("x / L"); ax[0].set_ylabel("w EI / (q L^4)"); ax[0].invert_yaxis(); ax[0].legend(fontsize=8.6)
 ax[0].set_title("Forward problem")
 ax[1].plot(xs, wt, "k", lw=2, label="True (EI = 0.8)")
 ax[1].plot(xs, wi, "--", color="#2B6CB0", lw=1.5, label="Inverse PINN (EI = %.3f)" % EI_hat)
 ax[1].plot(xs, wd, ":", color="#C53030", lw=1.8, label="Data-only MLP")
 ax[1].scatter(xsens, wsens, color="k", zorder=5, label="5 sensors")
-ax[1].set_xlabel("x / L"); ax[1].set_ylabel("w (nondimensional)"); ax[1].invert_yaxis(); ax[1].legend(fontsize=7)
+ax[1].set_xlabel("x / L"); ax[1].set_ylabel("w (nondimensional)"); ax[1].invert_yaxis(); fig.legend(*ax[1].get_legend_handles_labels(), loc="lower center", ncol=2, fontsize=8.6, bbox_to_anchor=(0.56, 0.0))
 ax[1].set_title("Inverse problem")
-plt.tight_layout(); plt.savefig("fig/fig16_1_pinn.png", dpi=150); plt.close()
+fig.subplots_adjust(left=0.15, right=0.98, top=0.92, bottom=0.3, wspace=0.6); plt.savefig("fig/fig16_1_pinn.png", dpi=150); plt.close()   # wspace: the right y-label stays clear of the left panel
 
 # ---------------- Part 3: digital twin - Kalman updating of stiffness from frequency ----------------
 r3 = np.random.default_rng(163)

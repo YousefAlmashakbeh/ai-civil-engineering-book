@@ -28,7 +28,7 @@ print("  'best seed' random split vs honest median by mix: %.2f vs %.2f MPa (opt
 fig, ax = plt.subplots(figsize=(6.5, 3.5))
 bins = np.linspace(min(rand.min(), grp.min()) - 0.1, max(rand.max(), grp.max()) + 0.1, 22)
 ax.hist(rand, bins=bins, alpha=0.6, color="#C05621", label="Random split (leaky)")
-ax.hist(grp, bins=bins, alpha=0.6, color="#2B6CB0", label="Split by mix (honest)")
+ax.hist(grp, bins=bins, histtype="step", lw=2, color="#2B6CB0", label="Split by mix (honest)")   # outline: no third colour where the two overlap
 ax.axvline(rand.min(), color="#C05621", ls="--", lw=1); ax.text(rand.min(), ax.get_ylim()[1] * 0.9, " best seed", color="#C05621", fontsize=8)
 ax.set_xlabel("Test MAE (MPa)"); ax.set_ylabel("Number of seeds (of 30)"); ax.legend(fontsize=8)
 plt.tight_layout(); plt.savefig("fig/fig18_1_seeds.png", dpi=150); plt.close()

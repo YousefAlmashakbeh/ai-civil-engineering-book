@@ -12,14 +12,14 @@ def echo(depth,amp=1.0,decay=900):                      # multiple reflections b
 def spectrum(x): X=np.abs(np.fft.rfft(x*np.hanning(len(x)),8*len(x))); fr=np.fft.rfftfreq(8*len(x),1/fs); return fr,X/X.max()
 surface=0.8*np.exp(-6000*t)*np.sin(2*np.pi*2500*t)      # low-frequency surface (R-wave) part of the record
 cases={"sound slab, 250 mm":echo(0.25)+surface,"delamination at 90 mm":0.15*echo(0.25)+echo(0.09)+surface}
-fig,ax=plt.subplots(1,2,figsize=(8.4,3)); print("Ex13.4 expected: 250 mm -> %.2f kHz, 90 mm -> %.2f kHz"%(beta*V/0.5/1e3,beta*V/0.18/1e3))
+fig,ax=plt.subplots(1,2,figsize=(5.0,2.9)); print("Ex13.4 expected: 250 mm -> %.2f kHz, 90 mm -> %.2f kHz"%(beta*V/0.5/1e3,beta*V/0.18/1e3))
 for (nm,x),c in zip(cases.items(),[B,O]):
     x=x+rng.normal(0,0.05,len(t)); fr,X=spectrum(x); band=(fr>4000)&(fr<40000); fp=fr[band][np.argmax(X[band])]; Tm=beta*V/(2*fp)
     print(f"  {nm}: peak {fp/1e3:.2f} kHz -> depth {Tm*1e3:.0f} mm; with assumed V off by +5%: {Tm*1.05*1e3:.0f} mm")
-    ls_="--" if c==O else "-"; ax[0].plot(t*1e3,x+(1.6 if c==O else 0),color=c,lw=0.5,ls=ls_); ax[1].plot(fr/1e3,X,color=c,lw=1,ls=ls_,label=nm); ax[1].text(fp/1e3+0.8,0.93,nm.replace(", ","\n").replace(" at ","\nat "),color=c,fontsize=8,va="top")
+    ls_="--" if c==O else "-"; ax[0].plot(t*1e3,x+(1.6 if c==O else 0),color=c,lw=0.5,ls=ls_); ax[1].plot(fr/1e3,X,color=c,lw=1,ls=ls_,label=nm); ax[1].text(fp/1e3+0.8,0.93 if c==O else 0.75,nm.replace(", ","\n").replace(" at ","\nat ").replace("sound slab","sound\nslab"),color=c,fontsize=9,va="top")
 ax[0].set_xlim(0,4); ax[0].set_xlabel("Time (ms)"); ax[0].set_yticks([]); clean(ax[0]); ax[1].set_xlim(0,40); ax[1].set_xlabel("Frequency (kHz)"); ax[1].set_ylabel("Normalised amplitude"); clean(ax[1])
 print("  frequency resolution of an 8 ms record = %.0f Hz -> thickness resolution near 250 mm = %.1f mm"%(1/0.008,0.25*(1/0.008)/(beta*V/0.5)*1e3))
-fig.tight_layout(); fig.subplots_adjust(wspace=0.3); fig.savefig("fig/fig13_5_impactecho.png",dpi=200); plt.close()
+fig.set_layout_engine("tight", w_pad=1.5); fig.savefig("fig/fig13_5_impactecho.png",dpi=200)   # drawn at print width (12.6 cm): fonts >= 9 pt in print; plt.close()
 
 # ---- Example 14.4: fundamental diagram of a traffic stream, two fitted models
 rng=np.random.default_rng(14); k=rng.uniform(5,110,220); vf,km=92.0,38.0
@@ -101,5 +101,5 @@ print("  over 200 random splits: mean coverage %.1f%%, range of the middle 90%% 
 early=te&(df.age.values<=3); late=te&(df.age.values>=56); print("  coverage by age: <=3 days %.0f%%, >=56 days %.0f%% (same interval for all)"%(100*np.mean(err[early[te]]<=qc),100*np.mean(err[late[te]]<=qc)))
 y2=y[te]*0.75                                                                                       # same mixes, but site-cured cores 25% weaker than lab cubes
 print("  shifted population (in-place strength 25%% below lab cubes): coverage %.0f%%"%(100*np.mean(np.abs(y2-gb.predict(X[te]))<=qc)))
-fig,ax=plt.subplots(figsize=(5.4,3.2)); ax.hist(100*np.array(cov),bins=25,color=B); ax.axvline(90,color=R,ls="--"); ax.set_xlabel("Coverage of the 90% conformal interval on new mixes (%)"); ax.set_yticks([]); clean(ax)
+fig,ax=plt.subplots(figsize=(5.4,3.2)); ax.hist(100*np.array(cov),bins=25,color=B); ax.axvline(90,color=R,ls="--"); ax.set_xlabel("Coverage of the 90% conformal interval on new mixes (%)"); ax.set_ylabel("number of splits (of 200)"); clean(ax)
 fig.tight_layout(); fig.savefig("fig/fig18_3_conformal.png",dpi=200); plt.close()

@@ -103,13 +103,14 @@ if __name__ == "__main__":
     for fn in [workflow, pipeline13, pipeline17, twin, roadmap, decision]: fn()
 # ---------------- Fig 1.2: should I use AI at all? (decision flowchart of Section 1.8) ----------------
 def decision():
-    f = Fig("fig1_2_decision"); py = 2.45; DW, DH = 5.4, 1.75; xo = -7.4; OW = 5.6
+    # gaps between the diamonds leave room for the short downward "no" arrows; drawn near print width (12.6 cm)
+    f = Fig("fig1_2_decision"); py = 3.0; DW, DH = 4.4, 1.6; xo = -6.05; OW = 4.7
     Q = [("هل توجد معادلة موثوقة\nورخيصة تحلّ المسألة؟", "استخدم المعادلة", "هي النموذج، ولا حاجة إلى غيرها", "red"),
          ("هل يفرض كود التصميم\nطريقة حساب محددة؟", "التزم بطريقة الكود", "النموذج للتحقق والفرز فقط", "red"),
          ("هل البيانات أقل من أن\nتمثّل المشكلة؟", "اجمع بيانات أو ابنِ محاكاة", "قبل أي نموذج", "red"),
          ("هل كلفة الخطأ كارثية\nولا قياس لثقة التنبؤ؟", "أضف مدى الثقة", "ومراجعة مهندس لكل قرار", "orange"),
          ("هل ظروف الاستخدام\nتختلف عن ظروف البيانات؟", "نموذج هجين", "واختبار صريح خارج المدى", "orange")]
-    f.add(r"\node[term=navy] (st) at (0,%.2f) {%s};" % (py*0.78, R("مسألة هندسية جديدة")))
+    f.add(r"\node[term=navy] (st) at (0,%.2f) {%s};" % (2.15, R("مسألة هندسية جديدة")))
     for i, (q, t, b, c) in enumerate(Q):
         y = -i*py
         f.add(r"\node[dec=%s,minimum width=%.2fcm,minimum height=%.2fcm,font=\footnotesize] (q%d) at (0,%.2f) {%s};" % ("navy", DW, DH, i, y, RL(q, True)))
@@ -119,7 +120,7 @@ def decision():
         prev = "st" if i == 0 else "q%d" % (i-1)
         if i == 0: f.add(r"\draw[conn] (st.south) -- (q0.north);")
         else: f.add(r"\draw[conn] (q%d.south) -- node[lab,right=1pt,font=\bfseries\footnotesize] {%s} (q%d.north);" % (i-1, R("لا"), i))
-    f.add(r"\node[term=green,minimum width=5.4cm] (en) at (0,%.2f) {%s};" % (-4*py - 1.95, RL("ابدأ بأبسط نموذج يحلّ المسألة\nوقارنه بخط أساس فيزيائي")))
+    f.add(r"\node[term=green,minimum width=4.6cm] (en) at (0,%.2f) {%s};" % (-4*py - 2.55, RL("ابدأ بأبسط نموذج يحلّ المسألة\nوقارنه بخط أساس فيزيائي")))
     f.add(r"\draw[connc=green] (q4.south) -- node[lab,right=1pt,text=green,font=\bfseries\footnotesize] {%s} (en.north);" % R("لا"))
     f.add(r"\draw[decorate,decoration={brace,amplitude=5pt},slate,line width=0.7pt] (%.2f,%.2f) -- (%.2f,%.2f);" % (xo - OW/2 - 0.25, -2*py - 0.75, xo - OW/2 - 0.25, 0.75))
     f.add(r"\node[rotate=90,font=\footnotesize,text=slate] at (%.2f,%.2f) {%s};" % (xo - OW/2 - 0.75, -py, R("الغالب أنك لا تحتاج إلى الذكاء الاصطناعي")))

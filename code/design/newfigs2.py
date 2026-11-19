@@ -41,11 +41,11 @@ vals = [("المخطط PV", PV, "#A0AEC0"), ("المكتسب EV", EV, BLUE), ("�
 for i, (lab, v, c) in enumerate(vals):
     a.bar(i, v / 1e3, color=c, width=0.62); a.text(i, v / 2e3, f"{v/1e3:.0f}", ha="center", va="center", fontsize=8.8, fontfamily="DejaVu Sans", color="white", fontweight="bold")
 a.set_xticks(range(3)); a.set_xticklabels([v[0] for v in vals], fontsize=8.8); a.set_ylim(0, 640); a.set_ylabel("ألف دينار", fontsize=9); a.tick_params(axis="y", labelsize=8.4)
-a.annotate("", xy=(2, EV / 1e3), xytext=(2, AC / 1e3), arrowprops=dict(arrowstyle="<->", color=RED, lw=1))
+a.annotate("", xy=(2, EV / 1e3), xytext=(2, AC / 1e3), arrowprops=dict(arrowstyle="<->", color="#1A202C", lw=1.3, mutation_scale=8, shrinkA=0, shrinkB=0))   # dark on the orange bar, as SV on the grey one
 a.text(2, 530, iso("CV = −60"), fontsize=8.6, color=RED, fontfamily="DejaVu Sans", ha="center")
-a.annotate("", xy=(0, EV / 1e3), xytext=(0, PV / 1e3), arrowprops=dict(arrowstyle="<->", color=NAVY, lw=1))
+a.annotate("", xy=(0, EV / 1e3), xytext=(0, PV / 1e3), arrowprops=dict(arrowstyle="<->", color=NAVY, lw=1.3, mutation_scale=8, shrinkA=0, shrinkB=0))
 a.hlines(EV / 1e3, -0.31, 2.31, color=BLUE, lw=0.8, ls=":")
-a.text(0, 545, iso("SV = −80"), fontsize=8.6, color=NAVY, fontfamily="DejaVu Sans", ha="center")
+a.text(0.22, 545, iso("SV = −80"), fontsize=8.6, color=NAVY, fontfamily="DejaVu Sans", ha="center")
 a.set_title("نهاية الشهر السادس", fontsize=10)
 b = axs[0]
 vals2 = [("الميزانية BAC", BAC, "#A0AEC0"), ("الأداء نفسه", EAC1, BLUE), ("الصيغة المتشائمة", EAC2, RED)]

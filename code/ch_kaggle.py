@@ -34,14 +34,15 @@ out["frp_is_yeh"] = list(y.columns)[:3] + [len(y)]
 out["sust_corr_fc_cement"] = float(c[["cement", "compressive_strength"]].corr().iloc[0, 1])
 out["yeh_corr_fc_cement"] = float(y[["cement", "concrete_compressive_strength"]].corr().iloc[0, 1])
 
-fig, ax = plt.subplots(1, 3, figsize=(7.2, 2.9))
+# drawn at print width (12.6 cm = 5.0 in): (a) and (b) on top, (c) across the bottom, no text below 8.6 pt in print
+fig = plt.figure(figsize=(5.0, 5.2)); gs_ = fig.add_gridspec(2, 2, height_ratios=[1, 1]); ax = [fig.add_subplot(gs_[0, 0]), fig.add_subplot(gs_[0, 1]), fig.add_subplot(gs_[1, :])]
 ax[0].hist(s["Cohesion (kPa)"], 40, color="#7a8ca8"); ax[0].set_title("(a) cohesion"); ax[0].set_ylabel("count"); ax[0].axhline(len(s)/40, c="#C05621", ls="--", lw=1)
 ax[0].set_xlabel("c (kPa)")
 ax[1].scatter(gen[:300], s.iloc[:300, 0], s=4, color="#2B6CB0"); ax[1].set_title(f"(b) seed 42: {out['slope_seed42_match']:.0%}")
 ax[1].set_xlabel("generated value"); ax[1].set_ylabel("unit weight in file")
 ax[2].hist(y.concrete_compressive_strength, 40, alpha=.7, label="Yeh (real)", color="#2B6CB0")
 ax[2].hist(c.compressive_strength, 40, alpha=.7, label="'sustainable'", color="#C05621", histtype="step", lw=1.4)
-ax[2].axvline(120, ls="--", c="k", lw=.8); ax[2].set_xlabel("f'c (MPa)"); ax[2].legend(); ax[2].set_xscale("log")
+ax[2].axvline(120, ls="--", c="k", lw=.8); ax[2].set_xlabel("f'c (MPa)"); ax[2].legend(loc="upper left"); ax[2].set_xscale("log"); ax[2].set_ylabel("count")
 ax[2].set_title("(c) f'c up to 615 MPa")
 fig.tight_layout(); fig.savefig(f"{F}/figK1_audit.png", dpi=260); plt.close()
 
@@ -68,14 +69,15 @@ def m(p): return dict(R2=round(r2_score(yv, p), 3), MAE_pct=round(float(np.mean(
 out["seattle_n"] = len(e); out["seattle_ridge"] = m(p_lin); out["seattle_gbm"] = m(p_gbm); out["seattle_gbm_fuel"] = m(p_gbm2)
 gbm.fit(X1, yv); pi = permutation_importance(gbm, X1, yv, n_repeats=5, random_state=0)
 imp = pd.Series(pi.importances_mean, X1.columns).sort_values()[-8:]
-fig, ax = plt.subplots(1, 2, figsize=(7.2, 3.2), gridspec_kw=dict(width_ratios=[1, 1.15]))
+fig, ax = plt.subplots(1, 2, figsize=(5.0, 2.9), gridspec_kw=dict(width_ratios=[1, 1.05]))   # drawn at print width (12.6 cm); long use names shortened below
 ax[0].scatter(np.exp(yv), np.exp(p_gbm2), s=4, alpha=.45, color="#2B6CB0"); lim = [5, 800]
 ax[0].plot(lim, lim, "k--", lw=.8); ax[0].set_xscale("log"); ax[0].set_yscale("log"); ax[0].set_xlim(lim); ax[0].set_ylim(lim)
 ax[0].set_xlabel("measured site EUI (kBtu/sf)"); ax[0].set_ylabel("predicted (5-fold CV)")
 ax[0].set_title(f"(a) n={len(e)}, R²={out['seattle_gbm_fuel']['R2']}")
-NICE = {"logGFA": "log floor area", "gas_share": "gas share", "parking_frac": "parking fraction", "steam": "district steam", "YearBuilt": "year built", "NumberofFloors": "floors"}
+NICE = {"use_Non-Refrigerated Warehouse": "use: warehouse", "use_Supermarket/Grocery Store": "use: supermarket", "use_Worship Facility": "use: worship",
+        "logGFA": "log floor area", "gas_share": "gas share", "parking_frac": "parking fraction", "steam": "district steam", "YearBuilt": "year built", "NumberofFloors": "floors"}
 ax[1].barh([NICE.get(k, k.replace("use_", "use: ")) for k in imp.index], imp.values, color="#2B6CB0"); ax[1].set_xlabel("permutation importance (ΔR²)")
-ax[1].set_title("(b) what drives energy intensity")
+ax[1].set_title("(b) what drives EUI")
 fig.tight_layout(); fig.savefig(f"{F}/figK2_seattle.png", dpi=260); plt.close()
 
 # ---------- K3: Melbourne wastewater inflow anomalies (Ch15) ----------

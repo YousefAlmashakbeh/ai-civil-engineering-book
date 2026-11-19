@@ -75,14 +75,20 @@ if os.path.isdir(f"{D}/{SURF}"):
     tiles = [np.asarray(Image.open(f"{D}/{SURF}/{w.file[i]}").convert("L").resize((96, 96))) for i in pick]
     grid = np.vstack([np.hstack(tiles[:4]), np.hstack(tiles[4:])]); ax0.imshow(grid, cmap="gray"); ax0.axis("off")
     ax0.set_title(f"(a) HU-CP {'walls' if SURF=='W' else 'pavements'}: cracked (top), uncracked (bottom)", fontsize=9.5)
-    ax1 = fig.add_subplot(gs[1, 0]); ks = ["AUC", "F1", "recall"]; xx = np.arange(3)
-    b1 = ax1.bar(xx - .2, [res_rand[k] for k in ks], .38, label="random patch split", color="#C05621")
-    b2 = ax1.bar(xx + .2, [res_rec[k] for k in ks], .38, label="record-level split", color="#2B6CB0")
-    lo = min(min(res_rand[k] for k in ks), min(res_rec[k] for k in ks)); y0 = max(0, np.floor(lo * 20) / 20 - .05)
-    for bb in list(b1) + list(b2):
-        ax1.text(bb.get_x() + bb.get_width() / 2, y0 + 0.008, f"{bb.get_height():.3f}", rotation=90, ha="center", va="bottom", fontsize=8.6, color="white", fontweight="bold")
-    ax1.set_xticks(xx); ax1.set_xticklabels(ks, fontsize=8.6); ax1.set_ylim(y0, 1.01); ax1.tick_params(axis="y", labelsize=8.6)
-    ax1.legend(loc="upper center", bbox_to_anchor=(0.5, -0.12), ncol=1, fontsize=8.6, frameon=False)
+    # (b) as a dot plot: a bar starting at 0.85 would exaggerate a 0.01 difference; the 5-fold record-level CV mean of F1 is added
+    ax1 = fig.add_subplot(gs[1, 0]); ks = ["AUC", "F1", "recall"]; yy = np.arange(3)[::-1]
+    cvm = float(np.mean(f_rec))
+    for yk, k in zip(yy, ks):
+        for dy, v, mk, col in [(0.25, res_rand[k], "o", "#C05621"), (0.0, res_rec[k], "s", "#2B6CB0")] + ([(-0.27, cvm, "D", "#1A202C")] if k == "F1" else []):
+            ax1.plot(v, yk + dy, mk, color=col, ms=5.5, mfc=col if mk != "D" else "white", mew=1.2)
+            ax1.text(v + 0.011, yk + dy, f"{v:.3f}", ha="left", va="center", fontsize=8.6, color=col)
+    lo = min(min(res_rand[k] for k in ks), min(res_rec[k] for k in ks), cvm); x0 = min(0.85, np.floor(lo * 20) / 20)
+    ax1.set_xlim(x0, 1.05); ax1.set_xticks(np.arange(x0, 1.001, 0.05), minor=True); ax1.set_xticks([0.9, 1.0]); ax1.set_xticklabels(["0.90", "1.00"], fontsize=8.6)
+    ax1.set_yticks(yy); ax1.set_yticklabels(ks, fontsize=8.6); ax1.set_ylim(-0.55, 2.5); ax1.grid(axis="x", which="both", color="#E2E8F0", lw=0.6); ax1.set_axisbelow(True)
+    from matplotlib.lines import Line2D
+    hh = [Line2D([], [], ls="none", marker="o", color="#C05621", ms=5.5), Line2D([], [], ls="none", marker="s", color="#2B6CB0", ms=5.5),
+          Line2D([], [], ls="none", marker="D", color="#1A202C", mfc="white", ms=5.5, mew=1.2)]
+    ax1.legend(hh, ["random patch split", "record-level split", "record-level 5-fold CV\n(mean F1)"], loc="upper center", bbox_to_anchor=(0.45, -0.12), ncol=1, fontsize=8.6, frameon=False)
     ax1.set_title("(b) same model, two splits", fontsize=9.5)
     ax2 = fig.add_subplot(gs[1, 1])
     ax2.barh(range(len(pr)), pr.F1, color="#2F855A"); ax2.set_yticks(range(len(pr)))

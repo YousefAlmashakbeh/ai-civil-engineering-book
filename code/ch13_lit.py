@@ -21,9 +21,9 @@ for k, nm in enumerate(["> -200 mV  (corrosion unlikely)", "-200..-350 (uncertai
 true = active > 0.35
 print("C876 '< -350' vs generated active zone: precision %.2f, recall %.2f" % ((true & (cls == 2)).sum() / (cls == 2).sum(), (true & (cls == 2)).sum() / true.sum()))
 fig, ax = plt.subplots(1, 2, figsize=(9.6, 2.9), gridspec_kw={"width_ratios": [1.25, 1]})
-im = ax[0].pcolormesh(X, Y, Ec, cmap="RdYlBu", vmin=-550, vmax=-50, shading="nearest"); fig.colorbar(im, ax=ax[0], label="E (mV vs CSE)")
+im = ax[0].pcolormesh(X, Y, Ec, cmap="RdYlBu", vmin=-550, vmax=-50, shading="nearest"); cb = fig.colorbar(im, ax=ax[0]); cb.ax.set_xlabel("mV", fontsize=8.6, labelpad=4)   # unit under the bar: no label beside the next panel
 ax[0].contour(X, Y, np.nan_to_num(Ec, nan=-150), levels=[-350, -200], colors="k", linewidths=[1.2, .8], linestyles=["-", "--"])
 ax[0].plot(*np.argwhere(phys)[0][::-1] * s, "kx", ms=9); ax[0].set_title("Half-cell map (generated deck)", fontsize=9); ax[0].set_xlabel("x (m)"); ax[0].set_ylabel("y (m)")
 ax[1].hist(Ec[np.isfinite(Ec)], bins=24, color="#4A5568"); [ax[1].axvline(v, color="k", ls=ls) for v, ls in ((-200, "--"), (-350, "-"))]
-ax[1].set_xlabel("E (mV vs CSE)"); ax[1].set_ylabel("points"); ax[1].set_title("ASTM C876 limits", fontsize=9)
-fig.tight_layout(); fig.savefig("fig/fig13_3_halfcell.png", dpi=200)
+ax[1].set_xlabel("E (mV vs CSE)"); ax[1].set_ylabel("number of points"); ax[1].set_title("ASTM C876 limits", fontsize=9)
+fig.set_layout_engine("tight", w_pad=3.0); fig.savefig("fig/fig13_3_halfcell.png", dpi=200)   # w_pad: colour bar and histogram axis kept apart
