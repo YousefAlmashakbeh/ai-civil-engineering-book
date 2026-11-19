@@ -49,7 +49,7 @@ print(f"Brier score={np.mean((pT-yd)**2):.3f} (always predicting the base rate: 
 BAC,PV,EV,AC=1_000_000,500_000,420_000,480_000; CPI=EV/AC; SPI=EV/PV
 print(f"EVM: CPI={CPI:.3f} SPI={SPI:.3f} EAC=BAC/CPI={BAC/CPI:,.0f}  EAC(CPI*SPI)={AC+(BAC-EV)/(CPI*SPI):,.0f}")
 lg=LogisticRegression(max_iter=1000).fit((D-D.mean(0))/D.std(0),yd); names=["log size","design %","government","lump sum","summer start","variations"]
-print("standardised coefs:",dict(zip(names,np.round(lg.coef_[0],2))))
+sc=[f"{k} {v:.2f}" for k,v in zip(names,lg.coef_[0])]; print("standardised coefs: "+", ".join(sc[:3])+",\n"+" "*20+", ".join(sc[3:]))
 fig,ax=plt.subplots(figsize=(4.6,4.2))
 for p,c,l in [(pL,"#2b6cb0","Logistic"),(pG,"#dd6b20","GBM")]:
     f,t,_=roc_curve(yd,p); ax.plot(f,t,color=c,lw=2,label=f"{l} AUC={roc_auc_score(yd,p):.2f}")
@@ -64,7 +64,7 @@ clf=make_pipeline(TfidfVectorizer(analyzer="char_wb",ngram_range=(2,5)),Logistic
 pc=cross_val_predict(clf,txt,lab,cv=StratifiedKFold(4,shuffle=True,random_state=0))
 print(f"clauses={len(txt)} CV accuracy={accuracy_score(lab,pc):.3f}")
 ks=list(CLAUSES); cm=confusion_matrix(lab,pc,labels=ks); print(cm)
-wrong=[(t,l,p) for t,l,p in zip(txt,lab,pc) if l!=p]
+wrong=[(t,l,str(p)) for t,l,p in zip(txt,lab,pc) if l!=p]
 for w in wrong[:6]: print("WRONG:",w)
 clf.fit(txt,lab)
 new=["تُصرف مستحقات المقاول خلال ستين يوماً من تقديم الفاتورة",
@@ -72,7 +72,7 @@ new=["تُصرف مستحقات المقاول خلال ستين يوماً من
      "يجوز لصاحب العمل إضافة طابق إضافي بأمر خطي مع تعديل السعر",
      "يُعدّ الزلزال أو الحريق العام حدثاً خارجاً عن إرادة الطرفين",
      "يضمن المقاول سلامة الهيكل الإنشائي عشر سنوات من الاستلام"]
-print("new clauses ->",list(clf.predict(new)))
+print("new clauses ->",list(map(str,clf.predict(new))))
 fig,ax=plt.subplots(figsize=(5,4.2)); ax.imshow(cm,cmap="Blues")
 lbl=["Payment","Delay","Variation","Force maj.","Warranty"]
 ax.set_xticks(range(5),lbl,rotation=30,fontsize=8); ax.set_yticks(range(5),lbl,fontsize=8)

@@ -61,7 +61,7 @@ print("Part2 inverse: 5 sensors at x=0.1..0.5 with 1%% noise; EI true=%.2f, PINN
       (EI_true, EI_hat, 100 * abs(EI_hat - EI_true) / EI_true))
 print("  max error on unsensed half x>0.5 (%% of max w): PINN=%.1f%%  data-only MLP=%.1f%%" %
       (100 * np.abs(wi - wt)[right].max() / wt.max(), 100 * np.abs(wd - wt)[right].max() / wt.max()))
-print("  support reaction check w(1): PINN=%.5f data-only=%.5f (should be 0)" % (wi[-1], wd[-1]))
+print("  support deflection check w(1): PINN=%.5f data-only=%.5f (should be 0)" % (wi[-1], wd[-1]))
 
 fig, ax = plt.subplots(1, 2, figsize=(10, 3.6))
 ax[0].plot(xs, we, "k", lw=2, label="Exact")

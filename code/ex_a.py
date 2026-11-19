@@ -96,16 +96,16 @@ ax.axhline(1010,color=B,ls="--",lw=0.8); ax.axhline(990,color=B,ls="--",lw=0.8);
 fig.tight_layout(); fig.savefig("fig/fig4_3_volume.png",dpi=200); plt.close()
 Xfull=df[V+["age"]].copy(); Xfull["log_age"]=np.log(Xfull.pop("age")); yc=df.fc.values; gmix=df.mix.values
 
-# ---- Example 5.4: learning curve and model complexity (bias-variance)
+# ---- Example 5.2: learning curve and model complexity (bias-variance)
 X5=Xfull.values; tr,te=next(GroupShuffleSplit(1,test_size=0.3,random_state=0).split(X5,yc,gmix))
 depths=[1,2,3,4,6,8,10,14,20]; etr=[];ete=[]
 for dpt in depths:
     t=DecisionTreeRegressor(max_depth=dpt,random_state=0).fit(X5[tr],yc[tr]); etr.append(mae(yc[tr],t.predict(X5[tr]))); ete.append(mae(yc[te],t.predict(X5[te])))
-print("Ex5.4 tree depth:",dict(zip(depths,np.round(ete,2))),"best depth=",depths[int(np.argmin(ete))],"train MAE at depth 20=%.2f"%etr[-1])
+print("Ex5.2 tree depth -> test MAE: {"+", ".join(f"{d}: {e:.2f}" for d,e in zip(depths,ete))+"}"); print(f"  train MAE at depth 20 = {etr[-1]:.2f}")
 sizes=[20,40,80,160,320,len(tr)]; ltr=[];lte=[]; r5=np.random.default_rng(5); order=r5.permutation(tr)
 for s in sizes:
     i=order[:s]; f=RandomForestRegressor(200,random_state=0).fit(X5[i],yc[i]); ltr.append(mae(yc[i],f.predict(X5[i]))); lte.append(mae(yc[te],f.predict(X5[te])))
-print("  learning curve (n -> test MAE):",dict(zip(sizes,np.round(lte,2))))
+print("  learning curve (rows -> test MAE): {"+", ".join(f"{s}: {e:.2f}" for s,e in zip(sizes,lte))+"}")
 fig,ax=plt.subplots(1,2,figsize=(8,3.2))
 ax[0].plot(depths,etr,"o-",color=B,label="training"); ax[0].plot(depths,ete,"s-",color=O,label="test"); ax[0].set_xlabel("Tree depth (model complexity)"); ax[0].set_ylabel("MAE (MPa)"); ax[0].legend(frameon=False,fontsize=8); clean(ax[0])
 ax[1].plot(sizes,ltr,"o-",color=B,label="training"); ax[1].plot(sizes,lte,"s-",color=O,label="test"); ax[1].set_xscale("log"); ax[1].set_xticks(sizes[:-1]); ax[1].set_xticklabels(sizes[:-1],fontsize=7); ax[1].minorticks_off(); ax[1].annotate(str(sizes[-1]),(sizes[-1],lte[-1]),xytext=(0,7),textcoords="offset points",ha="center",fontsize=7,color=O); ax[1].set_xlabel("Training rows (random forest)"); ax[1].legend(frameon=False,fontsize=8); clean(ax[1])

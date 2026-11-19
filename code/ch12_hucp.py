@@ -7,16 +7,16 @@ matplotlib.use("Agg"); import matplotlib.pyplot as plt
 from PIL import Image
 from skimage.feature import hog
 from sklearn.ensemble import HistGradientBoostingClassifier
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GroupKFold, StratifiedKFold
 from sklearn.metrics import roc_auc_score, f1_score, recall_score, precision_score
 from joblib import Parallel, delayed
 
 D = os.environ.get("HUCP_DIR", "hucp"); F = "fig"; os.makedirs(F, exist_ok=True)
-lab = pd.read_csv(f"{D}/tables/patch_labels_clean.csv", low_memory=False)
-SURF = os.environ.get("HUCP_SURFACE", "W")   # "W" walls (book figure) or "P" pavements
 if not os.path.exists(os.path.join(D, "tables")):
     raise SystemExit(f"HU-CP data not found in '{D}'. Download HU_CP_W.zip and HU_CP_tables_README_audit.zip from "
                      "https://doi.org/10.5281/zenodo.23836570, unzip them there, or set HUCP_DIR.")
+lab = pd.read_csv(f"{D}/tables/patch_labels_clean.csv", low_memory=False)
+SURF = os.environ.get("HUCP_SURFACE", "W")   # "W" walls (book figure) or "P" pavements
 w = lab[lab.surface_code == SURF].reset_index(drop=True)
 w["y"] = (w.label == "cracked").astype(int)
 
@@ -52,6 +52,11 @@ res_rand = {k: float(np.mean([r[k] for r in rs])) for k in rs[0]}
 out["record_split"] = {k: round(v, 3) for k, v in res_rec.items()}
 out["random_split"] = {k: round(v, 3) for k, v in res_rand.items()}
 out["test_records"] = int(w.record[te].nunique()); out["test_patches"] = len(te)
+# D) five-fold cross-validation over all records (GroupKFold by record) vs five random patch folds
+f_rec = [fit_eval(a, b)[0]["F1"] for a, b in GroupKFold(5).split(X, y, w.record)]
+f_rnd = [fit_eval(a, b)[0]["F1"] for a, b in StratifiedKFold(5, shuffle=True, random_state=0).split(X, y)]
+out["cv5_by_record_F1"] = {"folds": [round(float(f), 3) for f in f_rec], "mean": round(float(np.mean(f_rec)), 3)}
+out["cv5_random_F1"] = {"folds": [round(float(f), 3) for f in f_rnd], "mean": round(float(np.mean(f_rnd)), 3)}
 # C) recall on cracked test patches by stated crack width and lighting
 t = w.iloc[te].copy(); t["p"] = p_rec; c = t[t.y == 1].copy()
 wm = c.width_mm.astype(str).str.strip()

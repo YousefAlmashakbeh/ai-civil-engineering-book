@@ -84,7 +84,7 @@ print("Ex10.4 q_ult at mean values=%.0f kPa, allowable (FS=3)=%.0f kPa; Monte Ca
 tor={}
 for k_ in mu:
     lo=dict(mu); hi=dict(mu); lo[k_]=mu[k_]*(1-cov[k_]); hi[k_]=mu[k_]*(1+cov[k_]); tor[k_]=(qult(**lo),qult(**hi))
-print("  one-sd swings (kPa):",{k_:(round(a),round(b_)) for k_,(a,b_) in tor.items()})
+sym={"c": "c'", "phi": "phi'", "gam": "gamma"}; print("  one-sd swings (kPa): "+", ".join(f"{sym[k_]} {round(a)}..{round(b_)}" for k_,(a,b_) in tor.items()))
 fig,ax=plt.subplots(1,2,figsize=(8.4,3)); q5=np.percentile(q,5); ax[0].hist(q,bins=90,range=(0,3000),color=B); ax[0].axvline(qa,color=R,ls="--"); ax[0].axvline(q5,color=K,ls=":",lw=1.2)
 ax[0].text(qa-30,ax[0].get_ylim()[1]*0.93,"applied",fontsize=7,color=R,ha="right"); ax[0].annotate("5th percentile %.0f"%q5,xy=(q5,ax[0].get_ylim()[1]*0.80),xytext=(1500,ax[0].get_ylim()[1]*0.85),fontsize=7,color=K,va="center",arrowprops=dict(arrowstyle="->",color=K,lw=0.7))
 ax[0].text(0.98,0.55,"tail above 3000 kPa\nnot shown (%.1f%%)"%(100*np.mean(q>3000)),transform=ax[0].transAxes,ha="right",fontsize=7,color="0.4")
