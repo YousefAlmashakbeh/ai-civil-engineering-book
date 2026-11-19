@@ -108,7 +108,7 @@ for s in sizes:
 print("  learning curve (n -> test MAE):",dict(zip(sizes,np.round(lte,2))))
 fig,ax=plt.subplots(1,2,figsize=(8,3.2))
 ax[0].plot(depths,etr,"o-",color=B,label="training"); ax[0].plot(depths,ete,"s-",color=O,label="test"); ax[0].set_xlabel("Tree depth (model complexity)"); ax[0].set_ylabel("MAE (MPa)"); ax[0].legend(frameon=False,fontsize=8); clean(ax[0])
-ax[1].plot(sizes,ltr,"o-",color=B,label="training"); ax[1].plot(sizes,lte,"s-",color=O,label="test"); ax[1].set_xscale("log"); ax[1].set_xticks(sizes); ax[1].set_xticklabels(sizes,fontsize=7); ax[1].minorticks_off(); ax[1].set_xlabel("Training rows (random forest)"); ax[1].legend(frameon=False,fontsize=8); clean(ax[1])
+ax[1].plot(sizes,ltr,"o-",color=B,label="training"); ax[1].plot(sizes,lte,"s-",color=O,label="test"); ax[1].set_xscale("log"); ax[1].set_xticks(sizes[:-1]); ax[1].set_xticklabels(sizes[:-1],fontsize=7); ax[1].minorticks_off(); ax[1].annotate(str(sizes[-1]),(sizes[-1],lte[-1]),xytext=(0,7),textcoords="offset points",ha="center",fontsize=7,color=O); ax[1].set_xlabel("Training rows (random forest)"); ax[1].legend(frameon=False,fontsize=8); clean(ax[1])
 fig.tight_layout(); fig.savefig("fig/fig5_4_biasvar.png",dpi=200); plt.close()
 
 # ---- Example 6.5: sizes and parameter count of the crack CNN, layer by layer

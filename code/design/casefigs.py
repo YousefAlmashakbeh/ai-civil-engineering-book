@@ -26,15 +26,15 @@ fig, ax = plt.subplots(figsize=(5.0, 3.7))
 ax.loglog(x, np.exp(g["c"] + g["k"]*np.log(x)), color=BLUE, lw=2, label="ملاءمة النقاط الثلاث")
 kk, cc = np.polyfit(np.log(pga[:2]), np.log(lam[:2]), 1)
 ax.loglog(x, np.exp(cc + kk*np.log(x)), color=ORANGE, lw=2, ls="--", label="ملاءمة محلية (475 و975 سنة)")
-ax.loglog(pga, lam, "o", color=NAVY, ms=7, label="قيم الدراسة المنشورة")
-ax.axvline(0.20, color=RED, lw=1.6); T(ax, 0.207, 1.6e-2, "الكود الأردني\nPGA = 0.20 g", color=RED, fontsize=9.5)
+ax.loglog(pga, lam, "o", color=NAVY, ms=7, label="قيم الدراسة (تربة صلبة)")
+ax.axvline(0.20, color=RED, lw=1.6); T(ax, 0.205, 1.25e-2, "الكود الأردني\nPGA = 0.20 g", color=RED, fontsize=9.5)
 ax.axhline(1/475, color=GREY, lw=0.8, ls=":"); T(ax, 0.48, 1/475*1.15, "⁦10%⁩ في 50 سنة", color=GREY, fontsize=9, ha="center")
-ax.fill_betweenx([1/231, 1/145], 0.12, 0.2, color=TINT[RED], zorder=0)
-ax.annotate("مستوى الكود:\nفترة عودة 145–231 سنة", xy=(0.2, 1/185), xytext=(0.125, 7e-4), fontsize=9.5, color=RED, family="Amiri",
+ax.fill_betweenx([1/172, 1/122], 0.12, 0.2, color=TINT[RED], zorder=0)
+ax.annotate("مستوى الكود:\nفترة عودة 122–172 سنة", xy=(0.2, 1/145), xytext=(0.212, 2.6e-4), fontsize=9.5, color=RED, family="Amiri",
             arrowprops=dict(arrowstyle="->", color=RED, lw=0.9))
 from matplotlib.ticker import FixedLocator, FixedFormatter, NullFormatter
-ax.xaxis.set_major_locator(FixedLocator([0.15, 0.2, 0.3, 0.45, 0.6])); ax.xaxis.set_major_formatter(FixedFormatter(["0.15", "0.20", "0.30", "0.45", "0.60"])); ax.xaxis.set_minor_formatter(NullFormatter())
-XL(ax, "أقصى تسارع أرضي PGA (g)"); YL(ax, "معدل التجاوز السنوي"); ax.legend(loc="upper right", **LEG)
+ax.xaxis.set_major_locator(FixedLocator([0.15, 0.2, 0.3, 0.4, 0.5, 0.6])); ax.xaxis.set_major_formatter(FixedFormatter(["0.15", "0.20", "0.30", "0.40", "0.50", "0.60"])); ax.xaxis.set_minor_formatter(NullFormatter())
+XL(ax, "أقصى تسارع أرضي PGA (g)"); YL(ax, "معدل التجاوز السنوي"); ax.legend(loc="upper right", bbox_to_anchor=(1.03, 1.03), handlelength=1.6, **LEG)
 save(fig, F + "fig9_5_aqaba_hazard.png")
 # 10 --------------------------------------------------------------
 g = run("c10_marl.py"); FS = g["FS"]; c = g["c"]; phi = g["phi"]; gg, z = g["g"], g["z"]
@@ -85,7 +85,7 @@ save(fig, F + "fig12_6_sinkholes.png")
 # 13 ---------------------------------------------------------------
 g = run("c13_abdoun.py"); days, f, T_, res, s, al = g["days"], g["f"], g["T"], g["res"], g["s"], g["al"]
 fig, (a1, a2) = plt.subplots(2, 1, figsize=(5.8, 4.4), sharex=True)
-a1.axhspan(0.62*0.98, 0.62*1.02, color="#EDF2F7", zorder=0); T(a1, 5, 0.62*1.022, "نطاق ثابت عرضه 2% حول المتوسط", fontsize=9, color=GREY)
+a1.axhspan(0.62*0.98, 0.62*1.02, color="#EDF2F7", zorder=0); T(a1, 0.0, 1.03, "نطاق ثابت ⁦±2%⁩ حول التردد المرجعي", fontsize=9, color=GREY, transform=a1.transAxes)
 a1.scatter(days, f, c=T_, cmap="coolwarm", s=5); a1.axvline(600, color=NAVY, ls="--"); a1.set_ylabel("f1 (Hz)")
 T(a1, 605, 0.62*1.03, "انخفاض ⁦1%⁩\nمن اليوم 601", fontsize=9, color=NAVY, va="top"); T(a1, 590, 0.6015, "اللون: حرارة اليوم، الأزرق بارد والأحمر حار", fontsize=9, color=GREY, ha="right")
 e = np.zeros_like(res); acc = 0
@@ -93,7 +93,7 @@ for i, r in enumerate(res): acc = 0.2*r + 0.8*acc; e[i] = acc
 a2.axvspan(0, 365, color=TINT[GREEN], zorder=0); T(a2, 10, -5.5, "سنة التدريب", fontsize=9, color=GREEN)
 a2.plot(days, e*1000, color=BLUE, lw=1); a2.axhline(-3*s*np.sqrt(0.2/1.8)*1000, color=RED, ls="--"); a2.axvline(600, color=NAVY, ls="--")
 T(a2, 380, -3*s*np.sqrt(0.2/1.8)*1000*1.15, "حدّ الإنذار", fontsize=9, color=RED, va="top")
-YL(a2, "بواقي EWMA (mHz)"); XL(a2, "اليوم")
+YL(a2, "\u2067EWMA للبواقي (mHz)\u2069"); XL(a2, "اليوم")
 save(fig, F + "fig13_7_abdoun.png")
 # 14 --------------------------------------------------------------
 g = run("c14_accidents.py"); yr, dth, b = g["yr"], g["dth"], g["b"]

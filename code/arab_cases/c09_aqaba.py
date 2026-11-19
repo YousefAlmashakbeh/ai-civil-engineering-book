@@ -1,7 +1,7 @@
 # Aqaba seismic hazard: PSHA values (JJEES 15(1)) vs. the Jordanian code value
 import numpy as np
 T   = np.array([475, 975, 2475])          # return period (years)
-pga = np.array([0.30, 0.45, 0.52])        # g, published PSHA for Aqaba
+pga = np.array([0.30, 0.40, 0.50])        # g, stiff soil (Table 4 of the study)
 lam = 1 / T
 k, c = np.polyfit(np.log(pga), np.log(lam), 1)      # ln(lambda) = c + k ln(PGA)
 print(f"hazard curve: lambda = {np.exp(c):.2e} * PGA^{k:.2f}")

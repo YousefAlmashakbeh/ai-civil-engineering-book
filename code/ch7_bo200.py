@@ -1,5 +1,6 @@
 # Chapter 7, Example 7.3 repeated on 200 seeds:
 # Bayesian optimisation vs. simple bisection vs. fitting Abrams' law, seven mixes each.
+# Bayesian optimisation is scored twice: best measured mix, and peak of the GPR mean after 7 mixes.
 # "True error" = |f(w/b recommended) - 40 MPa| on the noise-free strength law.
 import warnings
 import numpy as np
@@ -10,7 +11,7 @@ from sklearn.gaussian_process.kernels import RBF, WhiteKernel, ConstantKernel as
 warnings.filterwarnings("ignore")
 law = lambda w: 110 / 6.5**w                 # strength law used in Example 7.3
 grid = np.linspace(0.3, 0.7, 401)
-err = {"bayes": [], "bisection": [], "abrams": []}
+err = {"bayes": [], "bayes_gpr": [], "bisection": [], "abrams": []}
 
 for seed in range(200):
     # 1) Bayesian optimisation exactly as in ch7.py (two starting mixes + five chosen)
@@ -26,6 +27,9 @@ for seed in range(200):
         ei = (mu - best) * norm.cdf(z) + sd * norm.pdf(z)
         X.append(grid[ei.argmax()]); Y.append(obj(lab(X[-1])))
     err["bayes"].append(abs(law(X[int(np.argmax(Y))]) - 40))      # best measured mix
+    gp = GaussianProcessRegressor(Ck(10) * RBF(0.1) + WhiteKernel(0.5), normalize_y=True,
+                                  random_state=0).fit(np.array(X)[:, None], Y)
+    err["bayes_gpr"].append(abs(law(grid[gp.predict(grid[:, None]).argmax()]) - 40))  # peak of GPR mean
 
     # 2) bisection on the same bracket, same number of mixes (2 + 5)
     rng = np.random.default_rng(seed)

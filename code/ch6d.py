@@ -23,7 +23,7 @@ prof=0.25+0.9*np.exp(-((hod-8)/1.5)**2)+0.8*np.exp(-((hod-16)/2.0)**2)+0.3*np.ex
 vol=1800*base*prof*(1+0.06*rng.normal(size=hours)); vol[np.isin(dow,[5])&(hod>=11)&(hod<=13)]*=0.5  # Friday prayer dip
 vol=vol.astype(np.float32)
 L=24; Xs=np.stack([vol[i:i+L] for i in range(hours-L)]); ys=vol[L:]
-s=vol.max(); split=24*7*8-L
+s=vol[:24*7*8].max(); split=24*7*8-L   # scale from the training weeks only
 Xtr,ytr,Xte,yte=Xs[:split]/s,ys[:split]/s,Xs[split:]/s,ys[split:]/s
 class LSTM(nn.Module):
     def __init__(s_): super().__init__(); s_.l=nn.LSTM(1,32,batch_first=True); s_.o=nn.Linear(32,1)

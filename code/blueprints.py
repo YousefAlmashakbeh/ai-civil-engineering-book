@@ -42,9 +42,10 @@ for k, d in CH.items():
         ax.add_patch(FancyBboxPatch((x0, ytop - 0.24), w, 0.24, boxstyle="round,pad=0,rounding_size=0.05", fc=dark, ec=dark, lw=0.9))
         ax.text(x0 + w / 2, ytop - 0.12, head, ha="center", va="center", color="white", fontsize=9.5, fontweight="bold")
         y = ytop - 0.31
-        for lines in wl:
+        for it, lines in zip(items, wl):
+            tc = "#C05621" if re.match(r"حالة \d+\.أ", it) else "#1A202C"      # Arab cases in the colour of their headings
             for j, ln in enumerate(lines):
-                ax.text(x - 0.07, y, ("• " if j == 0 else "   ") + ln, ha="right", va="top", fontsize=8.5, color="#1A202C"); y -= LH
+                ax.text(x - 0.07, y, ("• " if j == 0 else "   ") + ln, ha="right", va="top", fontsize=8.5, color=tc); y -= LH
         x = x0 - 0.06
     # chapter strip: where this chapter sits in the book
     needs, leads = chapters(d["needs"]), chapters(d["leads"])

@@ -27,17 +27,18 @@ print("  areas (cm2):",np.round(r.x*1e4,1))
 fig,ax=plt.subplots(1,2,figsize=(7.0,3.0),gridspec_kw={"width_ratios":[1.6,1]})
 for k_,((i,j),a) in enumerate(zip(bars,r.x)):
     ax[0].plot(*zip(nodes[i],nodes[j]),color=B,lw=0.6+a*1e4/22,solid_capstyle="round")
-    mx,my=(nodes[i]+nodes[j])/2; off=(0.0,0.0) if nodes[i][1]!=nodes[j][1] else (0,0.0)
-    ax[0].text(mx+off[0],my+off[1],str(k_+1),fontsize=7.5,ha="center",va="center",color=K,bbox=dict(boxstyle="circle,pad=0.15",fc="white",ec="0.6",lw=.5),zorder=6)
+    lo_,hi_=(nodes[i],nodes[j]) if nodes[i][1]<=nodes[j][1] else (nodes[j],nodes[i])
+    mx,my=(lo_+(hi_-lo_)/3) if (nodes[i][0]!=nodes[j][0] and nodes[i][1]!=nodes[j][1]) else (nodes[i]+nodes[j])/2   # diagonals: one third up from the lower node, so crossing bars keep their own numbers
+    ax[0].text(mx,my,str(k_+1),fontsize=7.5,ha="center",va="center",color=K,bbox=dict(boxstyle="circle,pad=0.15",fc="white",ec="0.6",lw=.5),zorder=6)
 ax[0].plot(nodes[:,0],nodes[:,1],"o",color=K,ms=4,zorder=5)
 for n_ in (4,5): ax[0].plot(nodes[n_][0]-0.55,nodes[n_][1],marker=">",ms=11,color="0.45",zorder=4); ax[0].plot([-1.05,-1.05],[nodes[n_][1]-0.9,nodes[n_][1]+0.9],color="0.45",lw=2)
 for n_ in (1,3):
     ax[0].annotate("",xy=(nodes[n_][0],-3.0),xytext=(nodes[n_][0],-0.25),arrowprops=dict(arrowstyle="-|>",color=R,lw=1.8,mutation_scale=12))
-    ax[0].text(nodes[n_][0]+0.35,-2.4,"445 kN",fontsize=8,color=R)
+    ax[0].text(nodes[n_][0]-0.35,-2.4,"445 kN",fontsize=8,color=R,ha="right")
 ax[0].set_xlim(-1.6,2*L+1.2); ax[0].set_ylim(-3.4,L+0.8); ax[0].set_aspect("equal"); ax[0].axis("off"); ax[0].set_title("(a) optimum: line width = bar area")
 ax[1].plot(hist,color=O); ax[1].set_yscale("log"); ax[1].set_xlabel("generation"); ax[1].set_ylabel("penalised weight (kg)")
 from matplotlib.ticker import ScalarFormatter, NullFormatter
-_f=ScalarFormatter(); _f.set_scientific(False); ax[1].yaxis.set_major_formatter(_f); ax[1].yaxis.set_minor_formatter(NullFormatter()); ax[1].set_title("(b) convergence"); clean(ax[1])
+_f=ScalarFormatter(); _f.set_scientific(False); ax[1].yaxis.set_major_formatter(_f); ax[1].yaxis.set_minor_formatter(NullFormatter()); _yt=[v for v in (2000,2500,3000,4000,5000,7000,10000,20000,50000) if min(hist)<=v<=max(hist)]; ax[1].set_yticks(_yt); ax[1].set_yticklabels([str(v) for v in _yt]); ax[1].set_title("(b) convergence"); clean(ax[1])
 fig.tight_layout(); fig.savefig("fig/fig7_4_truss.png",dpi=260); plt.close()
 
 # ---- Example 8.5: when can the slab formwork be struck? (equivalent age)
@@ -62,7 +63,8 @@ def point(c):
     phi=np.clip(0.65+0.25*(et-0.0021)/0.003,0.65,0.90); return Pn/1e3,Mn/1e6,phi
 cs=np.r_[np.linspace(40,h,120),np.linspace(h,6*h,60)]; pts=np.array([point(c) for c in cs]); Pn,Mn,phi=pts.T
 P0=(0.85*fc*(b*h-Ast)+fy*Ast)/1e3; cap=0.80*0.65*P0; dP=np.minimum(phi*Pn,cap); dM=phi*Mn
-ib=np.argmax(Mn); print("Ex9.4 P0=%.0f kN, max design axial 0.80*phi*P0=%.0f kN, balanced point: Pn=%.0f kN Mn=%.0f kN.m, pure bending Mn=%.0f kN.m"%(P0,cap,Pn[ib],Mn[ib],np.interp(0,Pn,Mn)))
+cb=0.003*(h-cover)/(0.003+fy/Es); Pb,Mb,_=point(cb)                       # balanced: extreme steel just yields as concrete reaches 0.003
+print("Ex9.4 P0=%.0f kN, max design axial 0.80*phi*P0=%.0f kN, balanced point (c = %.0f mm): Pn=%.0f kN Mn=%.0f kN.m, pure bending Mn=%.0f kN.m"%(P0,cap,cb,Pb,Mb,np.interp(0,Pn,Mn)))
 def ok(Pu,Mu): return Mu<=np.interp(Pu,dP,dM) and Pu<=cap
 loads={"A":(1500,120),"B":(2600,150),"C":(600,230),"D":(2000,240)}
 for k_,(pu,mu) in loads.items(): print(f"  load case {k_}: Pu={pu} kN, Mu={mu} kN.m, capacity phi*Mn at this Pu={np.interp(pu,dP,dM):.0f} kN.m -> {'OK' if ok(pu,mu) else 'FAILS'}")
@@ -73,7 +75,7 @@ fig.tight_layout(); fig.savefig("fig/fig9_4_interaction.png",dpi=200); plt.close
 
 # ---- Example 10.4: bearing capacity of a strip footing, which uncertainty matters?
 def qult(c,phi,gam,Bf=1.5,Df=1.2):
-    p=np.radians(phi); Nq=np.exp(np.pi*np.tan(p))*np.tan(np.pi/4+p/2)**2; Nc=(Nq-1)/np.tan(p); Ng=2*(Nq+1)*np.tan(p)       # Vesic factors
+    p=np.radians(phi); Nq=np.exp(np.pi*np.tan(p))*np.tan(np.pi/4+p/2)**2; Nc=(Nq-1)/np.tan(p); Ng=2*(Nq+1)*np.tan(p)       # Reissner Nq, Prandtl Nc, Vesic N_gamma; no depth/inclination factors
     return c*Nc+gam*Df*Nq+0.5*gam*Bf*Ng
 rng=np.random.default_rng(10); N=200000; mu=dict(c=10.0,phi=30.0,gam=18.0); cov=dict(c=0.40,phi=0.10,gam=0.05)
 sl=np.sqrt(np.log(1+cov["c"]**2)); c_=np.exp(rng.normal(np.log(mu["c"])-sl**2/2,sl,N)); ph=rng.normal(mu["phi"],mu["phi"]*cov["phi"],N); ga=rng.normal(mu["gam"],mu["gam"]*cov["gam"],N)
@@ -83,10 +85,13 @@ tor={}
 for k_ in mu:
     lo=dict(mu); hi=dict(mu); lo[k_]=mu[k_]*(1-cov[k_]); hi[k_]=mu[k_]*(1+cov[k_]); tor[k_]=(qult(**lo),qult(**hi))
 print("  one-sd swings (kPa):",{k_:(round(a),round(b_)) for k_,(a,b_) in tor.items()})
-fig,ax=plt.subplots(1,2,figsize=(8.4,3)); ax[0].hist(q,bins=80,range=(0,2500),color=B); ax[0].axvline(qa,color=R,ls="--"); ax[0].text(qa+20,ax[0].get_ylim()[1]*0.9,"applied",fontsize=7,color=R); ax[0].set_xlabel("Ultimate bearing capacity (kPa)"); ax[0].set_yticks([]); clean(ax[0])
+fig,ax=plt.subplots(1,2,figsize=(8.4,3)); q5=np.percentile(q,5); ax[0].hist(q,bins=90,range=(0,3000),color=B); ax[0].axvline(qa,color=R,ls="--"); ax[0].axvline(q5,color=K,ls=":",lw=1.2)
+ax[0].text(qa-30,ax[0].get_ylim()[1]*0.93,"applied",fontsize=7,color=R,ha="right"); ax[0].annotate("5th percentile %.0f"%q5,xy=(q5,ax[0].get_ylim()[1]*0.80),xytext=(1500,ax[0].get_ylim()[1]*0.85),fontsize=7,color=K,va="center",arrowprops=dict(arrowstyle="->",color=K,lw=0.7))
+ax[0].text(0.98,0.55,"tail above 3000 kPa\nnot shown (%.1f%%)"%(100*np.mean(q>3000)),transform=ax[0].transAxes,ha="right",fontsize=7,color="0.4")
+ax[0].set_xlabel("Ultimate bearing capacity (kPa)"); ax[0].set_ylabel("Frequency"); ax[0].set_yticks([]); clean(ax[0])
 lab={"c":"cohesion c' (COV 40%)","phi":"friction angle (COV 10%)","gam":"unit weight (COV 5%)"}
-for i,k_ in enumerate(sorted(tor,key=lambda z:abs(tor[z][1]-tor[z][0]))): ax[1].barh(i,tor[k_][1]-tor[k_][0],left=tor[k_][0],color=O); ax[1].text(tor[k_][1]+15,i,lab[k_],va="center",fontsize=7)
-ax[1].axvline(q0,color=K,lw=0.8); ax[1].set_yticks([]); ax[1].set_xlabel("q_ult for -1 sd ... +1 sd (kPa)"); ax[1].set_xlim(None,tor["phi"][1]+520); clean(ax[1])
+for i,k_ in enumerate(sorted(tor,key=lambda z:abs(tor[z][1]-tor[z][0]))): ax[1].barh(i,tor[k_][1]-tor[k_][0],left=tor[k_][0],height=0.5,color=O); ax[1].text(tor[k_][0],i+0.3,lab[k_],va="bottom",fontsize=7,zorder=3,bbox=dict(fc="white",ec="none",pad=0.6))
+ax[1].axvline(q0,color=K,lw=0.8); ax[1].text(q0+8,-0.55,"%.0f (mean values)"%q0,fontsize=7,color=K,va="bottom"); ax[1].set_yticks([]); ax[1].set_ylim(-0.6,2.75); ax[1].set_xlabel("q_ult for -1 sd ... +1 sd (kPa)"); ax[1].set_xlim(650,1500); clean(ax[1])
 fig.tight_layout(); fig.savefig("fig/fig10_5_bearing.png",dpi=200); plt.close()
 
 # ---- Example 11.4: schedule risk by Monte Carlo on a critical-path network

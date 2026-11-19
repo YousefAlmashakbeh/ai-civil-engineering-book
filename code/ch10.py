@@ -69,8 +69,8 @@ ax.semilogy(bb[wet>0],wet[wet>0]*100,"-",color="#1A365D",lw=1.8,label="Wet seaso
 ax.semilogy(bb[dry>0],dry[dry>0]*100,"--",color="#718096",lw=1.4,label="Dry season (m = 0)")
 ax.axhline(1,ls="--",color="#a0aec0",lw=0.9); ax.text(39.8,1.12,"1% target",fontsize=8.6,ha="right",va="bottom",color="#4A5568")
 xw=np.interp(np.log10(1),np.log10(wet[wet>0]*100),bb[wet>0]); xm=np.interp(np.log10(1),np.log10(mp[ok]*100),mb[ok])
-for xx,t,col in ((xw,f"≈{xw:.0f}° wet season","#1A365D"),(xm,f"≈{xm:.1f}° seasonal mean","#c53030")):
-    ax.annotate(t,xy=(xx,1),xytext=(xx,0.13 if col=="#1A365D" else 0.035),ha="center",fontsize=8.6,color=col,arrowprops=dict(arrowstyle="-|>",color=col,lw=1))
+for xx,t,col in ((xw,f"≈{xw:.1f}°\nwet season","#1A365D"),(xm,f"≈{xm:.1f}° seasonal mean","#c53030")):
+    ax.annotate(t,xy=(xx,1),xytext=(23.4 if col=="#1A365D" else xx,3.0 if col=="#1A365D" else 0.035),ha="center",fontsize=8.6,color=col,arrowprops=dict(arrowstyle="-|>",color=col,lw=1))
 ax.set_xlim(22,40); ax.set_ylim(0.01,100); ax.set_yticks([0.01,0.1,1,10,100]); ax.set_yticklabels(["0.01%","0.1%","1%","10%","100%"])
 ax.set_xlabel("Slope angle (deg)"); ax.set_ylabel("Probability of failure"); ax.spines[["top","right"]].set_visible(False); ax.legend(fontsize=8.6,frameon=False,loc="upper left")
 print("fig10.4 crossings: wet %.1f deg, seasonal mean %.1f deg; wet Pf at 40 deg %.1f%%"%(xw,xm,wet[-1]*100))

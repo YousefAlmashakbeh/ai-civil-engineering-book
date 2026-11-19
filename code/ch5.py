@@ -22,9 +22,10 @@ models={"Linear":make_pipeline(StandardScaler(),LinearRegression()),
 cv=GroupKFold(5); res=[]; preds={}
 for n,m in models.items():
     p=cross_val_predict(m,X,y,cv=cv,groups=g); preds[n]=p
-    a20=np.mean(np.abs(p/y-1)<=0.2)
-    res.append([n,mean_absolute_error(y,p),np.sqrt(mean_squared_error(y,p)),r2_score(y,p),a20])
-R=pd.DataFrame(res,columns=["model","MAE","RMSE","R2","a20"]).sort_values("MAE")
+    a20=np.mean((y/p>=0.8)&(y/p<=1.2))   # measured/predicted within 0.8-1.2
+    fold=[mean_absolute_error(y[te],p[te]) for _,te in cv.split(X,y,g)]
+    res.append([n,mean_absolute_error(y,p),np.std(fold,ddof=1),np.sqrt(mean_squared_error(y,p)),r2_score(y,p),a20])
+R=pd.DataFrame(res,columns=["model","MAE","MAE_fold_sd","RMSE","R2","a20"]).sort_values("MAE")
 print(R.round(3).to_string(index=False))
 best=R.iloc[0].model; p=preds[best]
 fig,ax=plt.subplots(figsize=(4.6,4.4))

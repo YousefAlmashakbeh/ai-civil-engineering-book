@@ -209,7 +209,7 @@ for i, k in enumerate(keys):
     if tf > 0.5:
         ag.barh(y, tf, left=ef_[k], height=0.6, fc="none", ec=GREY, ls="--", lw=0.9)
         lab = f"فائض {tf:.0f} أيام" if tf < 11 else f"فائض {tf:.0f} يوماً"
-        if tf >= 20: ag.text(lf[k] - 1.5, y, lab, ha="right", va="center", fontsize=8.4, color="#4A5568", bbox=dict(fc="white", ec="none", pad=0.4))
+        if tf >= 20: ag.text(lf[k] + 2, y, lab, ha="left", va="center", fontsize=8.4, color="#4A5568")   # outside the dashed frame, no background
         else: ag.text(es[k] + hi + 2, y, lab, ha="left", va="center", fontsize=8.4, color="#4A5568")
     ag.plot([es[k] + lo, es[k] + hi], [y, y], color=ORANGE, lw=1.1); ag.plot([es[k] + lo, es[k] + hi], [y, y], "|", color=ORANGE, ms=6)
 print("floats", {k: lf[k] - ef_[k] for k in keys})
@@ -286,6 +286,6 @@ for (a, num, si, ok), y in zip(ans, ay):
             bbox=dict(boxstyle="round,pad=0.25", fc="white", ec=col, lw=1.5))
     if ok: arrow(ax, (3.36, y - 0.24), (3.85, sy[si] - 0.3), col=GREEN, lw=1.3, head=10)
     else: ax.text(3.6, y - 0.24, "؟", ha="center", va="center", fontsize=14, color=RED, fontweight="bold")
-ax.text(3.4, 0.12, "الحارس يبحث عن كل رقم في الجواب داخل المقطع المسترجَع: الرقم غير الموجود فيه يوقف الجواب قبل أن يصل إلى المهندس", ha="center", fontsize=8.6, color=GREY)
+ax.text(3.4, 0.12, "الحارس يبحث عن\u2009كل رقم في الجواب داخل المقطع المسترجَع: الرقم غير الموجود فيه يوقف الجواب قبل أن يصل إلى المهندس", ha="center", fontsize=8.6, color=GREY)
 save(fig, F + "nfig_guard.png")
 print("ok")

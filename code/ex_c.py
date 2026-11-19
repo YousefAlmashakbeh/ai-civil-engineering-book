@@ -16,10 +16,10 @@ fig,ax=plt.subplots(1,2,figsize=(8.4,3)); print("Ex13.4 expected: 250 mm -> %.2f
 for (nm,x),c in zip(cases.items(),[B,O]):
     x=x+rng.normal(0,0.05,len(t)); fr,X=spectrum(x); band=(fr>4000)&(fr<40000); fp=fr[band][np.argmax(X[band])]; Tm=beta*V/(2*fp)
     print(f"  {nm}: peak {fp/1e3:.2f} kHz -> depth {Tm*1e3:.0f} mm; with assumed V off by +5%: {Tm*1.05*1e3:.0f} mm")
-    ax[0].plot(t*1e3,x+(1.6 if c==O else 0),color=c,lw=0.5); ax[1].plot(fr/1e3,X,color=c,lw=1,label=nm)
-ax[0].set_xlim(0,4); ax[0].set_xlabel("Time (ms)"); ax[0].set_yticks([]); clean(ax[0]); ax[1].set_xlim(0,40); ax[1].set_xlabel("Frequency (kHz)"); ax[1].set_ylabel("Normalised amplitude"); ax[1].legend(frameon=False,fontsize=8); clean(ax[1])
+    ls_="--" if c==O else "-"; ax[0].plot(t*1e3,x+(1.6 if c==O else 0),color=c,lw=0.5,ls=ls_); ax[1].plot(fr/1e3,X,color=c,lw=1,ls=ls_,label=nm); ax[1].text(fp/1e3+0.8,0.93,nm.replace(", ","\n").replace(" at ","\nat "),color=c,fontsize=8,va="top")
+ax[0].set_xlim(0,4); ax[0].set_xlabel("Time (ms)"); ax[0].set_yticks([]); clean(ax[0]); ax[1].set_xlim(0,40); ax[1].set_xlabel("Frequency (kHz)"); ax[1].set_ylabel("Normalised amplitude"); clean(ax[1])
 print("  frequency resolution of an 8 ms record = %.0f Hz -> thickness resolution near 250 mm = %.1f mm"%(1/0.008,0.25*(1/0.008)/(beta*V/0.5)*1e3))
-fig.tight_layout(); fig.savefig("fig/fig13_5_impactecho.png",dpi=200); plt.close()
+fig.tight_layout(); fig.subplots_adjust(wspace=0.3); fig.savefig("fig/fig13_5_impactecho.png",dpi=200); plt.close()
 
 # ---- Example 14.4: fundamental diagram of a traffic stream, two fitted models
 rng=np.random.default_rng(14); k=rng.uniform(5,110,220); vf,km=92.0,38.0
@@ -30,9 +30,9 @@ rm=lambda p:np.sqrt(np.mean((v-p)**2))
 print("Ex14.4 Greenshields: vf=%.0f km/h, kj=%.0f veh/km, capacity=%.0f veh/h/lane at k=%.0f, RMSE=%.1f km/h"%(a,kj,cap_g,kj/2,rm(a+b*k)))
 print("  Underwood: vf=%.0f km/h, km=%.0f veh/km, capacity=%.0f veh/h/lane at k=%.0f, RMSE=%.1f km/h; highest observed flow=%.0f"%(vf_u,km_u,cap_u,km_u,rm(vf_u*np.exp(-k/km_u)),(k*v).max()))
 g=np.linspace(0,125,200); fig,ax=plt.subplots(1,2,figsize=(8.4,3.1))
-ax[0].scatter(k,v,s=6,color="0.6"); ax[0].plot(g,np.maximum(a+b*g,0),color=O,label="Greenshields (linear)"); ax[0].plot(g,vf_u*np.exp(-g/km_u),color=B,label="Underwood (exponential)"); ax[0].set_xlabel("Density (veh/km/lane)"); ax[0].set_ylabel("Speed (km/h)"); ax[0].legend(frameon=False,fontsize=8); clean(ax[0])
+ax[0].scatter(k,v,s=6,color="0.6"); ax[0].plot(g,np.maximum(a+b*g,0),color=O,label="Greenshields (linear)"); ax[0].plot(g,vf_u*np.exp(-g/km_u),color=B,label="Underwood (exponential)"); ax[0].set_xlabel("Density (veh/km/lane)"); ax[0].set_ylabel("Speed (km/h)"); ax[0].legend(frameon=False,fontsize=7.5,loc="upper right"); clean(ax[0])
 ax[1].scatter(k,k*v,s=6,color="0.6"); ax[1].plot(g,g*np.maximum(a+b*g,0),color=O); ax[1].plot(g,g*vf_u*np.exp(-g/km_u),color=B); ax[1].set_xlabel("Density (veh/km/lane)"); ax[1].set_ylabel("Flow (veh/h/lane)"); clean(ax[1])
-fig.tight_layout(); fig.savefig("fig/fig14_5_fundamental.png",dpi=200); plt.close()
+fig.tight_layout(); fig.subplots_adjust(wspace=0.35); fig.savefig("fig/fig14_5_fundamental.png",dpi=200); plt.close()
 
 # ---- Example 15.4: design rainfall from a short record (Gumbel + bootstrap)
 rng=np.random.default_rng(15); true=stats.genextreme(c=-0.10,loc=28,scale=11); x=true.rvs(35,random_state=rng)          # 35 annual maxima of daily rain (mm)

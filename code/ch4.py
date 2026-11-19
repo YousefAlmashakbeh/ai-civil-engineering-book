@@ -25,20 +25,13 @@ df["water"] = df.water.fillna((df.cement*np.nanmedian(df.water/df.cement)).round
 print("after cleaning: missing", df.water.isna().sum(), " w/c range", round((df.water/df.cement).min(),2), round((df.water/df.cement).max(),2))
 fig,ax=plt.subplots(1,2,figsize=(8,3.2),sharey=True)
 ax[0].scatter(raw.water/raw.cement, raw.fc28, s=10, color="#2b6cb0"); ax[0].scatter((raw.water/raw.cement)[bad], raw.fc28[bad], s=40, color="#c53030")
-ax[0].set_title("Raw data", fontsize=10); ax[0].set_xlabel("w/c"); ax[0].set_ylabel("f'c 28 d (MPa)")
+ax[0].set_xscale("log"); ax[0].set_xlim(0.3,8); ax[0].set_xticks([0.3,0.5,1,2,4,8]); ax[0].set_xticklabels(["0.3","0.5","1","2","4","8"]); ax[0].minorticks_off()
+ax[0].set_title("Raw data (log scale)", fontsize=10); ax[0].set_xlabel("w/c"); ax[0].set_ylabel("f'c 28 d (MPa)")
 ax[1].scatter(df.water/df.cement, df.fc28, s=10, color="#2b6cb0"); ax[1].scatter((df.water/df.cement)[bad], df.fc28[bad], s=40, color="#38a169")
 ax[1].set_title("After cleaning", fontsize=10); ax[1].set_xlabel("w/c")
 for a in ax: a.spines[["top","right"]].set_visible(False)
 fig.tight_layout(); fig.savefig("fig/fig4_1_clean.png",dpi=200)
-# 4.2 feature engineering
-X_raw = df[["cement","water"]].values; y=df.fc28.values
-X_eng = (df.water/df.cement).values.reshape(-1,1)
-Xr_tr,Xr_te,Xe_tr,Xe_te,y_tr,y_te = train_test_split(X_raw,X_eng,y,test_size=0.25,random_state=0)
-r2_raw = r2_score(y_te, LinearRegression().fit(Xr_tr,y_tr).predict(Xr_te))
-lin = LinearRegression().fit(Xe_tr,np.log(y_tr))
-r2_eng = r2_score(y_te, np.exp(lin.predict(Xe_te)))
-print(f"R2 raw (cement, water) = {r2_raw:.3f} ; R2 engineered log-f vs w/c = {r2_eng:.3f}")
-print("recovered A,B:", round(np.exp(lin.intercept_),1), round(np.exp(-lin.coef_[0]),2))
+# 4.2 feature engineering: see ch4b.py (its own data, seed 5)
 # 4.3 imbalance
 m=2000
 y_c = (rng.random(m)<0.05).astype(int)

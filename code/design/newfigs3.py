@@ -22,7 +22,7 @@ if want("models3"):
         (2.62, "#2D3748", "--", "النموذج الفيزيائي", "معادلة من الفيزياء\n" + iso("f(x)"), "قانون أبرامز", "53.8"),
         (1.62, ORANGE, "-", "النموذج المبني على البيانات", "نموذج يتعلّم من الأمثلة\n" + r"$\hat{f}_\theta(x)$", "الغابة العشوائية (المثالان 1.1 و1.2)", "41.5"),
         (0.62, BLUE, "-", "النموذج الهجين", None, "أبرامز × تصحيح تتعلّمه الغابة (المثال 1.2)", "46.4")]
-    ax.text(0.15, 3.17, "الرقم تحت y: التنبؤ عند w/c = 0.30 وهواء 5% (الحقيقة 45.8 MPa)", ha="left", va="top", fontsize=8.6, color=GREY)
+    ax.text(0.15, 3.17, "الرقم تحت y: التنبؤ عند w/c = 0.30 وهواء 5%؛ الحقيقة " + iso("45.8 MPa"), ha="left", va="top", fontsize=8.6, color=GREY)
     for y, c, ls, title, body, ex, val in rows:
         ax.text(5.5, y + 0.12, title, ha="right", va="center", fontsize=9.6, color=c if c != "#2D3748" else NAVY, fontweight="bold")
         ax.text(5.5, y - 0.2, ex, ha="right", va="center", fontsize=8.6, color="#4A5568")
@@ -251,7 +251,7 @@ if want("pixel"):
     b = fig.add_axes([0.1, 0.075, 0.86, 0.265])
     r = [1.0, 0.5, 0.33, 0.25, 0.125]; wa = [17.3, 2.0, 1.0, 2.2, 2.8]; wn = [43, 7, 4, 7, 9]
     b.plot(r, wn, "s-", color=RED, lw=1.4, ms=4, label="near the limit"); b.plot(r, wa, "o-", color=BLUE, lw=1.4, ms=4, label="all cracks")
-    for x_, v in zip(r, wn): b.text(x_, v + 3, f"{v}", ha="center", va="bottom", fontsize=8.6, color=RED, **LAT)
+    for x_, v in zip(r, wn): b.text(x_ - (0.02 if x_ == 0.25 else 0), v + 3, f"{v}", ha="left" if x_ == 0.25 else "center", va="bottom", fontsize=8.6, color=RED, **LAT)   # the label at 0.25 sits right of the green rule
     b.text(1.0, 17.3 - 3, "17.3", ha="center", va="top", fontsize=8.6, color=BLUE, **LAT)
     b.axvline(0.25, color=GREEN, ls="--", lw=1); b.text(0.237, 52, "القاعدة العملية:\nبكسل ≈ ربع الحد", ha="left", va="top", fontsize=8.8, color=GREEN, fontweight="bold", linespacing=1.1)
     b.invert_xaxis(); b.set_xlim(1.05, 0.08); b.set_ylim(0, 55)

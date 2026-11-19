@@ -1,5 +1,6 @@
 # Aqaba-Amman National Water Carrier: hydraulic estimate + a Kalman-filter "twin" that tracks pipe roughness
-# published: 300 MCM/yr (250 to Amman), ~438 km pipeline, 2.0-2.5 m diameter, Amman ~1000 m above sea level
+# published: 300 MCM/yr (250 to Amman, 50 stay in Aqaba), ~438 km pipeline, max diameter ~2.3 m, Amman ~1000 m above sea level
+# D = 2.5 m below is a deliberately optimistic single value (larger than the published maximum)
 import numpy as np
 Q = 250e6/365/86400; L, D, Hs, eta = 438e3, 2.5, 1000.0, 0.85
 A = np.pi*D**2/4; v = Q/A
