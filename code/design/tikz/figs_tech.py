@@ -124,18 +124,23 @@ def signal():
     f.add(r"\draw[blue,line width=2pt,-{Stealth[length=7pt]}] (-2.5,-0.27) -- (-0.7,-0.27); \draw[orange,line width=2pt,-{Stealth[length=7pt]}] (0.27,-2.5) -- (0.27,-0.7);")
     f.text(-1.75, -1.25, "المدخل 1\n600 مركبة/ساعة", "font=\\scriptsize\\bfseries,text=blue,align=center"); f.text(1.75, -1.7, "المدخل 2\n400 مركبة/ساعة", "font=\\scriptsize\\bfseries,text=orange,align=center")
     x0, sc = 4.0, 0.24
+    HATCH = {"red": "pattern=north east lines,pattern color=white", "gold": "pattern=crosshatch dots,pattern color=white"}   # greyscale / colour-blind: red hatched, amber dotted, green solid
+    WORD = {"green": "أخضر", "red": "أحمر"}
     rows = [(0.75, "المرحلة 1", [(0, 18, "green"), (18, 4, "gold"), (22, 16, "red")]), (-0.75, "المرحلة 2", [(0, 22, "red"), (22, 12, "green"), (34, 4, "gold")])]
     for y, lab, segs in rows:
         for s0, dlen, c in segs:
             f.add(r"\fill[%s,rounded corners=1.5pt] (%.3f,%.2f) rectangle (%.3f,%.2f);" % (c, x0 + s0*sc + 0.03, y - 0.38, x0 + (s0+dlen)*sc - 0.03, y + 0.38))
-            if dlen >= 12: f.add(r"\node[text=white,font=\scriptsize\bfseries] at (%.3f,%.2f) {\lt %d s};" % (x0 + (s0 + dlen/2)*sc, y, dlen))
+            if c in HATCH: f.add(r"\fill[%s,rounded corners=1.5pt] (%.3f,%.2f) rectangle (%.3f,%.2f);" % (HATCH[c], x0 + s0*sc + 0.03, y - 0.38, x0 + (s0+dlen)*sc - 0.03, y + 0.38))
+            if dlen >= 12: f.add(r"\node[text=white,fill=%s,rounded corners=1pt,inner sep=2pt,font=\scriptsize\bfseries] at (%.3f,%.2f) {%s \lt %d s};" % (c, x0 + (s0 + dlen/2)*sc, y, R(WORD[c]), dlen))
         f.add(r"\node[anchor=west,font=\footnotesize\bfseries,text=navy] at (%.2f,%.2f) {%s};" % (x0 + 38*sc + 0.2, y, R(lab)))
     f.add(r"\draw[slate,line width=0.7pt,-{Stealth[length=5pt]}] (%.2f,-1.6) -- (%.2f,-1.6);" % (x0, x0 + 38*sc + 0.35))
     for tt in [0, 10, 18, 22, 34, 38]:
         f.add(r"\draw[slate,line width=0.6pt] (%.3f,-1.6) -- ++(0,-0.1) node[below,font=\scriptsize,text=slate,inner sep=2pt] {\lt %d};" % (x0 + tt*sc, tt))
     f.text(x0 + 19*sc, -2.45, "الزمن ضمن الدورة (ثانية): دورة وبستر 38 ثانية، وأربع ثوانٍ ضائعة عند كل تبديل", "font=\\scriptsize,text=slate")
     for i, (c, t) in enumerate([("green", "أخضر"), ("gold", "أصفر وإخلاء"), ("red", "أحمر")]):
-        f.add(r"\fill[%s,rounded corners=1pt] (%.2f,1.75) rectangle ++(0.35,0.25); \node[anchor=west,font=\scriptsize] at (%.2f,1.87) {%s};" % (c, x0 + 0.2 + i*3.0, x0 + 0.6 + i*3.0, R(t)))
+        f.add(r"\fill[%s,rounded corners=1pt] (%.2f,1.75) rectangle ++(0.35,0.25);" % (c, x0 + 0.2 + i*3.0))
+        if c in HATCH: f.add(r"\fill[%s,rounded corners=1pt] (%.2f,1.75) rectangle ++(0.35,0.25);" % (HATCH[c], x0 + 0.2 + i*3.0))
+        f.add(r"\node[anchor=west,font=\scriptsize] at (%.2f,1.87) {%s};" % (x0 + 0.6 + i*3.0, R(t)))
     f.build()
 # ---------------- Fig 8.6: accelerated corrosion set-up ----------------
 def setup():

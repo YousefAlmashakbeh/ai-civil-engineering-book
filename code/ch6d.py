@@ -37,7 +37,7 @@ with torch.no_grad(): p=m(torch.tensor(Xte)).numpy()*s
 yt=yte*s; naive=vol[split+L-168:hours-168]   # same hour last week
 print(f"LSTM MAE={np.abs(p-yt).mean():.0f} veh/h ; seasonal-naive (last week) MAE={np.abs(naive-yt).mean():.0f} veh/h ; mean volume={yt.mean():.0f}")
 fig,ax=plt.subplots(figsize=(8,3)); k=24*7
-ax.plot(yt[:k],color="#2d3748",lw=1.2,label="Observed"); ax.plot(p[:k],color="#dd6b20",lw=1.2,label="LSTM 1-h ahead")
+ax.plot(yt[:k],color="#2d3748",lw=1.2,label="Observed"); ax.plot(p[:k],color="#dd6b20",lw=1,ls="--",label="LSTM 1-h ahead")
 ax.set_xlabel("Hour of test week (starts Sunday)"); ax.set_ylabel("Volume (veh/h)"); ax.legend(frameon=False,fontsize=8); ax.spines[["top","right"]].set_visible(False)
 fig.tight_layout(); fig.savefig("fig/fig6_4_lstm.png",dpi=200)
 fig,ax=plt.subplots(figsize=(5.5,3))

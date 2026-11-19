@@ -19,7 +19,7 @@ print(f"GBM (f3,f7,w/b,SCM): MAE={mean_absolute_error(f28,p):.2f}  high-SCM MAE=
 print("high-SCM mixes:",hi.sum())
 fig,ax=plt.subplots(1,2,figsize=(8,3.5),sharey=True)
 for a,pp,t in [(ax[0],aci,"ACI 209 extrapolation from 7 d"),(ax[1],p,"Gradient boosting (3 d, 7 d, mix)")]:
-    a.scatter(f28[~hi],pp[~hi],s=8,color="#2b6cb0",label="SCM <= 30%"); a.scatter(f28[hi],pp[hi],s=8,color="#dd6b20",label="SCM > 30%")
+    a.scatter(f28[~hi],pp[~hi],s=8,color="#2b6cb0",label="SCM <= 30%"); a.scatter(f28[hi],pp[hi],s=12,marker="^",color="#dd6b20",label="SCM > 30%")
     a.plot([20,75],[20,75],color="#2d3748",lw=1); a.set_title(t,fontsize=9); a.set_xlabel("Measured f'c 28 d (MPa)"); a.spines[["top","right"]].set_visible(False)
 ax[0].set_ylabel("Predicted (MPa)"); ax[0].legend(frameon=False,fontsize=8); fig.tight_layout(); fig.savefig("fig/fig8_1_early.png",dpi=200)
 # (2) maturity
@@ -35,8 +35,8 @@ for T in (10,35):
     print(f"ML T={T} 28d={gbT.predict([[np.log(28),T]])[0]:.1f}")
 tt=np.linspace(0.5,28,200); fig,ax=plt.subplots(figsize=(6.5,3.5)); cols={10:"#2b6cb0",20:"#2d3748",35:"#c53030"}
 for T in (10,20,35):
-    ax.plot(tt,true_strength(tt,T),color=cols[T],lw=2,label=f"{T} °C true"); ax.plot(tt,nurse_saul(tt,T),color=cols[T],lw=1,ls="--")
-ax.set_xlabel("Age (days)"); ax.set_ylabel("f'c (MPa)"); ax.legend(frameon=False,fontsize=8,title="dashed = Nurse-Saul",title_fontsize=8)
+    ax.plot(tt,true_strength(tt,T),color=cols[T],lw={10:2,20:1.3,35:2.6}[T],ls={10:(0,(6,2)),20:"-",35:"-"}[T],marker={10:"o",20:None,35:"^"}[T],markevery=20,ms=4.5,label=f"{T} °C true"); ax.plot(tt,nurse_saul(tt,T),color=cols[T],lw=1,ls=":")
+ax.set_xlabel("Age (days)"); ax.set_ylabel("f'c (MPa)"); ax.legend(frameon=False,fontsize=8,title="dotted = Nurse-Saul",title_fontsize=8)
 ax.spines[["top","right"]].set_visible(False); fig.tight_layout(); fig.savefig("fig/fig8_2_maturity.png",dpi=200)
 # (3) chloride service life (Life-365-type relations)
 def life(wbv,sg,cover_mm,Cs=0.6,Cc=0.05):
@@ -58,9 +58,9 @@ ps=cross_val_predict(sur,S,np.log(L),cv=KFold(5,shuffle=True,random_state=0))
 print(f"surrogate log-life MAE={mean_absolute_error(np.log(L),ps):.3f} (≈{(np.exp(mean_absolute_error(np.log(L),ps))-1)*100:.0f}% typical error); sim time per case {tsim*1e3:.2f} ms")
 sur.fit(S,np.log(L)); t0=time.time(); sur.predict(S); print(f"surrogate time per case {(time.time()-t0)/N*1e3:.4f} ms")
 xx=np.linspace(0,100,200)/1000; fig,ax=plt.subplots(figsize=(6.5,3.4))
-for (wbv,sg,c) in [(0.5,0,"#c53030"),(0.4,0,"#dd6b20"),(0.4,50,"#2b6cb0")]:
+for (wbv,sg,c,ls_,mk) in [(0.5,0,"#c53030","-","o"),(0.4,0,"#dd6b20","--","s"),(0.4,50,"#2b6cb0","-.","^")]:
     D28=10**(-12.06+2.40*wbv)*31536000; m=min(0.2+0.4*sg/70,0.6); Dint=D28*(28/365)**m*25**(1-m)/(1-m)
-    ax.plot(xx*1000,min(0.04*25,0.6)*(1-erf(xx/(2*np.sqrt(Dint)))),color=c,lw=2,label=f"w/b={wbv}, slag={sg}%")
+    ax.plot(xx*1000,min(0.04*25,0.6)*(1-erf(xx/(2*np.sqrt(Dint)))),color=c,lw=2,ls=ls_,marker=mk,markevery=25,ms=4.5,label=f"w/b={wbv}, slag={sg}%")
 ax.axhline(0.05,ls="--",color="#2d3748",lw=1); ax.axvline(50,ls=":",color="#2d3748",lw=1); ax.text(48,0.6,"cover 50 mm",fontsize=8,ha="right",va="center"); ax.text(80,0.06,"threshold",fontsize=8)
 ax.set_xlabel("Depth (mm)"); ax.set_ylabel("Chloride (% by mass of concrete)"); ax.set_title("Profiles after 25 years",fontsize=9); ax.legend(frameon=False,fontsize=8)
 ax.spines[["top","right"]].set_visible(False); fig.tight_layout(); fig.savefig("fig/fig8_3_chloride.png",dpi=200)

@@ -47,7 +47,7 @@ X=np.c_[fc,rho,d,ad,bw]; px=cross_val_predict(XGBRegressor(n_estimators=500,max_
 rA=Vtest/Vaci; rX=Vtest/np.exp(px)
 for nm,r in [("ACI 318-19",rA),("XGBoost",rX)]: print(f"{nm}: mean Vtest/Vpred={r.mean():.2f} COV={r.std()/r.mean()*100:.0f}% unsafe(<1)={np.mean(r<1)*100:.0f}%")
 hiad=ad>4.5; print("ACI mean ratio a/d<3:",round(rA[ad<3].mean(),2)," a/d>4.5:",round(rA[hiad].mean(),2))
-fig,ax=plt.subplots(figsize=(6,3.3)); ax.scatter(ad,rA,s=8,color="#dd6b20",label="ACI 318-19"); ax.scatter(ad,rX,s=8,color="#2b6cb0",label="XGBoost")
+fig,ax=plt.subplots(figsize=(6,3.3)); ax.scatter(ad,rA,s=12,marker="^",facecolors="none",edgecolors="#dd6b20",linewidths=0.8,label="ACI 318-19"); ax.scatter(ad,rX,s=6,marker="o",color="#2b6cb0",label="XGBoost")
 ax.axhline(1,color="#2d3748",lw=1); ax.set_xlabel("Shear span ratio a/d"); ax.set_ylabel("V_test / V_pred"); ax.legend(frameon=False,fontsize=8); ax.spines[["top","right"]].set_visible(False)
 fig.tight_layout(); fig.savefig("fig/fig9_2_shear.png",dpi=200)
 # (3) fragility

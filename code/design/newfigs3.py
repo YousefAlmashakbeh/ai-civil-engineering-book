@@ -193,7 +193,7 @@ if want("bo"):
         Xs, Ys, mu, sd, ei, xn = snaps[n]; a, b = axs[0, 1 - j], axs[1, 1 - j]
         a.fill_between(grid, mu - 2 * sd, mu + 2 * sd, color=TINT[BLUE], lw=0); a.plot(grid, mu, color=BLUE, lw=1.4)
         a.plot(grid, -np.abs(110 / 6.5**grid - 40), color="#2D3748", lw=0.9, ls=":")
-        a.scatter(Xs, Ys, color=ORANGE, zorder=4, s=18)
+        a.scatter(Xs, Ys, color=ORANGE, edgecolors="#1A202C", linewidths=0.7, marker="D", zorder=4, s=18)
         for k, (x_, y_) in enumerate(zip(Xs, Ys)): a.annotate(str(k + 1), (x_, y_), textcoords="offset points", xytext=(3, -9), fontsize=8.6, **LAT)
         a.axvline(xn, color=RED, ls="--", lw=1); b.axvline(xn, color=RED, ls="--", lw=1)
         b.fill_between(grid, 0, ei, color=TINT[GREEN], lw=0); b.plot(grid, ei, color=GREEN, lw=1.4)
@@ -204,7 +204,7 @@ if want("bo"):
         b.text(xn + (-0.008 if n == 3 else 0.008), 3.1, f"التالية {xn:.3f}", ha="right" if n == 3 else "left", va="center", fontsize=8.6, color=RED)
         if j == 0: a.set_yticklabels([]); b.set_yticklabels([])
     axs[0, 0].set_ylabel(iso("−|f − 40|") + " (MPa)", fontsize=9); axs[1, 0].set_ylabel("EI", fontsize=9, **LAT)
-    fig.text(0.5, -0.05, "أزرق: متوسط " + iso("GPR ± 2σ") + " · منقّط: الهدف الحقيقي · برتقالي: الخلطات المقيسة · أحمر: الخلطة التالية", ha="center", va="top", fontsize=8.6, color="#4A5568")
+    fig.text(0.5, -0.05, "متصل: متوسط " + iso("GPR ± 2σ") + " · منقّط: الهدف الحقيقي · معيّنات: الخلطات المقيسة · عمودي متقطع: الخلطة التالية", ha="center", va="top", fontsize=8.6, color="#4A5568")
     save(fig, F + "nfig3_bo.png")
 
 # ================================================================ 7.5 the bridge maintenance MDP of Example 7.4

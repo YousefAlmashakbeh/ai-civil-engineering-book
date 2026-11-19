@@ -141,10 +141,10 @@ print("  extreme storm P=%.0f mm, P5=%.0f mm: true Q=%.1f mm  GBM=%.1f mm  SCS-C
 fig, ax = plt.subplots(figsize=(6, 3.8))
 ax.scatter(P[tr & (P > 0)], Q[tr & (P > 0)], s=5, color="0.7", label="Training days")
 pp = np.linspace(0, 130, 200)
-for p5, col in [(5, "#2F855A"), (35, "#B7791F")]:
+for p5, col, mk in [(5, "#2F855A", "o"), (35, "#B7791F", "s")]:
     cn = cn1 if p5 < 13 else (cn2 if p5 < 28 else cn3)
-    ax.plot(pp, scs(pp, cn), color=col, lw=1.2, label="SCS-CN, P5=%d mm" % p5)
-    ax.plot(pp, gbq.predict(np.column_stack([pp, np.full_like(pp, p5)])), color=col, ls="--", lw=1.2, label="GBM, P5=%d mm" % p5)
+    ax.plot(pp, scs(pp, cn), color=col, lw=1.2, marker=mk, markevery=25, ms=4, label="SCS-CN, P5=%d mm" % p5)
+    ax.plot(pp, gbq.predict(np.column_stack([pp, np.full_like(pp, p5)])), color=col, ls="--", lw=1.2, marker=mk, markevery=25, ms=4, mfc="white", label="GBM, P5=%d mm" % p5)
 ax.scatter([P[i]], [Q[i]], marker="*", s=150, color="#C53030", zorder=5, label="Extreme storm (true)")
 ax.axvline(P[tr].max(), color="k", ls=":", lw=0.8)
 ax.set_xlabel("Daily rainfall P (mm)"); ax.set_ylabel("Runoff Q (mm)"); ax.legend(fontsize=7)

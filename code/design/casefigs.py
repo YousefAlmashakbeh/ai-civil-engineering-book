@@ -72,7 +72,7 @@ for ax_, px in zip(axs[:2], (1, 5)):
     ax_.imshow(r[:300//px, :300//px], cmap="Greys_r", extent=(0, 300, 300, 0), vmin=-1.5, vmax=0.3)
     for d, (cx, cy) in zip(diam, C):
         if cx < 300 and cy < 300:
-            small = d < 5; ax_.add_patch(plt.Circle((cx, cy), max(d/2, 6 if small else 1.5), fill=False, ec=ORANGE if small else "#63B3ED", lw=1.3 if small else 1.0))
+            small = d < 5; ax_.add_patch(plt.Circle((cx, cy), max(d/2, 6 if small else 1.5), fill=False, ec=ORANGE if small else "#63B3ED", lw=1.3 if small else 1.0, ls="--" if small else "-"))
     ax_.set_title(f"بكسل {px} م", fontfamily="Amiri", fontsize=10.5); ax_.set_xticks([]); ax_.set_yticks([])
     ax_.plot([215, 265], [280, 280], color="white", lw=2.5); ax_.text(240, 268, "50 m", color="white", ha="center", fontsize=8)
 rec = {px: g["run"](px)[1] for px in (1, 2, 5)}
@@ -82,14 +82,16 @@ a3.bar(xx+0.18, [rec[p][diam>=5].mean() for p in (1, 2, 5)], 0.36, color=BLUE, h
 a3.set_xticks(xx, ["1 m", "2 m", "5 m"]); YL(a3, "الاستدعاء"); a3.set_ylim(0, 1.05); a3.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2, **LEG); XL(a3, "حجم البكسل")
 fig.subplots_adjust(wspace=0.45, bottom=0.2)
 b0 = axs[0].get_position(); b1 = axs[1].get_position()
-fig.text((b0.x0 + b1.x1) / 2, 0.06, "الدوائر حفر خسفية معروفة: البرتقالية أصغر من 5 م، والزرقاء 5 م فأكثر", ha="center", fontsize=9, fontfamily="Amiri", color="#2D3748")
+fig.text((b0.x0 + b1.x1) / 2, 0.06, "الدوائر حفر خسفية معروفة: المتقطعة أصغر من 5 م، والمتصلة 5 م فأكثر", ha="center", fontsize=9, fontfamily="Amiri", color="#2D3748")
 save(fig, F + "fig12_6_sinkholes.png")
 # 13 ---------------------------------------------------------------
 g = run("c13_abdoun.py"); days, f, T_, res, s, al = g["days"], g["f"], g["T"], g["res"], g["s"], g["al"]
 fig, (a1, a2) = plt.subplots(2, 1, figsize=(5.0, 4.2), sharex=True)   # printed at 12.6 cm (figmap "full"), fonts >= 9 pt
 a1.axhspan(0.62*0.98, 0.62*1.02, color="#EDF2F7", zorder=0); T(a1, 0.0, 1.03, "نطاق ثابت ⁦±2%⁩ حول التردد المرجعي", fontsize=9, color=GREY, transform=a1.transAxes)
-a1.scatter(days, f, c=T_, cmap="coolwarm", s=5); a1.axvline(600, color=NAVY, ls="--"); a1.set_ylabel("f1 (Hz)")
-T(a1, 605, 0.62*1.03, "انخفاض ⁦1%⁩\nمن اليوم 601", fontsize=9, color=NAVY, va="top"); T(a1, 590, 0.6015, "اللون: حرارة اليوم، الأزرق بارد والأحمر حار", fontsize=9, color=GREY, ha="right")
+sc = a1.scatter(days, f, c=T_, cmap="cividis", s=5)   # perceptually ordered: lighter = hotter, also in greyscale
+cax = a1.inset_axes([0.04, 0.13, 0.22, 0.045]); cb = fig.colorbar(sc, cax=cax, orientation="horizontal"); cb.ax.tick_params(labelsize=8.6, length=2, pad=1); cb.outline.set_linewidth(0.4); cax.set_title("T (°C)", fontsize=8.6, pad=2, fontweight="normal")
+a1.axvline(600, color=NAVY, ls="--"); a1.set_ylabel("f1 (Hz)")
+T(a1, 605, 0.62*1.03, "انخفاض ⁦1%⁩\nمن اليوم 601", fontsize=9, color=NAVY, va="top"); T(a1, 590, 0.6015, "اللون: حرارة اليوم (الأفتح أحرّ)", fontsize=9, color=GREY, ha="right")
 e = np.zeros_like(res); acc = 0
 for i, r in enumerate(res): acc = 0.2*r + 0.8*acc; e[i] = acc
 a2.axvspan(0, 365, color=TINT[GREEN], zorder=0); T(a2, 10, -5.5, "سنة التدريب", fontsize=9, color=GREEN)

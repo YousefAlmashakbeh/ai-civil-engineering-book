@@ -117,21 +117,21 @@ fig, axs = plt.subplots(1, 3, figsize=(6.8, 3.4), gridspec_kw=dict(width_ratios=
 axs[0].imshow(P, cmap="gray", vmin=P.min() - 10, vmax=P.max() + 10)
 for i in range(8):
     for j in range(8): axs[0].text(j, i, str(P[i, j]), ha="center", va="center", fontsize=7.8, color="white" if P[i, j] < P.mean() else "black", fontfamily="DejaVu Sans")
-axs[0].add_patch(Rectangle((-0.5, -0.5), 3, 3, fill=False, ec=RED, lw=2))
+axs[0].add_patch(Rectangle((-0.5, -0.5), 3, 3, fill=False, ec=RED, lw=2.5, ls="--"))
 axs[1].imshow(K, cmap="RdBu_r", vmin=-2, vmax=2)
 for i in range(3):
     for j in range(3): axs[1].text(j, i, str(K[i, j]), ha="center", va="center", fontsize=10, fontfamily="DejaVu Sans")
 lim = np.abs(O).max(); axs[2].imshow(O, cmap="RdBu_r", vmin=-lim, vmax=lim)
 for i in range(6):
     for j in range(6): axs[2].text(j, i, str(O[i, j]), ha="center", va="center", fontsize=8.2, fontfamily="DejaVu Sans")
-axs[2].add_patch(Rectangle((-0.5, -0.5), 1, 1, fill=False, ec=RED, lw=2))
+axs[2].add_patch(Rectangle((-0.5, -0.5), 1, 1, fill=False, ec=RED, lw=2.5, ls="--"))
 for a in axs: a.set_xticks([]); a.set_yticks([])
 axs[0].set_title("رقعة 8×8 من صورة شق", fontsize=10); axs[1].set_title("المرشّح 3×3", fontsize=10); axs[2].set_title("خريطة الخصائص 6×6", fontsize=10)
 fig.canvas.draw(); b0, b1, b2 = [a.get_position() for a in axs]
 fig.text((b0.x1 + b1.x0) / 2, 0.58, "⊛", fontsize=20, ha="center", va="center", color=NAVY, fontfamily="DejaVu Sans"); fig.text((b1.x1 + b2.x0) / 2, 0.58, "=", fontsize=18, ha="center", va="center", color=NAVY, fontfamily="DejaVu Sans")
 w = P[0:3, 0:3]; s = int((w * K).sum())
 calc = f"({w[0,2]}+{w[1,2]}+{w[2,2]}) − ({w[0,0]}+{w[1,0]}+{w[2,0]}) = {s}"
-fig.text(0.5, 0.155, "الخلية الحمراء في الخريطة = مجموع حاصل ضرب المربع الأحمر في المرشّح (⊛ رمز الالتفاف):", ha="center", fontsize=9.5, color="#2D3748")
+fig.text(0.5, 0.155, "الخلية المؤطَّرة في الخريطة = مجموع حاصل ضرب المربع المؤطَّر في المرشّح (⊛ رمز الالتفاف):", ha="center", fontsize=9.5, color="#2D3748")
 fig.text(0.5, 0.085, iso(calc), ha="center", fontsize=9.5, color=RED, fontfamily="DejaVu Sans")
 fig.text(0.5, 0.015, "الأرقام سطوع البكسل من 0 (أسود) إلى 100 (أبيض). بلا حشو تعطي الرقعة 8×8 خريطة 6×6، ومع حشو بكسل واحد (padding = 1) تبقى 8×8.", ha="center", fontsize=8.6, color=GREY)
 fig.subplots_adjust(bottom=0.27, top=0.88)

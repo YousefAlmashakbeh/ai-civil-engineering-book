@@ -51,8 +51,8 @@ print(f"EVM: CPI={CPI:.3f} SPI={SPI:.3f} EAC=BAC/CPI={BAC/CPI:,.0f}  EAC(CPI*SPI
 lg=LogisticRegression(max_iter=1000).fit((D-D.mean(0))/D.std(0),yd); names=["log size","design %","government","lump sum","summer start","variations"]
 sc=[f"{k} {v:.2f}" for k,v in zip(names,lg.coef_[0])]; print("standardised coefs: "+", ".join(sc[:3])+",\n"+" "*20+", ".join(sc[3:]))
 fig,ax=plt.subplots(figsize=(4.6,4.2))
-for p,c,l in [(pL,"#2b6cb0","Logistic"),(pG,"#dd6b20","GBM")]:
-    f,t,_=roc_curve(yd,p); ax.plot(f,t,color=c,lw=2,label=f"{l} AUC={roc_auc_score(yd,p):.3f}")
+for p,c,l,ls_ in [(pL,"#2b6cb0","Logistic","-"),(pG,"#dd6b20","GBM","--")]:
+    f,t,_=roc_curve(yd,p); ax.plot(f,t,color=c,lw=2,ls=ls_,label=f"{l} AUC={roc_auc_score(yd,p):.3f}")
 ax.plot([0,1],[0,1],color="#a0aec0",lw=1); ax.set_xlabel("False positive rate"); ax.set_ylabel("True positive rate"); ax.legend(frameon=False,fontsize=8); ax.spines[["top","right"]].set_visible(False)
 fig.tight_layout(); fig.savefig("fig/fig11_2_roc.png",dpi=200)
 # (3) clauses
