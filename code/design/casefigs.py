@@ -27,11 +27,13 @@ ax.loglog(x, np.exp(g["c"] + g["k"]*np.log(x)), color=BLUE, lw=2, label="ملا�
 kk, cc = np.polyfit(np.log(pga[:2]), np.log(lam[:2]), 1)
 ax.loglog(x, np.exp(cc + kk*np.log(x)), color=ORANGE, lw=2, ls="--", label="ملاءمة محلية (475 و975 سنة)")
 ax.loglog(pga, lam, "o", color=NAVY, ms=7, label="قيم الدراسة (تربة صلبة)")
-ax.axvline(0.20, color=RED, lw=1.6); T(ax, 0.205, 1.25e-2, "الكود الأردني\nPGA = 0.20 g", color=RED, fontsize=9.5)
-ax.axhline(1/475, color=GREY, lw=0.8, ls=":"); T(ax, 0.48, 1/475*1.15, "⁦10%⁩ في 50 سنة", color=GREY, fontsize=9, ha="center")
-ax.fill_betweenx([1/172, 1/122], 0.12, 0.2, color=TINT[RED], zorder=0)
-ax.annotate("مستوى الكود:\nفترة عودة 122–172 سنة", xy=(0.2, 1/145), xytext=(0.212, 2.6e-4), fontsize=9.5, color=RED, family="Amiri",
+ax.axvline(0.20, color=GREY, lw=1.3, ls="--"); T(ax, 0.196, 1.9e-4, "Z = 0.20 g\nمرجع صخري لا يُقارن\nبمنحنى التربة", color=GREY, fontsize=9, ha="right", va="bottom")
+ax.axvline(0.28, color=RED, lw=1.6); T(ax, 0.274, 2.4e-2, "الكود على التربة SD\nCa = 0.28 g", color=RED, fontsize=9.5, ha="right")
+ax.axhline(1/475, color=GREY, lw=0.8, ls=":"); T(ax, 0.125, 1/475*0.88, "⁦10%⁩ في 50 سنة", color=GREY, fontsize=9, ha="left", va="top")
+ax.fill_betweenx([1/400, 1/358], 0.12, 0.28, color=TINT[RED], zorder=0)
+ax.annotate("فترة عودة 358–400 سنة\nأي نحو ⁦13%⁩ في 50 سنة", xy=(0.28, 1/380), xytext=(0.335, 3.1e-3), fontsize=9.5, color=RED, family="Amiri", va="bottom",
             arrowprops=dict(arrowstyle="->", color=RED, lw=0.9))
+ax.set_ylim(1.3e-4, 6e-2)
 from matplotlib.ticker import FixedLocator, FixedFormatter, NullFormatter
 ax.xaxis.set_major_locator(FixedLocator([0.15, 0.2, 0.3, 0.4, 0.5, 0.6])); ax.xaxis.set_major_formatter(FixedFormatter(["0.15", "0.20", "0.30", "0.40", "0.50", "0.60"])); ax.xaxis.set_minor_formatter(NullFormatter())
 XL(ax, "أقصى تسارع أرضي PGA (g)"); YL(ax, "معدل التجاوز السنوي"); ax.legend(loc="upper right", bbox_to_anchor=(1.03, 1.03), handlelength=1.6, **LEG)
